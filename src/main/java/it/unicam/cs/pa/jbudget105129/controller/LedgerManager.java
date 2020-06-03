@@ -1,10 +1,7 @@
 package it.unicam.cs.pa.jbudget105129.controller;
 
-import it.unicam.cs.pa.jbudget105129.model.ScheduledTransaction;
-import it.unicam.cs.pa.jbudget105129.model.Transaction;
+import it.unicam.cs.pa.jbudget105129.model.*;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
-import it.unicam.cs.pa.jbudget105129.model.Account;
-import it.unicam.cs.pa.jbudget105129.model.Ledger;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +10,8 @@ public interface LedgerManager {
 
     Ledger getLedger();
 
-    void addTransaction(Transaction transaction) throws AccountException;
+    void addTransaction(String description, Date date, List<Movement> movements) throws AccountException;
+
     void removeTransaction(Transaction transaction) throws AccountException;
 
     void addAccount(Account account);

@@ -12,7 +12,7 @@ import java.util.Objects;
 //TODO javadoc
 public class RoundedMovement implements Movement {
 
-    private static RoundedMovementRegistry registry;
+    private static SingleInstanceClassRegistry<RoundedMovement> registry;
     private BigDecimal amount;
     private String description;
     private MovementType type;
@@ -33,9 +33,9 @@ public class RoundedMovement implements Movement {
         return this.ID;
     }
 
-    public static RoundedMovementRegistry getRegistry(){
+    public static SingleInstanceClassRegistry<RoundedMovement> getRegistry(){
         if (registry==null){
-            registry=new RoundedMovementRegistry(RoundedMovement::new);
+            registry= new SingleInstanceClassRegistry<>(RoundedMovement::new);
         }
         return registry;
     }

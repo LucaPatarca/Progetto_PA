@@ -1,6 +1,7 @@
 package it.unicam.cs.pa.jbudget105129.persistence;
 
 import com.google.gson.*;
+import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.FamilyLedger;
 import it.unicam.cs.pa.jbudget105129.model.Ledger;
 import it.unicam.cs.pa.jbudget105129.model.Transaction;
@@ -15,7 +16,14 @@ public class LedgerTypeAdapter implements JsonDeserializer<Ledger>, JsonSerializ
         Ledger ledger = new FamilyLedger();
         JsonObject jo = json.getAsJsonObject();
         List<Transaction> transactions = context.deserialize(jo.get("transactions"),LinkedList.class);
-        transactions.forEach(ledger::addTransaction);
+        for (Transaction transaction : transactions) {
+            try {
+                ledger.addTransaction(transaction);
+            } catch (AccountException e) {
+                // TODO: 03/06/20 sistemare sta eccezione
+                e.printStackTrace();
+            }
+        }
         return ledger;
     }
     @Override

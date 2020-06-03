@@ -64,9 +64,9 @@ public class FamilyLedgerManagerTest {
 
     @Test
     void shouldFindTransactions(){
-        Tag tag1=BasicTag.getInstance("yes1","");
-        Tag tag2=BasicTag.getInstance("no","yes2");
-        Tag tag3=BasicTag.getInstance("no","no");
+        Tag tag1= SingleTag.getInstance("yes1","");
+        Tag tag2= SingleTag.getInstance("no","yes2");
+        Tag tag3= SingleTag.getInstance("no","no");
         Transaction transaction1=new RoundedTransaction("yes3",Calendar.getInstance().getTime());
         Transaction transaction2=new RoundedTransaction("no1",Calendar.getInstance().getTime());
         Transaction transaction3=new RoundedTransaction("no2",Calendar.getInstance().getTime());

@@ -21,20 +21,48 @@ public class FamilyLedgerManager implements LedgerManager {
         return ledger;
     }
 
+    /**
+     * This method creates a new instance of RoundedTransaction and adds it to the ledger. It also takes
+     * as parameter a list of movements that will be added to the transaction. Before adding the transaction
+     * to the ledger every movement is checked to verify that it has an account, if this condition is not
+     * true an IllegalArgumentException will be thrown. Finally the transaction is added to the ledger
+     * which is responsible for adding each movement to the linked account. If ledger throws an AccountException
+     * meaning that one or more account refused the transaction, the entire transaction will be removed
+     * from the ledger and the method return false.
+     * @param description a description for the transaction
+     * @param date a date for the transaction
+     * @param movements a list of movements for the transaction
+     * @throws IllegalArgumentException if one or more movements does not have an account or if the
+     * list of movements is empty because a transaction with no
+     * movements wont have any effect.
+     * @throws NullPointerException if any of the parameter is null.
+     */
     @Override
-    public void addTransaction(Transaction transaction) {
-        if (transaction==null) throw new NullPointerException();
-        ledger.addTransaction(transaction);
+    public void addTransaction(String description, Date date, List<Movement> movements) throws AccountException {
+        // TODO: 03/06/20 fare quello che dice il javadoc
+        if (description==null||date==null||movements==null) throw new NullPointerException();
+        if (movements.isEmpty()) throw new IllegalArgumentException();
+        if(movements.parallelStream().anyMatch(m->m.getAccount()==null))
+            throw new IllegalArgumentException();
+        Transaction transaction = new RoundedTransaction(description,date);
+        movements.forEach(transaction::addMovement);
+        try {
+            ledger.addTransaction(transaction);
+        } catch (AccountException e){
+            this.removeTransaction(transaction);
+            throw e;
+        }
     }
 
     @Override
-    public void removeTransaction(Transaction transaction) {
+    public void removeTransaction(Transaction transaction) throws AccountException {
         if(transaction==null) throw new NullPointerException();
         ledger.removeTransaction(transaction);
     }
 
     @Override
     public void addAccount(Account account) {
+        // TODO: 03/06/20 dovrebbe creare un account a partire dai campi e in base al tipo aggiustare i parametri tipo max e min
         ledger.addAccount(account);
     }
 

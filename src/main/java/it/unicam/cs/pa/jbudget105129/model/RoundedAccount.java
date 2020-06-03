@@ -88,8 +88,15 @@ public class RoundedAccount implements Account {
         return this.movements.stream().filter(predicate).collect(Collectors.toList());
     }
 
+    /**
+     * Adds the movement to the list and update the balance. It also set the movement's account
+     * to this account to make sure everything is ok.
+     * @param movement The new movement to add
+     * @throws AccountException  If the new movement introduces a problem to the account balance
+     * (for example if the balance goes below the minimum or above the maximum value).
+     */
     @Override
-    public void addMovement(Movement movement) throws IllegalStateException {
+    public void addMovement(Movement movement) throws AccountException {
         if(getType()==AccountType.ASSET){
             if(movement.getType()== MovementType.INCOME)
                 add(movement);
@@ -106,7 +113,7 @@ public class RoundedAccount implements Account {
     }
 
     @Override
-    public void removeMovement(Movement movement) throws IllegalStateException {
+    public void removeMovement(Movement movement) throws AccountException {
         if(getType()==AccountType.ASSET){
             if(movement.getType()==MovementType.INCOME)
                 subtract(movement);
@@ -146,17 +153,17 @@ public class RoundedAccount implements Account {
         this.minAmount=new BigDecimal(minAmount).setScale(2,RoundingMode.HALF_DOWN);
     }
 
-    private void subtract(Movement movement) throws IllegalStateException {
+    private void subtract(Movement movement) throws AccountException {
         BigDecimal newBalance = balance.subtract(BigDecimal.valueOf(movement.getAmount()));
         if (minAmount!=null&&newBalance.compareTo(minAmount)<0)
-            throw new IllegalStateException("Not enough money on the account "+this.getName());
+            throw new AccountException("Not enough money on the account "+this.getName());
         balance=newBalance;
     }
 
-    private void add(Movement movement) throws IllegalStateException {
+    private void add(Movement movement) throws AccountException {
         BigDecimal newBalance = balance.add(BigDecimal.valueOf(movement.getAmount()));
         if (maxAmount!=null&&newBalance.compareTo(maxAmount)>0)
-            throw new IllegalStateException("Exceeded max amount on the account "+this.getName());
+            throw new AccountException("Exceeded max amount on the account "+this.getName());
         balance=newBalance;
     }
 

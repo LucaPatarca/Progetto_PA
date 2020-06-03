@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 //TODO javadoc
@@ -51,12 +52,12 @@ public class FamilyLedger implements Ledger {
      * This adds a new transaction to the list, it also adds all transaction's movements
      * to the linked account to maintain a consistent state of the ledger.
      * @param transaction the transaction to be added.
-     * @throws IllegalStateException if the same exception is thrown by one of the updated account.
+     * @throws AccountException if the same exception is thrown by one of the updated account.
      */
     @Override
-    public void addTransaction(Transaction transaction) throws IllegalStateException{
+    public void addTransaction(Transaction transaction) throws AccountException{
         transactions.add(transaction);
-        updateAccount(transaction,m->m.getAccount().addMovement(m));
+        updateAccountAdding(transaction);
     }
 
     @Override
@@ -65,15 +66,15 @@ public class FamilyLedger implements Ledger {
     }
 
     /**
-     * This removes a new transaction from the list, it also removes all transaction's movements
+     * This removes a transaction from the list, it also removes all transaction's movements
      * from the linked account to maintain a consistent state of the ledger.
      * @param transaction the transaction to be removed.
-     * @throws IllegalStateException if the same exception is thrown by one of the updated account.
+     * @throws AccountException if the same exception is thrown by one of the updated account.
      */
     @Override
-    public void removeTransaction(Transaction transaction) throws IllegalStateException{
+    public void removeTransaction(Transaction transaction) throws AccountException{
         transactions.remove(transaction);
-        updateAccount(transaction,m->m.getAccount().addMovement(m));
+        updateAccountRemoving(transaction);
     }
 
     @Override
@@ -87,12 +88,11 @@ public class FamilyLedger implements Ledger {
     }
 
     /**
-     * mark completed transactions as completed,
-     * adds each movement to the linked account.
-     * @param date the date at which this method stops scheduling
+     * mark completed transactions as completed, adds each movement to the linked account.
+     * @param date the date to be scheduled.
      */
     @Override
-    public void schedule(Date date) throws IllegalStateException {
+    public void schedule(Date date) throws AccountException {
         for (ScheduledTransaction st : scheduledTransactions) {
             if (st.isCompleted())
                 return;
@@ -101,7 +101,7 @@ public class FamilyLedger implements Ledger {
                     .filter(t -> !transactions.contains(t))
                     .collect(Collectors.toList());
             for (Transaction transaction : list) {
-                updateAccount(transaction,m->m.getAccount().addMovement(m));
+                updateAccountAdding(transaction);
                 st.markTransactionAsCompleted(transaction);
             }
         }
@@ -131,9 +131,15 @@ public class FamilyLedger implements Ledger {
                 '}';
     }
 
-    private void updateAccount(Transaction transaction, Consumer<Movement> action) {
+    private void updateAccountAdding(Transaction transaction) throws AccountException {
         for (Movement movement : transaction.getMovements()) {
-            action.accept(movement);
+            movement.getAccount().addMovement(movement);
+        }
+    }
+
+    private void updateAccountRemoving(Transaction transaction) throws AccountException {
+        for (Movement movement : transaction.getMovements()) {
+            movement.getAccount().removeMovement(movement);
         }
     }
 }

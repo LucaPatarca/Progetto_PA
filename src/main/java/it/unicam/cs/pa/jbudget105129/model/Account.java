@@ -42,13 +42,13 @@ public interface Account {
      * @return The referent name and surname
      */
     String getReferent();
-// TODO: 02/06/20 aggiustare i javadoc
     /**
      * Returns the maximum value the balance of the account can reach, in case of an asset
      * this represents the maximum amount of money the account can contain, in case of a
-     * liability this represents the maximum amount the debt can reach.
-     * @return  The max amount
-     * @throws UnsupportedOperationException if the account has no maximum amount.
+     * liability this represents the maximum amount the debt can reach. The return value
+     * is of type Optional so if an account does not have a maximum value should return an
+     * empty Optional.
+     * @return The max amount.
      */
     Optional<Double>  getMaxAmount();
 
@@ -56,9 +56,9 @@ public interface Account {
      * Returns the minimum value the balance of the account can reach, in case of an asset
      * this represents the minimum amount of money the account can contain (usually zero but
      * some bank account can handle relatively small negative values), in case of a
-     * liability this should always return zero.
-     * @return The minimum amount
-     * @throws UnsupportedOperationException If the account does not have a minimum amount.
+     * liability this should always return zero. The return value is of type Optional so if
+     * an account does not have a minimum value should return an empty Optional.
+     * @return The minimum amount.
      */
     Optional<Double> getMinAmount();
 
@@ -88,7 +88,7 @@ public interface Account {
      * @throws AccountException If the new movement introduces a problem to the account balance
      * (for example if the balance goes below the minimum or above the maximum value).
      */
-    void addMovement(Movement movement) throws IllegalStateException;
+    void addMovement(Movement movement) throws AccountException;
 
     /**
      * Removes a movement from the account, the balance should be recalculated considering the
@@ -97,7 +97,7 @@ public interface Account {
      * @throws AccountException If the missing movement introduces a problem to the account balance
      * (for example if the balance goes below the minimum or above the maximum value).
      */
-    void removeMovement(Movement movement) throws IllegalStateException;
+    void removeMovement(Movement movement) throws AccountException;
 
     /**
      * Changes the referent (the owner of the account).

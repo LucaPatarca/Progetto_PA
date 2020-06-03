@@ -1,24 +1,45 @@
 package it.unicam.cs.pa.jbudget105129.persistence;
 
 import com.google.gson.*;
-import it.unicam.cs.pa.jbudget105129.model.BasicTag;
+import it.unicam.cs.pa.jbudget105129.model.SingleTag;
 import it.unicam.cs.pa.jbudget105129.model.Tag;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class TagTypeAdapter implements JsonSerializer<Tag>, JsonDeserializer<Tag> {
 
+    private final Set<Integer> alreadySaved;
+
+    public TagTypeAdapter(){
+        alreadySaved=new HashSet<>();
+    }
+
     @Override
     public JsonElement serialize(Tag src, Type typeOfSrc, JsonSerializationContext context) {
-        return context.serialize(src);
+        JsonObject jo = new JsonObject();
+        if(alreadySaved.contains(src.getID())){
+            jo.addProperty("lazyID",src.getID());
+        }else{
+            jo.addProperty("ID",src.getID());
+            jo.addProperty("name",src.getName());
+            jo.addProperty("description",src.getDescription());
+        }
+        return jo;
     }
 
     @Override
     public Tag deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jo = json.getAsJsonObject();
-        return BasicTag.getInstance(jo.get("name").getAsString(),jo.get("description").getAsString());
+        if(jo.has("lazyID")){
+            return SingleTag.getInstance(jo.get("lazyID").getAsInt());
+        } else{
+            SingleTag o = SingleTag.getInstance(jo.get("ID").getAsInt())
+                    .setName(jo.get("name").getAsString())
+                    .setDescription(jo.get("description").getAsString());
+            alreadySaved.add(o.getID());
+            return o;
+        }
     }
 }

@@ -70,8 +70,8 @@ public class RoundedTransactionTest {
 
     @Test
     void shouldMirrorTagsToMovements(){
-        Tag tag1 = BasicTag.getInstance("tag1","");
-        Tag tag2 = BasicTag.getInstance("tag2","");
+        Tag tag1 = SingleTag.getInstance("tag1","");
+        Tag tag2 = SingleTag.getInstance("tag2","");
 
         m1.addTag(tag1);
         m2.addTag(tag1);

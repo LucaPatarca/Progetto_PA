@@ -17,10 +17,10 @@ public interface Ledger {
     List<Account> getAccounts();
 
     void addAccount(Account account);
-    void addTransaction(Transaction transaction);
+    void addTransaction(Transaction transaction) throws AccountException;
     void addScheduledTransaction(ScheduledTransaction transaction);
 
-    void removeTransaction(Transaction transaction);
+    void removeTransaction(Transaction transaction) throws AccountException;
     void removeScheduledTransaction(ScheduledTransaction transaction);
     void removeAccount(Account account);
 

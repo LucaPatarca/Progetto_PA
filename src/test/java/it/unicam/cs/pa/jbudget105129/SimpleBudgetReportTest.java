@@ -77,8 +77,8 @@ public class SimpleBudgetReportTest {
         transaction3.addMovement(movement7);
         transaction3.addMovement(movement8);
 
-        tag0 = BasicTag.getInstance("tag 0","");
-        tag1 = BasicTag.getInstance("tag 1","");
+        tag0 = SingleTag.getInstance("tag 0","");
+        tag1 = SingleTag.getInstance("tag 1","");
 
         transaction0.addTag(tag0);
         transaction1.addTag(tag0);
