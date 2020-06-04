@@ -3,11 +3,15 @@ package it.unicam.cs.pa.jbudget105129.controller;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
+import it.unicam.cs.pa.jbudget105129.persistence.JsonPersistenceManager;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 //TODO javadoc
 public class FamilyLedgerManager implements LedgerManager {
 
@@ -41,20 +45,20 @@ public class FamilyLedgerManager implements LedgerManager {
      * @return a reference to the transaction just added.
      */
     @Override
-    public Transaction addTransaction(String description, Date date, List<Movement> movements) throws AccountException {
+    public void addTransaction(String description, Date date, List<Movement> movements, List<Tag> tags) throws AccountException {
         if (description==null||date==null||movements==null) throw new NullPointerException();
         if (movements.isEmpty()) throw new IllegalArgumentException();
         if(movements.parallelStream().anyMatch(m->m.getAccount()==null))
             throw new IllegalArgumentException();
         Transaction transaction = new RoundedTransaction(description,date);
         movements.forEach(transaction::addMovement);
+        tags.forEach(transaction::addTag);
         try {
             ledger.addTransaction(transaction);
         } catch (AccountException e){
             this.removeTransaction(transaction);
             throw e;
         }
-        return transaction;
     }
 
     @Override
@@ -64,23 +68,21 @@ public class FamilyLedgerManager implements LedgerManager {
     }
 
     @Override
-    public Account addAccount(String name, String description, double opening, AccountType type) {
+    public void addAccount(String name, String description, double opening, AccountType type) {
         Account account=new RoundedAccount(name,description,opening,type);
         if(type.equals(AccountType.LIABILITY))
             account.setMinAmount(0);
         ledger.addAccount(account);
-        return account;
     }
 
     @Override
-    public Account addAccount(String name, String description, double opening, AccountType type, double min, double max) {
+    public void addAccount(String name, String description, double opening, AccountType type, double min, double max) {
         Account account=new RoundedAccount(name,description,opening,type);
         if(type.equals(AccountType.LIABILITY)&&min<0)
             throw new IllegalArgumentException("Account of type liability should always have min amount >=0");
         account.setMinAmount(min);
         account.setMaxAmount(max);
         ledger.addAccount(account);
-        return account;
     }
 
     @Override
@@ -119,6 +121,16 @@ public class FamilyLedgerManager implements LedgerManager {
     }
 
     @Override
+    public List<Account> getAccounts(String expression) {
+        Predicate<Account> predicate = account -> account.getName().equals(expression);
+        predicate=predicate.or(account -> account.getDescription().equals(expression));
+        predicate=predicate.or(account -> account.getReferent().equals(expression));
+        predicate=predicate.or(account -> account.getMovements().stream()
+                .allMatch(movement -> movement.getDescription().equals(expression)));
+        return ledger.getAccounts().stream().filter(predicate).collect(Collectors.toList());
+    }
+
+    @Override
     public void schedule(Date date) throws AccountException {
         ledger.schedule(date);
     }
@@ -126,5 +138,22 @@ public class FamilyLedgerManager implements LedgerManager {
     @Override
     public void schedule() throws AccountException {
         ledger.schedule(Calendar.getInstance().getTime());
+    }
+
+    @Override
+    public void loadLedger(String file) throws IOException {
+        JsonPersistenceManager pm = new JsonPersistenceManager();
+        pm.load(file);
+    }
+
+    @Override
+    public void saveLedger(String file) throws IOException {
+        JsonPersistenceManager pm = new JsonPersistenceManager();
+        pm.save(ledger,file);
+    }
+
+    @Override
+    public void setLogLevel() {
+        // TODO: 04/06/20 implementare
     }
 }

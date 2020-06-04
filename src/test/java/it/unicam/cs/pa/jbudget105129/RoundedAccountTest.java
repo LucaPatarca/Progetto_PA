@@ -45,20 +45,12 @@ public class RoundedAccountTest {
     }
 
     @Test
-    void shouldUpdateBalance() {
+    void shouldUpdateBalance() throws AccountException {
         assertEquals(asset.getBalance(),asset.getOpeningBalance());
-        Movement movement1 = RoundedMovement.getInstance()
-            .setDescription("movement+10")
-            .setAmount(10)
-            .setType(MovementType.INCOME)
-            .setAccount(asset);
+        Movement movement1 = RoundedMovement.getInstance("movement+10",10,MovementType.INCOME,asset);
         asset.addMovement(movement1);
         assertEquals(asset.getBalance(),10);
-        Movement movement2= RoundedMovement.getInstance()
-                .setDescription("movement-15")
-                .setAmount(15)
-                .setType(MovementType.OUTFLOW)
-                .setAccount(asset);
+        Movement movement2= RoundedMovement.getInstance("movement-15",15,MovementType.OUTFLOW,asset);
         asset.addMovement(movement2);
         assertEquals(asset.getBalance(),-5);
 
@@ -70,67 +62,35 @@ public class RoundedAccountTest {
     }
 
     @Test
-    void shouldNotThrowAccountException() {
-        Movement movement1 = RoundedMovement.getInstance()
-                .setDescription("on the min edge")
-                .setAmount(95)
-                .setType(MovementType.OUTFLOW)
-                .setAccount(asset);
+    void shouldNotThrowAccountException() throws AccountException {
+        Movement movement1 = RoundedMovement.getInstance("on the min edge",95,MovementType.OUTFLOW,asset);
         asset.addMovement(movement1);
         assertEquals(asset.getBalance(),-100);
-        Movement movement2=RoundedMovement.getInstance()
-                .setDescription("on the max edge")
-                .setAmount(300)
-                .setType(MovementType.INCOME)
-                .setAccount(asset);
+        Movement movement2=RoundedMovement.getInstance("on the max edge",300,MovementType.INCOME,asset);
         asset.addMovement(movement2);
         assertEquals(asset.getBalance(), 200);
 
-        Movement movement3=RoundedMovement.getInstance()
-                .setDescription("on the min edge")
-                .setAmount(105)
-                .setType(MovementType.INCOME)
-                .setAccount(liability);
+        Movement movement3=RoundedMovement.getInstance("on the min edge",105,MovementType.INCOME,liability);
         liability.addMovement(movement3);
         assertEquals(liability.getBalance(),0);
-        Movement movement4=RoundedMovement.getInstance()
-                .setDescription("on the max edge")
-                .setAmount(300)
-                .setType(MovementType.OUTFLOW)
-                .setAccount(liability);
+        Movement movement4=RoundedMovement.getInstance("on the max edge",300,MovementType.OUTFLOW,liability);
         liability.addMovement(movement4);
         assertEquals(liability.getBalance(),300);
     }
 
     @Test
     void shouldTrowAccountException(){
-        Movement movement1 = RoundedMovement.getInstance()
-                .setDescription("above maximum")
-                .setAmount(10)
-                .setType(MovementType.INCOME)
-                .setAccount(asset);
+        Movement movement1 = RoundedMovement.getInstance("above maximum",10,MovementType.INCOME,asset);
         assertThrows(AccountException.class,()->asset.addMovement(movement1));
         assertEquals(asset.getBalance(),200);
-        Movement movement2 = RoundedMovement.getInstance()
-                .setDescription("below minimum")
-                .setAmount(310)
-                .setType(MovementType.OUTFLOW)
-                .setAccount(asset);
+        Movement movement2 = RoundedMovement.getInstance("below minimum",310,MovementType.OUTFLOW,asset);
         assertThrows(AccountException.class, ()->asset.addMovement(movement2));
         assertEquals(asset.getBalance(), 200);
 
-        Movement movement3 = RoundedMovement.getInstance()
-                .setDescription("above maximum")
-                .setAmount(10)
-                .setType(MovementType.OUTFLOW)
-                .setAccount(liability);
+        Movement movement3 = RoundedMovement.getInstance("above maximum",10,MovementType.OUTFLOW,liability);
         assertThrows(AccountException.class,()->liability.addMovement(movement3));
         assertEquals(liability.getBalance(),300);
-        Movement movement4 = RoundedMovement.getInstance()
-                .setDescription("below minimum")
-                .setAmount(310)
-                .setType(MovementType.INCOME)
-                .setAccount(liability);
+        Movement movement4 = RoundedMovement.getInstance("below minimum",310,MovementType.INCOME,liability);
         assertThrows(AccountException.class, ()->liability.addMovement(movement4));
         assertEquals(liability.getBalance(), 300);
     }

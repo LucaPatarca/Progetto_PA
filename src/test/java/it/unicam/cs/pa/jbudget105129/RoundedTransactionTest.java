@@ -23,26 +23,10 @@ public class RoundedTransactionTest {
         transaction = new RoundedTransaction("transazione", Calendar.getInstance().getTime());
         Account account1=new RoundedAccount("account1","account1",0, AccountType.ASSET);
         Account account2=new RoundedAccount("account2","account2",0,AccountType.LIABILITY);
-        m1=RoundedMovement.getInstance()
-                .setDescription("m1")
-                .setAmount(0.78)
-                .setType(MovementType.INCOME)
-                .setAccount(account1);
-        m2=RoundedMovement.getInstance()
-                .setDescription("m2")
-                .setAmount(10.66)
-                .setType(MovementType.OUTFLOW)
-                .setAccount(account1);
-        m3=RoundedMovement.getInstance()
-                .setDescription("m3")
-                .setAmount(42.8)
-                .setType(MovementType.INCOME)
-                .setAccount(account2);
-        m4=RoundedMovement.getInstance()
-                .setDescription("m4")
-                .setAmount(133.5)
-                .setType(MovementType.OUTFLOW)
-                .setAccount(account2);
+        m1=RoundedMovement.getInstance("m1",0.78,MovementType.INCOME,account1);
+        m2=RoundedMovement.getInstance("m2",10.66,MovementType.OUTFLOW,account1);
+        m3=RoundedMovement.getInstance("m3",42.8,MovementType.INCOME,account2);
+        m4=RoundedMovement.getInstance("m4",133.5,MovementType.OUTFLOW,account2);
     }
 
     @Test

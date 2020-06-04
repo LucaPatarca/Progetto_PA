@@ -23,7 +23,7 @@ public class FamilyLedgerTest {
     private static Account liability;
 
     @BeforeAll
-    static void init(){
+    static void init() throws AccountException {
         //calendar init
         Calendar oneMonthAgo = Calendar.getInstance();
         oneMonthAgo.roll(Calendar.MONTH,false);
@@ -47,22 +47,10 @@ public class FamilyLedgerTest {
         asset=new RoundedAccount("asset","",0, AccountType.ASSET);
         liability=new RoundedAccount("liability","",100,AccountType.LIABILITY);
 
-        Movement movement1=RoundedMovement.getInstance()
-            .setAmount(87.66)
-            .setType(MovementType.INCOME)
-            .setAccount(liability);
-        Movement movement2=RoundedMovement.getInstance()
-            .setAmount(91.44)
-            .setType(MovementType.OUTFLOW)
-            .setAccount(asset);
-        Movement movement3=RoundedMovement.getInstance()
-            .setAmount(3.97)
-            .setType(MovementType.INCOME)
-            .setAccount(asset);
-        Movement movement4=RoundedMovement.getInstance()
-            .setAmount(4.65)
-            .setType(MovementType.OUTFLOW)
-            .setAccount(liability);
+        Movement movement1=RoundedMovement.getInstance("",87.66,MovementType.INCOME,liability);
+        Movement movement2=RoundedMovement.getInstance("",91.44,MovementType.OUTFLOW,asset);
+        Movement movement3=RoundedMovement.getInstance("",3.97,MovementType.INCOME,asset);
+        Movement movement4=RoundedMovement.getInstance("",4.65,MovementType.OUTFLOW,liability);
         transaction1.addMovement(movement1);
         transaction1.addMovement(movement3);
         transaction2.addMovement(movement2);
@@ -75,9 +63,6 @@ public class FamilyLedgerTest {
 
         assertTrue(st.isCompleted(transaction2));
         assertFalse(st.isCompleted(transaction1));
-        assertTrue(ledger.getTransactions().contains(transaction2));
-        assertFalse(ledger.getTransactions().contains(transaction1));
-        assertTrue(ledger.getTransactions().contains(transaction0));
 
         assertEquals(-91.44,asset.getBalance());
         assertEquals(104.65,liability.getBalance());

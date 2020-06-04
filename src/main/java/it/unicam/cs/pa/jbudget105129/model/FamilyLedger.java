@@ -133,6 +133,8 @@ public class FamilyLedger implements Ledger {
 
     private void updateAccountAdding(Transaction transaction) throws AccountException {
         for (Movement movement : transaction.getMovements()) {
+            if(!accounts.contains(movement.getAccount()))
+                accounts.add(movement.getAccount());
             movement.getAccount().addMovement(movement);
         }
     }

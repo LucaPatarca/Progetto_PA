@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,35 +29,16 @@ public class JsonPersistenceManagerTest {
         LedgerManager manager = new FamilyLedgerManager(ledger);
         Account account1=new RoundedAccount("banca","mia banca",0, AccountType.ASSET);
         Account account2=new RoundedAccount("carta","mia carta di debito",0, AccountType.LIABILITY);
-        Transaction transaction1 = new RoundedTransaction("transazione1", Calendar.getInstance().getTime());
-        Transaction transaction2 = new RoundedTransaction("transazione2", Calendar.getInstance().getTime());
-        Movement movement1=RoundedMovement.getInstance()
-                .setDescription("movimento1")
-                .setAmount(10.94)
-                .setType(MovementType.INCOME)
-                .setAccount(account1);
-        Movement movement2=RoundedMovement.getInstance()
-                .setDescription("movimento2")
-                .setAmount(5.63)
-                .setType(MovementType.OUTFLOW)
-                .setAccount(account2);
-        transaction1.addMovement(movement1);
-        transaction1.addMovement(movement2);
-        Movement movement3=RoundedMovement.getInstance()
-                .setDescription("movimento3")
-                .setAmount(6.65)
-                .setType(MovementType.OUTFLOW)
-                .setAccount(account1);
-        Movement movement4=RoundedMovement.getInstance()
-                .setDescription("movimento4")
-                .setAmount(9.84)
-                .setType(MovementType.INCOME)
-                .setAccount(account2);
-        transaction2.addMovement(movement3);
-        transaction2.addMovement(movement4);
+        List<Movement> movements = new LinkedList<>();
+        movements.add(RoundedMovement.getInstance("movimento1",10.94,MovementType.INCOME,account1));
+        movements.add(RoundedMovement.getInstance("movimento2", 5.63, MovementType.OUTFLOW,account2));
+        movements.add(RoundedMovement.getInstance("movimento3",6.65,MovementType.OUTFLOW,account1));
+        movements.add(RoundedMovement.getInstance("movimento4",9.84,MovementType.INCOME,account2));
+        List<Tag> tags1 = new LinkedList<>();
+        List<Tag> tags2 = new LinkedList<>();
         try {
-            manager.addTransaction(transaction1);
-            manager.addTransaction(transaction2);
+            manager.addTransaction("transazione1",Calendar.getInstance().getTime(),movements,tags1);
+            manager.addTransaction("transazione2",Calendar.getInstance().getTime(),movements,tags2);
         } catch (AccountException e) {
             fail(e);
         }

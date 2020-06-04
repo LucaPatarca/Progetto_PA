@@ -13,9 +13,12 @@ public class MovementTypeAdapter implements JsonSerializer<Movement>, JsonDeseri
 
     private static Set<Integer> alreadySaved;
 
+    public MovementTypeAdapter(){
+        alreadySaved = new HashSet<>();
+    }
+
     @Override
     public Movement deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        alreadySaved = new HashSet<>();
         JsonObject jo =json.getAsJsonObject();
         if(jo.has("lazyID")){
             return RoundedMovement.getInstance(jo.get("lazyID").getAsInt());
@@ -33,7 +36,6 @@ public class MovementTypeAdapter implements JsonSerializer<Movement>, JsonDeseri
 
     @Override
     public JsonElement serialize(Movement src, Type typeOfSrc, JsonSerializationContext context) {
-        alreadySaved = new HashSet<>();
         JsonObject jo = new JsonObject();
         if (alreadySaved.contains(src.getID())){
             jo.addProperty("lazyID",src.getID());

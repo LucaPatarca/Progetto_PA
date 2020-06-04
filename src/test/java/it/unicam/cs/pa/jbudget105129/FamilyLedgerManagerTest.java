@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,86 +33,52 @@ public class FamilyLedgerManagerTest {
     void shouldAddTransaction() throws AccountException {
         assertTrue(ledger.getTransactions().isEmpty());
         assertTrue(ledger.getAccounts().isEmpty());
-        manager.addTransaction("test",Calendar.getInstance().getTime(),List.of(movement));
-        assertTrue(ledger.getTransactions().contains(transaction));
+        manager.addTransaction("test",Calendar.getInstance().getTime(),List.of(movement),new LinkedList<>());
+        assertEquals(1, ledger.getTransactions().size());
+        assertEquals("test",ledger.getTransactions().get(0).getDescription());
         assertTrue(ledger.getAccounts().contains(account));
         assertEquals(10,account.getBalance());
     }
 
     @Test
-    void shouldRemoveTransaction(){
-        manager.addTransaction(transaction);
-        assertTrue(ledger.getTransactions().contains(transaction));
-        manager.removeTransaction(transaction);
+    void shouldRemoveTransaction() throws AccountException {
+        manager.addTransaction("test",Calendar.getInstance().getTime(),List.of(movement),new LinkedList<>());
+        assertEquals(1, ledger.getTransactions().size());
+        manager.removeTransaction(ledger.getTransactions().get(0));
         assertTrue(ledger.getTransactions().isEmpty());
         assertEquals(0,account.getBalance());
     }
 
     @Test
-    void shouldRefuseToRemoveUsedAccount(){
-        manager.addTransaction(transaction);
+    void shouldRefuseToRemoveUsedAccount() throws AccountException {
+        manager.addTransaction("test",Calendar.getInstance().getTime(),List.of(movement),new LinkedList<>());
         assertThrows(AccountException.class,()->manager.removeAccount(account));
+        Transaction transaction = ledger.getTransactions().get(0);
         manager.removeTransaction(transaction);
         manager.addScheduledTransaction(new MapScheduledTransaction("prova", List.of(transaction)));
         assertThrows(AccountException.class,()->manager.removeAccount(account));
     }
 
     @Test
-    void shouldFindTransactions(){
-        Tag tag1= SingleTag.getInstance("yes1","");
-        Tag tag2= SingleTag.getInstance("no","yes2");
-        Tag tag3= SingleTag.getInstance("no","no");
-        Transaction transaction1=new RoundedTransaction("yes3",Calendar.getInstance().getTime());
-        Transaction transaction2=new RoundedTransaction("no1",Calendar.getInstance().getTime());
-        Transaction transaction3=new RoundedTransaction("no2",Calendar.getInstance().getTime());
-        Transaction transaction4=new RoundedTransaction("no3",Calendar.getInstance().getTime());
-        Transaction transaction5=new RoundedTransaction("no4",Calendar.getInstance().getTime());
-        Transaction transaction6=new RoundedTransaction("no5",Calendar.getInstance().getTime());
-        Movement movement1=RoundedMovement.getInstance()
-                .setAccount(account)
-                .setDescription("fake1")
-                .setAmount(0)
-                .setType(MovementType.INCOME);
-        Movement movement2=RoundedMovement.getInstance()
-                .setAccount(account)
-                .setDescription("fake2")
-                .setAmount(0)
-                .setType(MovementType.INCOME);
-        Movement movement3=RoundedMovement.getInstance()
-                .setAccount(account)
-                .setDescription("fake3")
-                .setAmount(0)
-                .setType(MovementType.INCOME);
-        transaction2.addMovement(movement1);
-        transaction3.addMovement(movement2);
-        transaction4.addMovement(movement3);
-        transaction2.addTag(tag3);
-        transaction3.addTag(tag1);
-        transaction4.addTag(tag2);
-        Movement movement4=RoundedMovement.getInstance()
-                .setAccount(account)
-                .setDescription("yes4")
-                .setAmount(10)
-                .setType(MovementType.INCOME);
-        Movement movement5=RoundedMovement.getInstance()
-                .setAccount(account)
-                .setDescription("no")
-                .setAmount(10)
-                .setType(MovementType.INCOME);
-        transaction5.addMovement(movement4);
-        transaction6.addMovement(movement5);
-        manager.addTransaction(transaction1);
-        manager.addTransaction(transaction2);
-        manager.addTransaction(transaction3);
-        manager.addTransaction(transaction4);
-        manager.addTransaction(transaction5);
-        manager.addTransaction(transaction6);
+    void shouldFindTransactions() throws AccountException {
+        List<Tag> tags1= List.of(SingleTag.getInstance("yes1",""));
+        List<Tag> tags2= List.of(SingleTag.getInstance("no","yes2"));
+        List<Tag> tags3= List.of(SingleTag.getInstance("no","no"));
+        List<Movement> movements1 = List.of(RoundedMovement.getInstance("fake1",0,MovementType.INCOME,account));
+        List<Movement> movements2 = List.of(RoundedMovement.getInstance("fake2",0,MovementType.INCOME,account));
+        List<Movement> movements3 = List.of(RoundedMovement.getInstance("fake3",0,MovementType.INCOME,account));
+        List<Movement> movements4 = List.of(RoundedMovement.getInstance("yes4",10,MovementType.INCOME,account));
+        List<Movement> movements5 = List.of(RoundedMovement.getInstance("no",10,MovementType.INCOME,account));
+        manager.addTransaction("yes3",Calendar.getInstance().getTime(),movements5,new LinkedList<>());
+        manager.addTransaction("no1",Calendar.getInstance().getTime(),movements1,tags3);
+        manager.addTransaction("no2",Calendar.getInstance().getTime(),movements2,tags1);
+        manager.addTransaction("no3",Calendar.getInstance().getTime(),movements3,tags2);
+        manager.addTransaction("no4",Calendar.getInstance().getTime(),movements4,new LinkedList<>());
+        manager.addTransaction("no5",Calendar.getInstance().getTime(),movements5,new LinkedList<>());
         List<Transaction> result=manager.getTransactions("yes");
-        assertTrue(result.contains(transaction1));
-        assertTrue(result.contains(transaction3));
-        assertTrue(result.contains(transaction4));
-        assertTrue(result.contains(transaction5));
-        assertFalse(result.contains(transaction2));
-        assertFalse(result.contains(transaction6));
+        List<Transaction> expected = ledger.getTransactions();
+        expected.remove(1);
+        expected.remove(4);
+        assertEquals(expected,result);
     }
 }
