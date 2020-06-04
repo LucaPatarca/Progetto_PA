@@ -1,5 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.controller;
 
+import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
 
@@ -26,9 +27,9 @@ public class FamilyLedgerManager implements LedgerManager {
      * as parameter a list of movements that will be added to the transaction. Before adding the transaction
      * to the ledger every movement is checked to verify that it has an account, if this condition is not
      * true an IllegalArgumentException will be thrown. Finally the transaction is added to the ledger
-     * which is responsible for adding each movement to the linked account. If ledger throws an AccountException
+     * which is responsible for adding each movement to the linked account. If ledger throws an AccountException,
      * meaning that one or more account refused the transaction, the entire transaction will be removed
-     * from the ledger and the method return false.
+     * from the ledger and the exception is re-thrown to be fully managed by the view.
      * @param description a description for the transaction
      * @param date a date for the transaction
      * @param movements a list of movements for the transaction
@@ -36,10 +37,11 @@ public class FamilyLedgerManager implements LedgerManager {
      * list of movements is empty because a transaction with no
      * movements wont have any effect.
      * @throws NullPointerException if any of the parameter is null.
+     * @throws AccountException if thrown by the ledger.
+     * @return a reference to the transaction just added.
      */
     @Override
-    public void addTransaction(String description, Date date, List<Movement> movements) throws AccountException {
-        // TODO: 03/06/20 fare quello che dice il javadoc
+    public Transaction addTransaction(String description, Date date, List<Movement> movements) throws AccountException {
         if (description==null||date==null||movements==null) throw new NullPointerException();
         if (movements.isEmpty()) throw new IllegalArgumentException();
         if(movements.parallelStream().anyMatch(m->m.getAccount()==null))
@@ -52,6 +54,7 @@ public class FamilyLedgerManager implements LedgerManager {
             this.removeTransaction(transaction);
             throw e;
         }
+        return transaction;
     }
 
     @Override
@@ -61,9 +64,23 @@ public class FamilyLedgerManager implements LedgerManager {
     }
 
     @Override
-    public void addAccount(Account account) {
-        // TODO: 03/06/20 dovrebbe creare un account a partire dai campi e in base al tipo aggiustare i parametri tipo max e min
+    public Account addAccount(String name, String description, double opening, AccountType type) {
+        Account account=new RoundedAccount(name,description,opening,type);
+        if(type.equals(AccountType.LIABILITY))
+            account.setMinAmount(0);
         ledger.addAccount(account);
+        return account;
+    }
+
+    @Override
+    public Account addAccount(String name, String description, double opening, AccountType type, double min, double max) {
+        Account account=new RoundedAccount(name,description,opening,type);
+        if(type.equals(AccountType.LIABILITY)&&min<0)
+            throw new IllegalArgumentException("Account of type liability should always have min amount >=0");
+        account.setMinAmount(min);
+        account.setMaxAmount(max);
+        ledger.addAccount(account);
+        return account;
     }
 
     @Override
@@ -107,7 +124,7 @@ public class FamilyLedgerManager implements LedgerManager {
     }
 
     @Override
-    public void scheduleNow() throws AccountException {
+    public void schedule() throws AccountException {
         ledger.schedule(Calendar.getInstance().getTime());
     }
 }

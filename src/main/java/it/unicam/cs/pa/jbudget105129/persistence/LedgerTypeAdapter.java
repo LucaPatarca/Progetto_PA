@@ -20,7 +20,7 @@ public class LedgerTypeAdapter implements JsonDeserializer<Ledger>, JsonSerializ
             try {
                 ledger.addTransaction(transaction);
             } catch (AccountException e) {
-                // TODO: 03/06/20 sistemare sta eccezione
+                // TODO: 03/06/20 sistemare sta eccezione (logging)
                 e.printStackTrace();
             }
         }

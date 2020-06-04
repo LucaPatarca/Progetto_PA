@@ -30,7 +30,6 @@ public class JsonPersistenceManager implements PersistenceManager{
 
     @Override
     public void save(Ledger ledger, File file) throws IOException {
-        // TODO: 01/06/20 implementare
         String json = gson.toJson(ledger);
         FileOutputStream out = new FileOutputStream(file);
         out.write(json.getBytes());
@@ -38,7 +37,6 @@ public class JsonPersistenceManager implements PersistenceManager{
 
     @Override
     public Ledger load(File file) throws IOException {
-        // TODO: 01/06/20 implementare
         FileInputStream in = new FileInputStream(file);
         String jsonString = new String(in.readAllBytes());
         return gson.fromJson(jsonString, FamilyLedger.class);

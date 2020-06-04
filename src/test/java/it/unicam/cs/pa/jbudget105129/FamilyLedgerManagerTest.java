@@ -16,29 +16,22 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FamilyLedgerManagerTest {
     private FamilyLedger ledger;
     private FamilyLedgerManager manager;
-    private Transaction transaction;
     private Account account;
+    private Movement movement;
 
     @BeforeEach
     void init(){
         ledger = new FamilyLedger();
         manager =new FamilyLedgerManager(ledger);
-        transaction = new RoundedTransaction("test", Calendar.getInstance().getTime());
         account = new RoundedAccount("prova","",0, AccountType.ASSET);
-        Movement movement = RoundedMovement.getInstance()
-                .setAccount(account)
-                .setType(MovementType.INCOME)
-                .setAmount(10)
-                .setDescription("movement1");
-        transaction.addMovement(movement);
-
+        movement = RoundedMovement.getInstance("movement1",10,MovementType.INCOME,account);
     }
 
     @Test
-    void shouldAddTransaction() {
+    void shouldAddTransaction() throws AccountException {
         assertTrue(ledger.getTransactions().isEmpty());
         assertTrue(ledger.getAccounts().isEmpty());
-        manager.addTransaction(transaction);
+        manager.addTransaction("test",Calendar.getInstance().getTime(),List.of(movement));
         assertTrue(ledger.getTransactions().contains(transaction));
         assertTrue(ledger.getAccounts().contains(account));
         assertEquals(10,account.getBalance());

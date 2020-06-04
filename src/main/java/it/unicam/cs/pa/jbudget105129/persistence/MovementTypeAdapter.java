@@ -20,10 +20,11 @@ public class MovementTypeAdapter implements JsonSerializer<Movement>, JsonDeseri
         if(jo.has("lazyID")){
             return RoundedMovement.getInstance(jo.get("lazyID").getAsInt());
         } else {
-            Movement o = RoundedMovement.getInstance(jo.get("ID").getAsInt())
-                    .setDescription(jo.get("description").getAsString())
-                    .setAmount(jo.get("amount").getAsDouble())
-                    .setType(context.deserialize(jo.get("type"), MovementType.class));
+            Movement o = RoundedMovement.getRegistry().getInstance(jo.get("ID").getAsInt(),
+                    jo.get("description").getAsString(),
+                    jo.get("amount").getAsDouble(),
+                    context.deserialize(jo.get("type"), MovementType.class),
+                    null);
             List<Tag> tags = context.deserialize(jo.get("tags"), List.class);
             tags.forEach(o::addTag);
             return o;

@@ -14,11 +14,10 @@ public interface Movement {
     Transaction getTransaction();
     List<Tag> getTags();
     Account getAccount();
-    Movement setTransaction(Transaction transaction);
-    Movement setAmount(double amount);
-    Movement setType(MovementType type);
-    Movement setDescription(String description);
-    Movement setAccount(Account account);
+    void setTransaction(Transaction transaction);
+    void setAmount(double amount);
+    void setDescription(String description);
+    void setAccount(Account account);
     void addTag(Tag tag);
     void removeTag(Tag tag);
 }

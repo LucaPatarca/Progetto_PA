@@ -12,7 +12,7 @@ import java.util.Objects;
 //TODO javadoc
 public class RoundedMovement implements Movement {
 
-    private static SingleInstanceClassRegistry<RoundedMovement> registry;
+    private static RoundedMovementRegistry registry;
     private BigDecimal amount;
     private String description;
     private MovementType type;
@@ -21,11 +21,13 @@ public class RoundedMovement implements Movement {
     private Account account;
     private final int ID;
 
-    private RoundedMovement(int ID){
-        this.description="";
-        this.amount=new BigDecimal(0).setScale(2, RoundingMode.HALF_DOWN);
+    private RoundedMovement(int ID, String description, double amount, MovementType type, Account account){
+        this.description=description;
+        this.amount=new BigDecimal(amount).setScale(2, RoundingMode.HALF_DOWN);
         this.tags=new ArrayList<>();
         this.ID=ID;
+        this.type=type;
+        this.account=account;
     }
 
     @Override
@@ -33,9 +35,9 @@ public class RoundedMovement implements Movement {
         return this.ID;
     }
 
-    public static SingleInstanceClassRegistry<RoundedMovement> getRegistry(){
+    public static RoundedMovementRegistry getRegistry(){
         if (registry==null){
-            registry= new SingleInstanceClassRegistry<>(RoundedMovement::new);
+            registry= new RoundedMovementRegistry(RoundedMovement::new);
         }
         return registry;
     }
@@ -44,8 +46,8 @@ public class RoundedMovement implements Movement {
         return getRegistry().getInstance(ID);
     }
 
-    public static RoundedMovement getInstance(){
-        return getRegistry().getInstance();
+    public static RoundedMovement getInstance(String description, double amount, MovementType type, Account account){
+        return getRegistry().getInstance(description,amount,type,account);
     }
 
     @Override
@@ -85,14 +87,12 @@ public class RoundedMovement implements Movement {
     }
 
     @Override
-    public Movement setAccount(Account account) {
+    public void setAccount(Account account) {
         this.account=account;
-        return this;
     }
 
-    public Movement setTransaction(Transaction transaction) {
+    public void setTransaction(Transaction transaction) {
         this.transaction = Objects.requireNonNull(transaction);
-        return this;
     }
 
     @Override
@@ -105,9 +105,8 @@ public class RoundedMovement implements Movement {
         tags.remove(tag);
     }
 
-    public Movement setAmount(double amount){
+    public void setAmount(double amount){
         this.amount= new BigDecimal(amount).setScale(2,RoundingMode.HALF_DOWN);
-        return this;
     }
 
     @Override
@@ -140,13 +139,7 @@ public class RoundedMovement implements Movement {
                 '}';
     }
 
-    public Movement setType(MovementType type) {
-        this.type = type;
-        return this;
-    }
-
-    public Movement setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
-        return this;
     }
 }

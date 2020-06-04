@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * Represents a Budget, it links a Tag to an expected amount to be spent.
+ * The classes implementing this interface has the responsibility to link a tag (which represents a category)
+ * to a double value (which represents the amount expected to be spend on that category).
  */
 public interface Budget {
     /**

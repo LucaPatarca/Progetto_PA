@@ -13,14 +13,16 @@ public class SingleTag implements Tag {
     private String name;
     private String description;
     private final int ID;
-    private static SingleInstanceClassRegistry<SingleTag> registry;
+    private static SingleTagRegistry registry;
 
-    private SingleTag(int ID){
+    private SingleTag(int ID, String name, String description){
         this.ID=ID;
+        this.name=name;
+        this.description=description;
     }
 
-    public static SingleInstanceClassRegistry<SingleTag> getRegistry(){
-        if(registry==null) registry=new SingleInstanceClassRegistry<>(SingleTag::new);
+    public static SingleTagRegistry getRegistry(){
+        if(registry==null) registry=new SingleTagRegistry(SingleTag::new);
         return registry;
     }
 
@@ -28,8 +30,9 @@ public class SingleTag implements Tag {
         return getRegistry().getInstance(ID);
     }
 
-    public static SingleTag getInstance(){
-        return getRegistry().getInstance();
+    public static SingleTag getInstance(String name, String description){
+        // TODO: 04/06/20 scrivere da qualche parte che il metodo con tutti e tre i parametri non lo metto perche serve solo alla persistenza.
+        return getRegistry().getInstance(name,description);
     }
 
     @Override
@@ -45,16 +48,6 @@ public class SingleTag implements Tag {
     @Override
     public String getDescription() {
         return description;
-    }
-
-    public SingleTag setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public SingleTag setDescription(String description) {
-        this.description = description;
-        return this;
     }
 
     @Override

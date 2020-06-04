@@ -35,9 +35,11 @@ public class TagTypeAdapter implements JsonSerializer<Tag>, JsonDeserializer<Tag
         if(jo.has("lazyID")){
             return SingleTag.getInstance(jo.get("lazyID").getAsInt());
         } else{
-            SingleTag o = SingleTag.getInstance(jo.get("ID").getAsInt())
-                    .setName(jo.get("name").getAsString())
-                    .setDescription(jo.get("description").getAsString());
+            SingleTag o = SingleTag.getRegistry().getInstance(
+                    jo.get("ID").getAsInt(),
+                    jo.get("name").getAsString(),
+                    jo.get("description").getAsString()
+            );
             alreadySaved.add(o.getID());
             return o;
         }
