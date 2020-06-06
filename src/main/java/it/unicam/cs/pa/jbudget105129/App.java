@@ -6,12 +6,15 @@ package it.unicam.cs.pa.jbudget105129;
 // TODO: 01/06/20 logging
 // TODO: 01/06/20 view
 
+import it.unicam.cs.pa.jbudget105129.view.TableView;
+import javafx.application.Application;
+
 public class App {
     public String getGreeting() {
         return "Hello world.";
     }
 
     public static void main(String[] args) {
-
+        Application.launch(TableView.class,args);
     }
 }

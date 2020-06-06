@@ -1,9 +1,13 @@
 package it.unicam.cs.pa.jbudget105129.controller;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import it.unicam.cs.pa.jbudget105129.Dependency.AppLedger;
+import it.unicam.cs.pa.jbudget105129.Dependency.AppPersistence;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
-import it.unicam.cs.pa.jbudget105129.persistence.JsonPersistenceManager;
+import it.unicam.cs.pa.jbudget105129.persistence.PersistenceManager;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -13,12 +17,16 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 //TODO javadoc
+@Singleton
 public class FamilyLedgerManager implements LedgerManager {
 
-    private final Ledger ledger;
+    private Ledger ledger;
+    private final PersistenceManager persistenceManager;
 
-    public FamilyLedgerManager(Ledger ledger){
+    @Inject
+    public FamilyLedgerManager(@AppLedger Ledger ledger, @AppPersistence PersistenceManager persistenceManager){
         this.ledger=ledger;
+        this.persistenceManager =persistenceManager;
     }
 
     @Override
@@ -42,7 +50,6 @@ public class FamilyLedgerManager implements LedgerManager {
      * movements wont have any effect.
      * @throws NullPointerException if any of the parameter is null.
      * @throws AccountException if thrown by the ledger.
-     * @return a reference to the transaction just added.
      */
     @Override
     public void addTransaction(String description, Date date, List<Movement> movements, List<Tag> tags) throws AccountException {
@@ -142,14 +149,12 @@ public class FamilyLedgerManager implements LedgerManager {
 
     @Override
     public void loadLedger(String file) throws IOException {
-        JsonPersistenceManager pm = new JsonPersistenceManager();
-        pm.load(file);
+        ledger= persistenceManager.load(file);
     }
 
     @Override
     public void saveLedger(String file) throws IOException {
-        JsonPersistenceManager pm = new JsonPersistenceManager();
-        pm.save(ledger,file);
+        persistenceManager.save(ledger,file);
     }
 
     @Override

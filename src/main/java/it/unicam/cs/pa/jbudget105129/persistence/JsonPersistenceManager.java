@@ -19,11 +19,17 @@ public class JsonPersistenceManager implements PersistenceManager{
         AccountTypeAdapter accountTypeAdapter = new AccountTypeAdapter();
         TagTypeAdapter tagTypeAdapter = new TagTypeAdapter();
 
+        // TODO: 06/06/20 no dipendenze dalle classi (dependency injection?)
         builder.registerTypeAdapter(Movement.class,movementTypeAdapter);
         builder.registerTypeAdapter(Ledger.class,ledgerTypeAdapter);
         builder.registerTypeAdapter(Transaction.class,transactionTypeAdapter);
         builder.registerTypeAdapter(Account.class,accountTypeAdapter);
         builder.registerTypeAdapter(Tag.class,tagTypeAdapter);
+        builder.registerTypeAdapter(RoundedMovement.class,movementTypeAdapter);
+        builder.registerTypeAdapter(FamilyLedger.class,ledgerTypeAdapter);
+        builder.registerTypeAdapter(RoundedTransaction.class,transactionTypeAdapter);
+        builder.registerTypeAdapter(RoundedAccount.class,accountTypeAdapter);
+        builder.registerTypeAdapter(SingleTag.class,tagTypeAdapter);
 
         gson = builder.create();
     }

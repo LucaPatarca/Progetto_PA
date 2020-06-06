@@ -1,6 +1,10 @@
 package it.unicam.cs.pa.jbudget105129;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import it.unicam.cs.pa.jbudget105129.Dependency.LedgerManagerModule;
 import it.unicam.cs.pa.jbudget105129.controller.FamilyLedgerManager;
+import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
@@ -8,6 +12,7 @@ import it.unicam.cs.pa.jbudget105129.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.beans.Transient;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -16,36 +21,36 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FamilyLedgerManagerTest {
-    private FamilyLedger ledger;
     private FamilyLedgerManager manager;
     private Account account;
     private Movement movement;
+    private Injector injector;
 
     @BeforeEach
     void init(){
-        ledger = new FamilyLedger();
-        manager =new FamilyLedgerManager(ledger);
+        injector = Guice.createInjector(new LedgerManagerModule());
+        manager = injector.getInstance(FamilyLedgerManager.class);
         account = new RoundedAccount("prova","",0, AccountType.ASSET);
         movement = RoundedMovement.getInstance("movement1",10,MovementType.INCOME,account);
     }
 
     @Test
     void shouldAddTransaction() throws AccountException {
-        assertTrue(ledger.getTransactions().isEmpty());
-        assertTrue(ledger.getAccounts().isEmpty());
+        assertTrue(manager.getLedger().getTransactions().isEmpty());
+        assertTrue(manager.getLedger().getAccounts().isEmpty());
         manager.addTransaction("test",Calendar.getInstance().getTime(),List.of(movement),new LinkedList<>());
-        assertEquals(1, ledger.getTransactions().size());
-        assertEquals("test",ledger.getTransactions().get(0).getDescription());
-        assertTrue(ledger.getAccounts().contains(account));
+        assertEquals(1, manager.getLedger().getTransactions().size());
+        assertEquals("test",manager.getLedger().getTransactions().get(0).getDescription());
+        assertTrue(manager.getLedger().getAccounts().contains(account));
         assertEquals(10,account.getBalance());
     }
 
     @Test
     void shouldRemoveTransaction() throws AccountException {
         manager.addTransaction("test",Calendar.getInstance().getTime(),List.of(movement),new LinkedList<>());
-        assertEquals(1, ledger.getTransactions().size());
-        manager.removeTransaction(ledger.getTransactions().get(0));
-        assertTrue(ledger.getTransactions().isEmpty());
+        assertEquals(1, manager.getLedger().getTransactions().size());
+        manager.removeTransaction(manager.getLedger().getTransactions().get(0));
+        assertTrue(manager.getLedger().getTransactions().isEmpty());
         assertEquals(0,account.getBalance());
     }
 
@@ -53,7 +58,7 @@ public class FamilyLedgerManagerTest {
     void shouldRefuseToRemoveUsedAccount() throws AccountException {
         manager.addTransaction("test",Calendar.getInstance().getTime(),List.of(movement),new LinkedList<>());
         assertThrows(AccountException.class,()->manager.removeAccount(account));
-        Transaction transaction = ledger.getTransactions().get(0);
+        Transaction transaction = manager.getLedger().getTransactions().get(0);
         manager.removeTransaction(transaction);
         manager.addScheduledTransaction(new MapScheduledTransaction("prova", List.of(transaction)));
         assertThrows(AccountException.class,()->manager.removeAccount(account));
@@ -76,9 +81,17 @@ public class FamilyLedgerManagerTest {
         manager.addTransaction("no4",Calendar.getInstance().getTime(),movements4,new LinkedList<>());
         manager.addTransaction("no5",Calendar.getInstance().getTime(),movements5,new LinkedList<>());
         List<Transaction> result=manager.getTransactions("yes");
-        List<Transaction> expected = ledger.getTransactions();
+        List<Transaction> expected = manager.getLedger().getTransactions();
         expected.remove(1);
         expected.remove(4);
         assertEquals(expected,result);
+    }
+
+    @Test
+    void shouldBeSingleton(){
+        manager.addAccount("prova","description",0,AccountType.ASSET);
+        assertEquals(1,manager.getLedger().getAccounts().size());
+        LedgerManager manager2 = injector.getInstance(FamilyLedgerManager.class);
+        assertEquals(1,manager2.getLedger().getAccounts().size());
     }
 }

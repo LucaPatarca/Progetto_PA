@@ -12,6 +12,8 @@ plugins {
 
     // Apply the application plugin to add support for building a CLI application.
     id 'application'
+
+    id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
 repositories {
@@ -30,6 +32,8 @@ dependencies {
 
     // Use JUnit Jupiter Engine for testing.
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+
+    compile group:'com.google.inject', name:'guice', version:'4.2.3'
 }
 
 application {
@@ -40,4 +44,9 @@ application {
 test {
     // Use junit platform for unit tests
     useJUnitPlatform()
+}
+
+javafx {
+    version=14
+    modules=['javafx.controls', 'javafx.fxml']
 }

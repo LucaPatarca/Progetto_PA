@@ -1,8 +1,10 @@
 package it.unicam.cs.pa.jbudget105129.controller;
 
+import com.google.inject.Singleton;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.model.*;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.util.Date;
@@ -33,6 +35,4 @@ public interface LedgerManager {
     void saveLedger(String file) throws IOException;
 
     void setLogLevel();
-
-
 }

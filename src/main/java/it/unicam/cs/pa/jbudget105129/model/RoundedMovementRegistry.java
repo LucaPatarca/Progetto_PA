@@ -8,7 +8,7 @@ import java.util.Map;
 // TODO: 04/06/20 estrarre l'interfaccia (forse) e capire se si può migliorare il codice duplicato
 public class RoundedMovementRegistry {
 
-    private static final Map<Integer,RoundedMovement> registry = new HashMap<>();
+    private static Map<Integer,RoundedMovement> registry = new HashMap<>();
     private final RoundedMovementConstructor factory;
     private static int nextID=0;
 

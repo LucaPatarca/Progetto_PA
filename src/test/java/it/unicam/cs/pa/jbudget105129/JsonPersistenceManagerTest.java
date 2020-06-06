@@ -1,5 +1,8 @@
 package it.unicam.cs.pa.jbudget105129;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import it.unicam.cs.pa.jbudget105129.Dependency.LedgerManagerModule;
 import it.unicam.cs.pa.jbudget105129.controller.FamilyLedgerManager;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
@@ -24,21 +27,34 @@ public class JsonPersistenceManagerTest {
 
     @BeforeAll
     static void init(){
-        // TODO: 02/06/20 mettere pure i tag e sperare che funziona
-        ledger=new FamilyLedger();
-        LedgerManager manager = new FamilyLedgerManager(ledger);
+        ledger = new FamilyLedger();
         Account account1=new RoundedAccount("banca","mia banca",0, AccountType.ASSET);
         Account account2=new RoundedAccount("carta","mia carta di debito",0, AccountType.LIABILITY);
         List<Movement> movements = new LinkedList<>();
+        List<Movement> movements2 = new LinkedList<>();
         movements.add(RoundedMovement.getInstance("movimento1",10.94,MovementType.INCOME,account1));
         movements.add(RoundedMovement.getInstance("movimento2", 5.63, MovementType.OUTFLOW,account2));
         movements.add(RoundedMovement.getInstance("movimento3",6.65,MovementType.OUTFLOW,account1));
         movements.add(RoundedMovement.getInstance("movimento4",9.84,MovementType.INCOME,account2));
+        movements2.add(RoundedMovement.getInstance("movimento1",10.94,MovementType.INCOME,account1));
+        movements2.add(RoundedMovement.getInstance("movimento2", 5.63, MovementType.OUTFLOW,account2));
+        movements2.add(RoundedMovement.getInstance("movimento3",6.65,MovementType.OUTFLOW,account1));
+        movements2.add(RoundedMovement.getInstance("movimento4",9.84,MovementType.INCOME,account2));
         List<Tag> tags1 = new LinkedList<>();
         List<Tag> tags2 = new LinkedList<>();
+        tags1.add(SingleTag.getInstance("prova1","description1"));
+        tags1.add(SingleTag.getInstance("prova2","description2"));
+        tags2.add(SingleTag.getInstance("prova3","description3"));
+        tags2.add(SingleTag.getInstance("prova4","description4"));
+        Transaction transaction1 = new RoundedTransaction("transazione1",Calendar.getInstance().getTime());
+        Transaction transaction2 = new RoundedTransaction("transazione2",Calendar.getInstance().getTime());
+        movements.forEach(transaction1::addMovement);
+        movements2.forEach(transaction2::addMovement);
+        tags1.forEach(transaction1::addTag);
+        tags2.forEach(transaction2::addTag);
         try {
-            manager.addTransaction("transazione1",Calendar.getInstance().getTime(),movements,tags1);
-            manager.addTransaction("transazione2",Calendar.getInstance().getTime(),movements,tags2);
+            ledger.addTransaction(transaction1);
+            ledger.addTransaction(transaction2);
         } catch (AccountException e) {
             fail(e);
         }
@@ -55,7 +71,7 @@ public class JsonPersistenceManagerTest {
         } catch (IOException e) {
             fail(e);
         }
-        assertEquals(loaded.toString(),ledger.toString());
+        assertEquals(ledger,loaded);
         file.delete();
     }
 }

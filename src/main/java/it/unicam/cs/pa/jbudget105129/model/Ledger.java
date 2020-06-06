@@ -1,7 +1,9 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
+import javafx.collections.ObservableList;
 
+import java.beans.PropertyChangeSupport;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
@@ -25,4 +27,5 @@ public interface Ledger {
     void removeAccount(Account account);
 
     void schedule(Date date) throws AccountException;
+    PropertyChangeSupport getPropertyChangeSupport();
 }

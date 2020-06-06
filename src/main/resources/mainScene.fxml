@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="mainVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.MainFXController">
+   <children>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#handleSavePressed" text="Save" />
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Add">
+              <items>
+                <MenuItem fx:id="newTransactionItem" mnemonicParsing="false" onAction="#handleNewTransaction" text="New transaction..." />
+                  <MenuItem mnemonicParsing="false" text="New account..." />
+                  <MenuItem mnemonicParsing="false" text="New scheduled transaction..." />
+              </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <tabs>
+          <Tab text="Transactions">
+               <content>
+                  <TableView fx:id="transactionTable" tableMenuButtonVisible="true">
+                    <columns>
+                      <TableColumn fx:id="transactionDateCol" prefWidth="75.0" text="Date" />
+                      <TableColumn fx:id="transactionDescriptionCol" prefWidth="116.0" text="Description" />
+                        <TableColumn fx:id="transactionTotalCol" prefWidth="71.0" text="Total" />
+                        <TableColumn fx:id="transactionMovementsCol" prefWidth="104.0" text="Movements" />
+                        <TableColumn fx:id="transactionTagsCol" prefWidth="62.0" text="Tags" />
+                    </columns>
+                  </TableView>
+               </content></Tab>
+          <Tab text="Scheduled transactions">
+               <content>
+                  <TreeTableView prefHeight="200.0" prefWidth="200.0">
+                    <columns>
+                      <TreeTableColumn prefWidth="75.0" text="C1" />
+                      <TreeTableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TreeTableView>
+               </content></Tab>
+            <Tab text="Accounts">
+               <content>
+                  <TableView fx:id="accountTable" prefHeight="200.0" prefWidth="200.0">
+                    <columns>
+                      <TableColumn fx:id="accountNameCol" prefWidth="75.0" text="Name" />
+                      <TableColumn fx:id="accountDescriptionCol" prefWidth="75.0" text="Description" />
+                        <TableColumn fx:id="accountReferentCol" prefWidth="75.0" text="Referent" />
+                        <TableColumn fx:id="accountTypeCol" prefWidth="75.0" text="Type" />
+                        <TableColumn fx:id="accountBalanceCol" prefWidth="75.0" text="Balance" />
+                    </columns>
+                  </TableView>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</VBox>

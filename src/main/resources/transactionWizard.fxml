@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="701.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.TransactionWizardFXController">
+   <children>
+      <Label text="Movements:">
+         <VBox.margin>
+            <Insets left="15.0" top="8.0" />
+         </VBox.margin>
+      </Label>
+      <GridPane hgap="15.0" VBox.vgrow="NEVER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <TextField fx:id="movementDescriptionTextfield" />
+            <ChoiceBox fx:id="movementTypeSelect" prefWidth="150.0" GridPane.rowIndex="1" />
+            <ChoiceBox fx:id="movementAccountSelect" prefWidth="150.0" GridPane.columnIndex="2" />
+            <Spinner fx:id="movementAmountSpinner" editable="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label text="Description" GridPane.columnIndex="1" />
+            <Label text="Type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Account" GridPane.columnIndex="3" />
+            <Label text="Amount" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Button fx:id="addMovementButton" mnemonicParsing="false" onAction="#handleAddMovementPressed" prefHeight="26.0" prefWidth="91.0" text="Add" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <Label text="Movement" textAlignment="RIGHT" GridPane.columnIndex="4" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </GridPane>
+      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+         <content>
+            <TableView fx:id="movementTable" prefHeight="200.0" prefWidth="200.0">
+              <columns>
+                <TableColumn fx:id="movementDescriptionCol" prefWidth="186.0" text="Description" />
+                <TableColumn fx:id="movementTypeCol" prefWidth="112.0" text="Type" />
+                  <TableColumn fx:id="movementAmountCol" minWidth="0.0" prefWidth="89.0" text="Amount" />
+                  <TableColumn fx:id="movementAccountCol" prefWidth="107.0" text="Account" />
+              </columns>
+            </TableView>
+         </content>
+      </ScrollPane>
+      <Separator prefWidth="200.0" />
+      <HBox prefHeight="34.0" prefWidth="200.0" spacing="15.0" VBox.vgrow="NEVER">
+         <children>
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancelPressed" text="Cancel" />
+            <TextField fx:id="transactionDescriptionTextField" />
+            <Label text="Description" />
+            <DatePicker fx:id="transactionDate" />
+            <Label text="Date" />
+            <Button fx:id="addTransactionButton" mnemonicParsing="false" onAction="#handleAddTransactionPressed" text="Add" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

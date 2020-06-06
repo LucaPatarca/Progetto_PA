@@ -1,11 +1,11 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.beans.PropertyChangeSupport;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -16,11 +16,13 @@ public class FamilyLedger implements Ledger {
     private final List<Transaction> transactions;
     private final List<ScheduledTransaction> scheduledTransactions;
     private final List<Account> accounts;
+    private final PropertyChangeSupport pcs;
 
     public FamilyLedger(){
-        transactions=new ArrayList<>();
-        scheduledTransactions=new ArrayList<>();
-        accounts=new ArrayList<>();
+        transactions= FXCollections.observableArrayList();
+        scheduledTransactions= FXCollections.observableArrayList();
+        accounts= FXCollections.observableArrayList();
+        pcs = new PropertyChangeSupport(this);
     }
 
     @Override
@@ -46,6 +48,7 @@ public class FamilyLedger implements Ledger {
     @Override
     public void addAccount(Account account) {
         accounts.add(account);
+        pcs.firePropertyChange("accounts",accounts,account);
     }
 
     /**
@@ -58,6 +61,7 @@ public class FamilyLedger implements Ledger {
     public void addTransaction(Transaction transaction) throws AccountException{
         transactions.add(transaction);
         updateAccountAdding(transaction);
+        pcs.firePropertyChange("transactions",transactions,transaction);
     }
 
     @Override
@@ -105,6 +109,11 @@ public class FamilyLedger implements Ledger {
                 st.markTransactionAsCompleted(transaction);
             }
         }
+    }
+
+    @Override
+    public PropertyChangeSupport getPropertyChangeSupport() {
+        return pcs;
     }
 
     @Override
