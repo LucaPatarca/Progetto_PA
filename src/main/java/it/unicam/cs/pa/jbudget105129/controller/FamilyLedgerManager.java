@@ -17,8 +17,6 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-//TODO javadoc
-
 /**
  * A singleton {@link LedgerManager}.
  * @see Ledger

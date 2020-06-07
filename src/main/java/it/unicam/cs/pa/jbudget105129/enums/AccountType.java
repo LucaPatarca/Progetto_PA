@@ -1,18 +1,20 @@
 package it.unicam.cs.pa.jbudget105129.enums;
 
 /**
- * Specifies the type of an account. Specific operation regarding an Account behaves differently depending
- * on the type of the Account.
+ * Represents the type of an {@link it.unicam.cs.pa.jbudget105129.model.Account}. Specific operation regarding an
+ * account behaves differently depending on the type of the Account.
  */
 public enum AccountType {
+
     /**
-     * This type of Account represents any amount of money (physical or not) that grows with an income and
-     * shrinks with an outflow.
+     * This type of account represents any amount of money that grows with an income and
+     * decrease with an outflow.
      */
     ASSET,
+
     /**
-     * This type of Account represents any amount of money (physical or not) that grows with an outflow and
-     * shrinks with an income.
+     * This type of Account represents any amount of money that grows with an outflow and
+     * decrease with an income.
      */
     LIABILITY,
 }

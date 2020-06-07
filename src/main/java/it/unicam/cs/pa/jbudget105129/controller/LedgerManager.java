@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-//TODO javadoc
-
 /**
  * Represents an object to manage operations upon a {@link Ledger}.
  */

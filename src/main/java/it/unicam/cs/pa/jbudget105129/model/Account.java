@@ -14,13 +14,13 @@ import java.util.function.Predicate;
 public interface Account {
     /**
      * Returns the current balance of the account as a double value, this should be equal to the
-     * sum of all movements applied to the account and its opening balance.
+     * sum of all movements applied to the account's opening balance.
      * @return The current balance
      */
     double getBalance();
 
     /**
-     * Returns the balance the account has at the moment of its creation.
+     * Returns the balance the account had at the moment of its creation.
      * @return The opening balance
      */
     double getOpeningBalance();
@@ -46,7 +46,7 @@ public interface Account {
      * Returns the maximum value the balance of the account can reach, in case of an asset
      * this represents the maximum amount of money the account can contain, in case of a
      * liability this represents the maximum amount the debt can reach. The return value
-     * is of type Optional so if an account does not have a maximum value should return an
+     * is an {@link Optional} so if an account does not have a maximum value should return an
      * empty Optional.
      * @return The max amount.
      */
@@ -56,7 +56,7 @@ public interface Account {
      * Returns the minimum value the balance of the account can reach, in case of an asset
      * this represents the minimum amount of money the account can contain (usually zero but
      * some bank account can handle relatively small negative values), in case of a
-     * liability this should always return zero. The return value is of type Optional so if
+     * liability this should always return zero. The return value is an {@link Optional} so if
      * an account does not have a minimum value should return an empty Optional.
      * @return The minimum amount.
      */
@@ -75,14 +75,14 @@ public interface Account {
     List<Movement> getMovements();
 
     /**
-     * Returns the list of movement associated with the account that satisfy a predicate
+     * Returns the list of {@link Movement} associated with the account that satisfy a {@link Predicate}
      * @param predicate The predicate used to filter the movements
      * @return The list of movements
      */
     List<Movement> getMovements(Predicate<Movement> predicate);
 
     /**
-     * Adds a movement to the account, the balance should be recalculated considering the
+     * Adds a {@link Movement} to the account, the balance should be recalculated considering the
      * new movement.
      * @param movement The new movement to add
      * @throws AccountException If the new movement introduces a problem to the account balance
@@ -91,7 +91,7 @@ public interface Account {
     void addMovement(Movement movement) throws AccountException;
 
     /**
-     * Removes a movement from the account, the balance should be recalculated considering the
+     * Removes a {@link Movement} from the account, the balance should be recalculated considering the
      * missing movement.
      * @param movement The movement to be removed
      * @throws AccountException If the missing movement introduces a problem to the account balance

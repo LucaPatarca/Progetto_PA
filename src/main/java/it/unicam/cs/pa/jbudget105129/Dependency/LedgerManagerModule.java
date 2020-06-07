@@ -11,6 +11,9 @@ import it.unicam.cs.pa.jbudget105129.persistence.PersistenceManager;
 
 // FIXME: 07/06/20 fix warnings at startup
 
+/**
+ * The {@link com.google.inject.Guice} module for injecting dependencies to {@link FamilyLedgerManager}
+ */
 public class LedgerManagerModule extends AbstractModule {
 
     @Override

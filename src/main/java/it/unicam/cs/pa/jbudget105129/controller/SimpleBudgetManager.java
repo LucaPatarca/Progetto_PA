@@ -5,7 +5,9 @@ import it.unicam.cs.pa.jbudget105129.model.Budget;
 import it.unicam.cs.pa.jbudget105129.model.BudgetReport;
 import it.unicam.cs.pa.jbudget105129.model.Ledger;
 
-//TODO javadoc
+/**
+ * An object used to generate a {@link BudgetReport} from a {@link Ledger} and a {@link Budget}
+ */
 public class SimpleBudgetManager implements BudgetManager {
     @Override
     public BudgetReport generateReport(Ledger ledger, Budget budget) {

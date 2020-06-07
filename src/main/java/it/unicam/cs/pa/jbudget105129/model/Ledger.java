@@ -5,25 +5,101 @@ import java.beans.PropertyChangeSupport;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
-//TODO javadoc
 
 /**
- * Represents
+ * Represents a collection of {@link Account}, {@link Transaction} and {@link ScheduledTransaction},
+ * it is responsible for managing basic operation between this 3 types of object.
+ *
+ * This is a model object so it is possible to listen it for changes, this kind of responsibility is delegated
+ * to a field of type {@link PropertyChangeSupport} that can be obtained by its getter.
+ *
+ * It is listener responsibility to add itself to the listener list by getting the {@link PropertyChangeSupport}
+ * and calling the method addListener.
  */
 public interface Ledger {
+    /**
+     * Returns the list of {@link Transaction} this ledger contains.
+     * @return the list of transactions.
+     */
     List<Transaction> getTransactions();
+
+    /**
+     * Returns all the {@link Transaction} this ledger contains, filtered by a {@link Predicate<Transaction>}.
+     * @return the filtered list of transactions.
+     */
     List<Transaction> getTransactions(Predicate<Transaction> predicate);
+
+    /**
+     * Returns all the {@link ScheduledTransaction} this ledger contains.
+     * @return the list of scheduled transactions
+     */
     List<ScheduledTransaction> getScheduledTransactions();
+
+    /**
+     * Returns all the {@link Account} this ledger contains.
+     * @return the list of accounts.
+     */
     List<Account> getAccounts();
 
+    /**
+     * Adds an {@link Account} to this ledger and fires an event to all the listeners
+     * on the {@link PropertyChangeSupport}.
+     * @param account the account to add
+     */
     void addAccount(Account account);
+
+    /**
+     * Adds a {@link Transaction} to this ledger and fires an event to all the listeners
+     * on the {@link PropertyChangeSupport}. If one of the transaction's movement has an
+     * {@link Account} that is not present inside the ledger the account is added to the
+     * ledger. Each transaction's {@link Movement} is also added to the linked account to
+     * update accounts balance.
+     * @param transaction the transaction to add
+     * @throws AccountException if one of the accounts refuses the transaction
+     */
     void addTransaction(Transaction transaction) throws AccountException;
+
+    /**
+     * Adds a {@link ScheduledTransaction} to this ledger and fires an event to all the listeners
+     * on the {@link PropertyChangeSupport}.
+     * @param transaction the scheduled transaction to add
+     */
     void addScheduledTransaction(ScheduledTransaction transaction);
 
+    /**
+     * Removes a {@link Transaction} from this ledger and fires an event to all the listeners
+     * on the {@link PropertyChangeSupport}.
+     * @param transaction the transaction to remove
+     * @throws AccountException if it is not possible to remove the transaction
+     */
     void removeTransaction(Transaction transaction) throws AccountException;
+
+    /**
+     * Removes a {@link ScheduledTransaction} from this ledger and fires an event to all the listeners
+     * on the {@link PropertyChangeSupport}.
+     * @param transaction the scheduled transaction to remove
+     */
     void removeScheduledTransaction(ScheduledTransaction transaction);
+
+    /**
+     * Removes a {@link Transaction} from this ledger and fires an event to all the listeners
+     * on the {@link PropertyChangeSupport}.
+     * @param account the account to remove
+     */
     void removeAccount(Account account);
 
+    /**
+     * Marks completed transactions as completed and adds each movement to the linked account.
+     * @param date the date to be scheduled.
+     * @throws AccountException if one of the account refuses the movement
+     */
     void schedule(Date date) throws AccountException;
+
+    /**
+     * Returns the inner {@link PropertyChangeSupport} used to notify listener objects.
+     * To listen for this ledger an object needs to implement {@link java.beans.PropertyChangeListener}
+     * interface and than add itself to the listener of this return object.
+     * @return the {@link PropertyChangeSupport} object
+     */
     PropertyChangeSupport getPropertyChangeSupport();
 }
