@@ -1,15 +1,18 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-// TODO: 04/06/20 javadoc
+/**
+ * Represents a registry for the class {@link SingleTag}, it is responsible for maintaining a registry
+ * for all instances of {@link SingleTag} throughout the application. It guarantee that every {@link SingleTag}
+ * has a different and unique ID.
+ *
+ * The method getInstance is also the only way you can create a new instance of {@link SingleTag}.
+ */
 public class SingleTagRegistry {
 
-    private final Map<Integer, SingleTag> registry = new HashMap<>();
+    private final Map<Integer, SingleTag> registry;
 
     private final SingleTagConstructor factory;
     private static int nextID=0;
@@ -20,6 +23,7 @@ public class SingleTagRegistry {
      */
     public SingleTagRegistry(SingleTagConstructor factory){
         this.factory=factory;
+        this.registry=new HashMap<>();
     }
 
     /**

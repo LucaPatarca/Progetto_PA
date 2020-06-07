@@ -150,7 +150,9 @@ public class FamilyLedger implements Ledger {
     }
 
     /**
-     * Marks completed transactions as completed and adds each movement to the linked account.
+     * Schedules every {@link ScheduledTransaction} to a given date.
+     * This means that every {@link Transaction} before this date is marked as completed and its {@link Movement}
+     * are added to the linked account to update the balance.
      * @param date the date to be scheduled.
      * @throws AccountException if one of the account refuses the movement
      */

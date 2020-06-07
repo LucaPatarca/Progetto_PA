@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO: 04/06/20 provare a generalizzare in qualche modo per eliminare codice ripetuto con SingleTagRegistry
+// TODO: 07/06/20 javadoc
 public class RoundedMovementRegistry {
 
     private final Map<Integer,RoundedMovement> registry = new HashMap<>();
