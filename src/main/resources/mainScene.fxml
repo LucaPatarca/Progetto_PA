@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TreeTableColumn?>
-<?import javafx.scene.control.TreeTableView?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox fx:id="mainVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.MainFXController">
+<VBox fx:id="mainVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.MainFXController">
    <children>
       <MenuBar>
         <menus>
@@ -44,7 +36,7 @@
         <tabs>
           <Tab text="Transactions">
                <content>
-                  <TableView fx:id="transactionTable" tableMenuButtonVisible="true">
+                  <TableView fx:id="transactionTable" onKeyPressed="#handleTransactionKeyPressed" onMouseClicked="#handleTransactionClicked" tableMenuButtonVisible="true">
                     <columns>
                       <TableColumn fx:id="transactionDateCol" prefWidth="75.0" text="Date" />
                       <TableColumn fx:id="transactionDescriptionCol" prefWidth="116.0" text="Description" />

@@ -1,8 +1,5 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import it.unicam.cs.pa.jbudget105129.Dependency.LedgerManagerModule;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

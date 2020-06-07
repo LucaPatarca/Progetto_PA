@@ -6,9 +6,6 @@ import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
 
 import java.lang.reflect.Type;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +14,7 @@ public class LedgerTypeAdapter implements JsonDeserializer<Ledger>, JsonSerializ
     public Ledger deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         Ledger ledger = new FamilyLedger();
         JsonObject jo = json.getAsJsonObject();
-        deserializeMovements(ledger,jo,context);
+        deserializeMovements(jo,context);
         deserializeAccounts(ledger,jo,context);
         deserializeTransactions(ledger,jo,context);
         return ledger;
@@ -42,7 +39,7 @@ public class LedgerTypeAdapter implements JsonDeserializer<Ledger>, JsonSerializ
                 Transaction transaction = context.deserialize(element,Transaction.class);
                 ledger.addTransaction(transaction);
             } catch (AccountException e) {
-                // TODO: 03/06/20 logging
+                // TODO: 03/06/20 log
                 e.printStackTrace();
             }
         }
@@ -56,7 +53,7 @@ public class LedgerTypeAdapter implements JsonDeserializer<Ledger>, JsonSerializ
         }
     }
 
-    private void deserializeMovements(Ledger ledger, JsonObject jo, JsonDeserializationContext context){
+    private void deserializeMovements(JsonObject jo, JsonDeserializationContext context){
         JsonArray movements = jo.get("movements").getAsJsonArray();
         for(JsonElement element : movements){
             JsonObject movement =element.getAsJsonObject();

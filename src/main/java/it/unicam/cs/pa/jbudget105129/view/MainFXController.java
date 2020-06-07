@@ -5,10 +5,10 @@ import com.google.inject.Injector;
 import it.unicam.cs.pa.jbudget105129.Dependency.LedgerManagerModule;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
+import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.Account;
 import it.unicam.cs.pa.jbudget105129.model.Transaction;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,6 +18,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -47,7 +50,7 @@ public class MainFXController implements Initializable, PropertyChangeListener {
 
     private LedgerManager ledgerManager;
 
-    @FXML protected void handleNewTransaction(ActionEvent actionEvent) {
+    @FXML protected void handleNewTransaction() {
         Stage stage = (Stage) mainVbox.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/transactionWizard.fxml"));
         loader.setControllerFactory(param -> new TransactionWizardFXController(mainVbox.getScene(),ledgerManager));
@@ -56,8 +59,9 @@ public class MainFXController implements Initializable, PropertyChangeListener {
             root=loader.load();
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: 05/06/20 logging
+            // TODO: 05/06/20 log
         }
+        assert root != null;
         Scene scene = new Scene(root,750,450);
         stage.setTitle("Adding new transaction");
         stage.setScene(scene);
@@ -71,7 +75,7 @@ public class MainFXController implements Initializable, PropertyChangeListener {
             ledgerManager.loadLedger("ledger.txt");
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: 06/06/20 gestire
+            // TODO: 06/06/20 log
         }
         initTransactionTable();
         initAccountTable();
@@ -103,12 +107,34 @@ public class MainFXController implements Initializable, PropertyChangeListener {
         transactionTable.refresh();
     }
 
-    @FXML public void handleSavePressed(ActionEvent event) {
+    @FXML public void handleSavePressed() {
         try {
             ledgerManager.saveLedger("ledger.txt");
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: 06/06/20 gestire
+            // TODO: 06/06/20 gestire e log
         }
+    }
+
+    @FXML public void handleTransactionClicked(MouseEvent mouseEvent) {
+        // TODO: 07/06/20 menu contestuale
+    }
+
+    @FXML public void handleTransactionKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.DELETE) {
+            removeSelectedTransaction();
+        }
+    }
+
+    private void removeSelectedTransaction(){
+        Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
+        try {
+            ledgerManager.removeTransaction(transaction);
+        } catch (AccountException e) {
+            e.printStackTrace();
+            // TODO: 07/06/20 gestire e log
+        }
+        transactionTable.refresh();
+        accountTable.refresh();
     }
 }

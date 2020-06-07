@@ -2,14 +2,11 @@ package it.unicam.cs.pa.jbudget105129.persistence;
 
 import com.google.gson.*;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
-import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.Account;
 import it.unicam.cs.pa.jbudget105129.model.Movement;
 import it.unicam.cs.pa.jbudget105129.model.RoundedAccount;
 
 import java.lang.reflect.Type;
-import java.util.LinkedList;
-import java.util.List;
 
 public class AccountTypeAdapter implements JsonDeserializer<Account>, JsonSerializer<Account> {
     @Override
@@ -22,6 +19,7 @@ public class AccountTypeAdapter implements JsonDeserializer<Account>, JsonSerial
                 context.deserialize(jo.get("type"), AccountType.class)
         );
         //account.setReferent(jo.get("referent").getAsString());
+        // FIXME: 06/06/20 aggiornare anche il referent
         JsonArray movements = jo.get("movements").getAsJsonArray();
         for (JsonElement element : movements){
             Movement movement = context.deserialize(element,Movement.class);

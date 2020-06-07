@@ -15,7 +15,7 @@ public class RoundedMovement implements Movement {
     private static RoundedMovementRegistry registry;
     private BigDecimal amount;
     private String description;
-    private MovementType type;
+    private final MovementType type;
     private Transaction transaction;
     private final List<Tag> tags;
     private Account account;

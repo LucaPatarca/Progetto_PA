@@ -5,10 +5,10 @@ import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: 04/06/20 estrarre l'interfaccia (forse) e capire se si può migliorare il codice duplicato
+// TODO: 04/06/20 provare a generalizzare in qualche modo per eliminare codice ripetuto con SingleTagRegistry
 public class RoundedMovementRegistry {
 
-    private static Map<Integer,RoundedMovement> registry = new HashMap<>();
+    private final Map<Integer,RoundedMovement> registry = new HashMap<>();
     private final RoundedMovementConstructor factory;
     private static int nextID=0;
 

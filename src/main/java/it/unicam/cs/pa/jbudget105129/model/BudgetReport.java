@@ -18,7 +18,7 @@ public interface BudgetReport {
 
     /**
      * Returns a map object representing the report,
-     * @return
+     * @return the map object representing the report.
      */
     Map<Tag,Double> report();
     Budget getBudget();

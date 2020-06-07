@@ -10,8 +10,8 @@ import java.util.Objects;
  */
 public class SingleTag implements Tag {
 
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
     private final int ID;
     private static SingleTagRegistry registry;
 

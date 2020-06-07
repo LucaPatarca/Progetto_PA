@@ -18,13 +18,13 @@ public class LedgerManagerModule extends AbstractModule {
 
     @Provides
     @AppLedger
-    static Ledger provideLedger(){
+    protected static Ledger provideLedger(){
         return new FamilyLedger();
     }
 
     @Provides
     @AppPersistence
-    static PersistenceManager providePersistence(){
+    protected static PersistenceManager providePersistence(){
         return new JsonPersistenceManager();
     }
 }

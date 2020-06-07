@@ -2,7 +2,6 @@ package it.unicam.cs.pa.jbudget105129.persistence;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import it.unicam.cs.pa.jbudget105129.model.*;
 
 import java.io.*;
@@ -19,7 +18,7 @@ public class JsonPersistenceManager implements PersistenceManager{
         AccountTypeAdapter accountTypeAdapter = new AccountTypeAdapter();
         TagTypeAdapter tagTypeAdapter = new TagTypeAdapter();
 
-        // TODO: 06/06/20 no dipendenze dalle classi (dependency injection?)
+        // TODO: 06/06/20 risolvere dipendenze dalle classi (dependency injection?)
         builder.registerTypeAdapter(Movement.class,movementTypeAdapter);
         builder.registerTypeAdapter(Ledger.class,ledgerTypeAdapter);
         builder.registerTypeAdapter(Transaction.class,transactionTypeAdapter);

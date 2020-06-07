@@ -7,11 +7,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 // TODO: 04/06/20 javadoc
-// TODO: 04/06/20 sarebbe meglio estrarre l'interfaccia
-// TODO: 04/06/20 il registry potrebbe non essere static tanto questo oggetto e un singleton idem per movement
 public class SingleTagRegistry {
 
-    private static final Map<Integer, SingleTag> registry = new HashMap<>();
+    private final Map<Integer, SingleTag> registry = new HashMap<>();
 
     private final SingleTagConstructor factory;
     private static int nextID=0;

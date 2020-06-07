@@ -5,7 +5,6 @@ import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -59,7 +58,7 @@ public class TransactionWizardFXController implements Initializable {
 
     }
 
-    @FXML protected void handleAddMovementPressed(ActionEvent event) {
+    @FXML protected void handleAddMovementPressed() {
         movementTable.getItems().add(RoundedMovement.getInstance(
                 movementDescriptionTextfield.getText(),
                 movementAmountSpinner.getValue(),
@@ -68,11 +67,11 @@ public class TransactionWizardFXController implements Initializable {
         ));
     }
 
-    @FXML public void handleCancelPressed(ActionEvent event) {
+    @FXML public void handleCancelPressed() {
         returnToMainView();
     }
 
-    @FXML public void handleAddTransactionPressed(ActionEvent event) {
+    @FXML public void handleAddTransactionPressed() {
         try {
             ledgerManager.addTransaction(
                     transactionDescriptionTextField.getText(),

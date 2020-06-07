@@ -2,12 +2,8 @@ package it.unicam.cs.pa.jbudget105129.model;
 
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 import java.beans.PropertyChangeSupport;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 //TODO javadoc
