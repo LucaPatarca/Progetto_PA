@@ -12,9 +12,7 @@ import it.unicam.cs.pa.jbudget105129.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.beans.Transient;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -89,7 +87,7 @@ public class FamilyLedgerManagerTest {
 
     @Test
     void shouldBeSingleton(){
-        manager.addAccount("prova","description",0,AccountType.ASSET);
+        manager.addAccount("prova","description", null,0,AccountType.ASSET);
         assertEquals(1,manager.getLedger().getAccounts().size());
         LedgerManager manager2 = injector.getInstance(FamilyLedgerManager.class);
         assertEquals(1,manager2.getLedger().getAccounts().size());

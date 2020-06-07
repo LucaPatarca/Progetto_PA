@@ -9,6 +9,8 @@ import it.unicam.cs.pa.jbudget105129.model.Ledger;
 import it.unicam.cs.pa.jbudget105129.persistence.JsonPersistenceManager;
 import it.unicam.cs.pa.jbudget105129.persistence.PersistenceManager;
 
+// FIXME: 07/06/20 fix warnings at startup
+
 public class LedgerManagerModule extends AbstractModule {
 
     @Override

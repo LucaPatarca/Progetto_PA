@@ -1,7 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
-import javafx.collections.FXCollections;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.function.Predicate;
@@ -15,9 +14,9 @@ public class FamilyLedger implements Ledger {
     private final PropertyChangeSupport pcs;
 
     public FamilyLedger(){
-        transactions= FXCollections.observableArrayList();
-        scheduledTransactions= FXCollections.observableArrayList();
-        accounts= FXCollections.observableArrayList();
+        transactions= new LinkedList<>();
+        scheduledTransactions= new LinkedList<>();
+        accounts= new LinkedList<>();
         pcs = new PropertyChangeSupport(this);
     }
 
