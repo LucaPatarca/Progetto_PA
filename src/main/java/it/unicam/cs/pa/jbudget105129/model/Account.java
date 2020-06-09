@@ -124,12 +124,12 @@ public interface Account {
      * @param maxAmount The new maximum value
      * @throws UnsupportedOperationException if this account does not support a maximum amount
      */
-    void setMaxAmount(double maxAmount) throws UnsupportedOperationException;
+    void setMaxAmount(Double maxAmount) throws UnsupportedOperationException;
 
     /**
      * Sets a new value as the minimum value.
      * @param minAmount The new minimum value
      * @throws UnsupportedOperationException if this account does not support a minimum amount
      */
-    void setMinAmount(double minAmount) throws UnsupportedOperationException;
+    void setMinAmount(Double minAmount) throws UnsupportedOperationException;
 }

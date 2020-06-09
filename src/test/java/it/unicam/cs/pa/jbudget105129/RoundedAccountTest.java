@@ -30,10 +30,10 @@ public class RoundedAccountTest {
         assertEquals(Optional.empty(),asset.getMinAmount());
         assertEquals(Optional.empty(),liability.getMaxAmount());
         assertEquals(Optional.empty(),liability.getMinAmount());
-        asset.setMinAmount(-100);
-        asset.setMaxAmount(200);
-        liability.setMinAmount(0);
-        liability.setMaxAmount(300);
+        asset.setMinAmount(-100.0);
+        asset.setMaxAmount(200.0);
+        liability.setMinAmount(0.0);
+        liability.setMaxAmount(300.0);
         assertTrue(asset.getMaxAmount().isPresent());
         assertTrue(asset.getMinAmount().isPresent());
         assertTrue(liability.getMaxAmount().isPresent());

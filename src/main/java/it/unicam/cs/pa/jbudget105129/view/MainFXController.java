@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 public class MainFXController implements Initializable, PropertyChangeListener {
+
     @FXML public MenuItem newTransactionItem;
     @FXML public VBox mainVbox;
     @FXML public TableView<Transaction> transactionTable;

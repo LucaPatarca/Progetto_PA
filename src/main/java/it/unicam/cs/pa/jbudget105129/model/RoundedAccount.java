@@ -236,8 +236,10 @@ public class RoundedAccount implements Account {
      * @throws UnsupportedOperationException if this account does not support a maximum amount
      */
     @Override
-    public void setMaxAmount(double maxAmount) {
-        this.maxAmount=new BigDecimal(maxAmount).setScale(2,RoundingMode.HALF_DOWN);
+    public void setMaxAmount(Double maxAmount) {
+        if(Objects.nonNull(maxAmount))
+            this.maxAmount=new BigDecimal(maxAmount).setScale(2,RoundingMode.HALF_DOWN);
+        else this.maxAmount=null;
     }
 
     /**
@@ -246,8 +248,10 @@ public class RoundedAccount implements Account {
      * @throws UnsupportedOperationException if this account does not support a minimum amount
      */
     @Override
-    public void setMinAmount(double minAmount) {
-        this.minAmount=new BigDecimal(minAmount).setScale(2,RoundingMode.HALF_DOWN);
+    public void setMinAmount(Double minAmount) {
+        if(Objects.nonNull(minAmount))
+            this.minAmount=new BigDecimal(minAmount).setScale(2,RoundingMode.HALF_DOWN);
+        else this.minAmount=null;
     }
 
     private void subtract(Movement movement) throws AccountException {

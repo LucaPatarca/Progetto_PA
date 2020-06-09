@@ -64,7 +64,7 @@ public interface LedgerManager {
      * @param min the account's minimum value
      * @param max the account's maximum value
      */
-    void addAccount(String name, String description,String referent, double opening, AccountType type, double min, double max);
+    void addAccount(String name, String description,String referent, double opening, AccountType type, Double min, Double max);
 
     /**
      * Removes an {@link Account} from the ledger's list. Before removing it checks that the account is not

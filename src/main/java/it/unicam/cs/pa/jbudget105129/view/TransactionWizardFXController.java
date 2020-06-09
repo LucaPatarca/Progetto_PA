@@ -59,9 +59,7 @@ public class TransactionWizardFXController implements Initializable {
         movementTypeSelect.setItems(FXCollections.observableArrayList(MovementType.values()));
         movementAccountSelect.setItems(FXCollections.observableArrayList(ledgerManager.getLedger().getAccounts()));
         // FIXME: 08/06/20 capire come visualizzare solo il nome invece del toString()
-        movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-100.0,1000.0,1.0));
-        movementAmountSpinner.setInitialDelay(Duration.millis(500));
-        // FIXME: 08/06/20 impstare anche valori decimali
+        movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(Double.MIN_VALUE,Double.MAX_VALUE,1.0,0.01));
     }
 
     @FXML protected void handleAddMovementPressed() {

@@ -13,7 +13,6 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -56,27 +55,37 @@
          <content>
             <TableView fx:id="movementTable" prefHeight="200.0" prefWidth="200.0">
               <columns>
-                <TableColumn fx:id="movementDescriptionCol" prefWidth="186.0" text="Description" />
-                <TableColumn fx:id="movementTypeCol" prefWidth="112.0" text="Type" />
-                  <TableColumn fx:id="movementAmountCol" minWidth="0.0" prefWidth="89.0" text="Amount" />
-                  <TableColumn fx:id="movementAccountCol" prefWidth="107.0" text="Account" />
+                <TableColumn fx:id="movementDescriptionCol" prefWidth="260.0" text="Description" />
+                <TableColumn fx:id="movementTypeCol" prefWidth="115.0" text="Type" />
+                  <TableColumn fx:id="movementAmountCol" minWidth="0.0" prefWidth="128.0" text="Amount" />
+                  <TableColumn fx:id="movementAccountCol" prefWidth="142.0" text="Account" />
               </columns>
             </TableView>
          </content>
       </ScrollPane>
       <Separator prefWidth="200.0" />
-      <HBox prefHeight="34.0" prefWidth="200.0" spacing="15.0" VBox.vgrow="NEVER">
+      <GridPane hgap="16.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="65.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="299.0" minWidth="10.0" prefWidth="299.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="291.0" minWidth="10.0" prefWidth="202.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="161.0" minWidth="10.0" prefWidth="57.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancelPressed" text="Cancel" />
-            <TextField fx:id="transactionDescriptionTextField" />
-            <Label text="Description" />
-            <DatePicker fx:id="transactionDate" />
-            <Label text="Date" />
-            <Button fx:id="addTransactionButton" mnemonicParsing="false" onAction="#handleAddTransactionPressed" text="Add" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancelPressed" text="Cancel" GridPane.rowIndex="1" />
+            <Button fx:id="addTransactionButton" mnemonicParsing="false" onAction="#handleAddTransactionPressed" text="Add" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+            <TextField fx:id="transactionDescriptionTextField" GridPane.columnIndex="1" />
+            <Label text="Description" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <DatePicker fx:id="transactionDate" GridPane.columnIndex="2" />
+            <Label text="Date" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
          </children>
          <VBox.margin>
-            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+            <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
          </VBox.margin>
-      </HBox>
+      </GridPane>
    </children>
 </VBox>
