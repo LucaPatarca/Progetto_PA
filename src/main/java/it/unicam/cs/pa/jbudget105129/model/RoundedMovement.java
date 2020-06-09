@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Objects;
 
 //TODO javadoc
+
+/**
+ * A simple change in the balance of an {@link Account}, this type of {@link Movement} guarantee that
+ * it's amount has always no more than two decimal places.
+ */
 public class RoundedMovement implements Movement {
 
     private static RoundedMovementRegistry registry;
@@ -21,20 +26,38 @@ public class RoundedMovement implements Movement {
     private Account account;
     private final int ID;
 
+    /**
+     * Creates a new {@link RoundedMovement} with the specified parameters. This method is private,
+     * you can create a new instance of this class with the method getInstance().
+     * @param ID the unique identifier of the new movement
+     * @param description the description of the new movement
+     * @param amount the amount of the new movement
+     * @param type the type of the new movement, this field is set once for all and does not have a setter
+     * @param account the account the new movement is linked with
+     */
     private RoundedMovement(int ID, String description, double amount, MovementType type, Account account){
-        this.description=description;
+        this.description=Objects.requireNonNull(description);
         this.amount=new BigDecimal(amount).setScale(2, RoundingMode.HALF_DOWN);
         this.tags=new ArrayList<>();
         this.ID=ID;
-        this.type=type;
+        this.type=Objects.requireNonNull(type);
         this.account=account;
     }
 
+    /**
+     * Returns the unique identifier of this movement.
+     * @return this movement's ID
+     */
     @Override
     public int getID() {
         return this.ID;
     }
 
+    /**
+     * Returns the registry of this class used to create new instances.
+     * @return the registry
+     * @see RoundedMovementRegistry
+     */
     public static RoundedMovementRegistry getRegistry(){
         if (registry==null){
             registry= new RoundedMovementRegistry(RoundedMovement::new);
@@ -42,10 +65,27 @@ public class RoundedMovement implements Movement {
         return registry;
     }
 
+    /**
+     * Lets the class registry return the instance of {@link RoundedMovement} given only the ID,
+     * if a movement with this ID does not exist it returns null.
+     * @param ID the identifier of the requested movement
+     * @return the reference of the {@link RoundedMovement} identified with this ID if such a movement
+     * exists, null instead.
+     * @see RoundedMovementRegistry
+     */
     public static RoundedMovement getInstance(int ID){
         return getRegistry().getInstance(ID);
     }
 
+    /**
+     * Lets the class registry create a new instance with the specified parameters, the registry will
+     * provide a unique ID to the new movement.
+     * @param description the description of the new movement
+     * @param amount the amount of the new movement
+     * @param type the type of the new movement, this field is set once for all and does not have a setter
+     * @param account the reference to the account this movement is linked with
+     * @return the new instance of the movement
+     */
     public static RoundedMovement getInstance(String description, double amount, MovementType type, Account account){
         return getRegistry().getInstance(description,amount,type,account);
     }
@@ -111,7 +151,6 @@ public class RoundedMovement implements Movement {
 
     @Override
     public boolean equals(Object o) {
-        // TODO: 01/06/20 gli oggetti nulli sono cambiati
         if (this == o) return true;
         if (!(o instanceof RoundedMovement)) return false;
         RoundedMovement that = (RoundedMovement) o;

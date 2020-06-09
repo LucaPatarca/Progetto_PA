@@ -20,7 +20,6 @@ public class SimpleBudgetReportTest {
     private static Ledger ledger;
     private static Budget budget;
     private static BudgetManager bm;
-    private static Account account;
     private static Tag tag0;
     private static Tag tag1;
 
@@ -29,21 +28,21 @@ public class SimpleBudgetReportTest {
         ledger = new FamilyLedger();
         budget = new SimpleBudget();
         bm = new SimpleBudgetManager();
-        account = new RoundedAccount("account","",0, AccountType.ASSET);
+        Account account = new RoundedAccount("account", "", 0, AccountType.ASSET);
 
         Transaction transaction0 = new RoundedTransaction("transazione 0", Calendar.getInstance().getTime());
         Transaction transaction1 = new RoundedTransaction("transazione 1", Calendar.getInstance().getTime());
         Transaction transaction2 = new RoundedTransaction("transazione 2", Calendar.getInstance().getTime());
         Transaction transaction3 = new RoundedTransaction("transazione 3", Calendar.getInstance().getTime());
 
-        Movement movement1 = RoundedMovement.getInstance("",2.5,MovementType.INCOME,account);
-        Movement movement2 = RoundedMovement.getInstance("",4.64,MovementType.OUTFLOW,account);
-        Movement movement3 = RoundedMovement.getInstance("",7.48,MovementType.INCOME,account);
-        Movement movement4 = RoundedMovement.getInstance("",4.8,MovementType.OUTFLOW,account);
-        Movement movement5 = RoundedMovement.getInstance("",9.86,MovementType.INCOME,account);
-        Movement movement6 = RoundedMovement.getInstance("",7.74,MovementType.OUTFLOW,account);
-        Movement movement7 = RoundedMovement.getInstance("",3.4,MovementType.INCOME,account);
-        Movement movement8 = RoundedMovement.getInstance("",6.5,MovementType.OUTFLOW,account);
+        Movement movement1 = RoundedMovement.getInstance("",2.5,MovementType.INCOME, account);
+        Movement movement2 = RoundedMovement.getInstance("",4.64,MovementType.OUTFLOW, account);
+        Movement movement3 = RoundedMovement.getInstance("",7.48,MovementType.INCOME, account);
+        Movement movement4 = RoundedMovement.getInstance("",4.8,MovementType.OUTFLOW, account);
+        Movement movement5 = RoundedMovement.getInstance("",9.86,MovementType.INCOME, account);
+        Movement movement6 = RoundedMovement.getInstance("",7.74,MovementType.OUTFLOW, account);
+        Movement movement7 = RoundedMovement.getInstance("",3.4,MovementType.INCOME, account);
+        Movement movement8 = RoundedMovement.getInstance("",6.5,MovementType.OUTFLOW, account);
 
         transaction0.addMovement(movement1);
         transaction0.addMovement(movement2);

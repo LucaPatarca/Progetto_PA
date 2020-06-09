@@ -1,5 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
+import com.google.inject.Inject;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
@@ -12,6 +13,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import javafx.util.StringConverter;
+import javafx.util.converter.DefaultStringConverter;
 
 import java.net.URL;
 import java.util.Calendar;
@@ -39,7 +43,8 @@ public class TransactionWizardFXController implements Initializable {
     private final LedgerManager ledgerManager;
     private final Scene mainScene;
 
-    public TransactionWizardFXController(Scene mainScene,LedgerManager ledgerManager){
+    @Inject
+    protected TransactionWizardFXController(@MainScene Scene mainScene, LedgerManager ledgerManager){
         this.ledgerManager=ledgerManager;
         this.mainScene=mainScene;
     }
@@ -53,9 +58,10 @@ public class TransactionWizardFXController implements Initializable {
 
         movementTypeSelect.setItems(FXCollections.observableArrayList(MovementType.values()));
         movementAccountSelect.setItems(FXCollections.observableArrayList(ledgerManager.getLedger().getAccounts()));
-
-        movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-100,1000,1));
-
+        // FIXME: 08/06/20 capire come visualizzare solo il nome invece del toString()
+        movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-100.0,1000.0,1.0));
+        movementAmountSpinner.setInitialDelay(Duration.millis(500));
+        // FIXME: 08/06/20 impstare anche valori decimali
     }
 
     @FXML protected void handleAddMovementPressed() {

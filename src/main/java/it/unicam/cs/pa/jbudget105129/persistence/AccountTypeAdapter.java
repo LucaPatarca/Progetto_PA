@@ -18,8 +18,8 @@ public class AccountTypeAdapter implements JsonDeserializer<Account>, JsonSerial
                 jo.get("openingBalance").getAsDouble(),
                 context.deserialize(jo.get("type"), AccountType.class)
         );
-        //account.setReferent(jo.get("referent").getAsString());
-        // FIXME: 06/06/20 aggiornare anche il referent
+        if(jo.has("referent"))
+            account.setReferent(jo.get("referent").getAsString());
         JsonArray movements = jo.get("movements").getAsJsonArray();
         for (JsonElement element : movements){
             Movement movement = context.deserialize(element,Movement.class);

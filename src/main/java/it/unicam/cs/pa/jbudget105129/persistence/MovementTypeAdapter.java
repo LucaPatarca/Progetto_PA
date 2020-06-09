@@ -28,8 +28,12 @@ public class MovementTypeAdapter implements JsonSerializer<Movement>, JsonDeseri
                     jo.get("amount").getAsDouble(),
                     context.deserialize(jo.get("type"), MovementType.class),
                     null);
-            List<Tag> tags = context.deserialize(jo.get("tags"), List.class);
-            tags.forEach(o::addTag);
+            JsonArray ja = jo.getAsJsonArray("tags");
+            ja.forEach(element->{
+                JsonObject jtag = element.getAsJsonObject();
+                Tag tag = context.deserialize(jtag,Tag.class);
+                o.addTag(tag);
+            });
             return o;
         }
     }

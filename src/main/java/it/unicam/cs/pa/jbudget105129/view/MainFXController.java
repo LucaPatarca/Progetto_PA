@@ -2,13 +2,14 @@ package it.unicam.cs.pa.jbudget105129.view;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import it.unicam.cs.pa.jbudget105129.Dependency.LedgerManagerModule;
+import it.unicam.cs.pa.jbudget105129.controller.LedgerManagerModule;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.Account;
 import it.unicam.cs.pa.jbudget105129.model.Transaction;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,6 +28,7 @@ import javafx.stage.Stage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -47,35 +49,24 @@ public class MainFXController implements Initializable, PropertyChangeListener {
     @FXML public TableColumn<Account,Double> accountBalanceCol;
     @FXML public TableView<Account> accountTable;
     @FXML public MenuItem saveMenuItem;
+    @FXML public MenuItem newAccountMenuItem;
 
     private LedgerManager ledgerManager;
+    private Injector injector;
 
     @FXML protected void handleNewTransaction() {
-        Stage stage = (Stage) mainVbox.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/transactionWizard.fxml"));
-        loader.setControllerFactory(param -> new TransactionWizardFXController(mainVbox.getScene(),ledgerManager));
-        Parent root = null;
-        try {
-            root=loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: 05/06/20 log
-        }
-        assert root != null;
-        Scene scene = new Scene(root,750,450);
-        stage.setTitle("Adding new transaction");
-        stage.setScene(scene);
+        loadNewScene("/transactionWizard.fxml",750,450,"Adding new transaction",TransactionWizardFXController.class);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Injector injector = Guice.createInjector(new LedgerManagerModule());
+        injector = Guice.createInjector(new LedgerManagerModule(),new ViewModule());
         ledgerManager=injector.getInstance(LedgerManager.class);
         try {
             ledgerManager.loadLedger("ledger.txt");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            // TODO: 06/06/20 log
+            // TODO: 06/06/20 log e gestire
         }
         initTransactionTable();
         initAccountTable();
@@ -134,7 +125,24 @@ public class MainFXController implements Initializable, PropertyChangeListener {
             e.printStackTrace();
             // TODO: 07/06/20 gestire e log
         }
-        transactionTable.refresh();
-        accountTable.refresh();
+    }
+
+    private void loadNewScene(String resource,int width, int height,String title, Class<?> controller){
+        Stage stage = (Stage) mainVbox.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+        loader.setControllerFactory(param -> injector.getInstance(controller));
+        try {
+            Parent root=loader.load();
+            Scene scene = new Scene(root,width,height);
+            stage.setTitle(title);
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO: 05/06/20 log
+        }
+    }
+
+    @FXML public void handleNewAccountPressed(ActionEvent event) {
+        loadNewScene("/accountWizard.fxml",400,300,"Adding new account",AccountWizardFXController.class);
     }
 }

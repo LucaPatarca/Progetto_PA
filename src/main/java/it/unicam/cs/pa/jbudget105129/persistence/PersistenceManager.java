@@ -9,39 +9,20 @@ import java.io.IOException;
  * Represent an object that is responsible for managing the persistence of a {@link Ledger}.
  */
 public interface PersistenceManager {
+
     /**
-     * Saves the {@link Ledger} to a new file created by the given string.
+     * Saves the {@link Ledger} to the path represented by the {@link String} passed as argument.
      * @param ledger the ledger to save
-     * @param file the file path of the file to save to
-     * @throws IOException if it is not possible to create and write the file
+     * @param path the {@link String} representing the path to save to
+     * @throws IOException if it is not possible to create and write to the path
      */
-    default void save(Ledger ledger, String file) throws IOException {
-        save(ledger,new File(file));
-    }
+    void save(Ledger ledger, String path) throws IOException;
 
     /**
-     * Loads a {@link Ledger} from an existing file represented by a string
-     * @param file the file path of the file to load from
-     * @return the new {@link Ledger} created from the file
-     * @throws IOException if it is not possible to read the file
+     * Loads a {@link Ledger} from the path represented by the {@link String} passed as argument.
+     * @param path the path to load from
+     * @return the new {@link Ledger} created from the path
+     * @throws IOException if it is not possible to read from the path
      */
-    default Ledger load(String file) throws IOException {
-        return load(new File(file));
-    }
-
-    /**
-     * Saves the {@link Ledger} to the {@link File} passed as argument.
-     * @param ledger the ledger to save
-     * @param file the {@link File} object to save to
-     * @throws IOException if it is not possible to create and write the file
-     */
-    void save(Ledger ledger, File file) throws IOException;
-
-    /**
-     * Loads a {@link Ledger} from an existing {@link File} passed as argument.
-     * @param file the file object to load from
-     * @return the new {@link Ledger} created from the file
-     * @throws IOException if it is not possible to read the file
-     */
-    Ledger load(File file) throws IOException;
+    Ledger load(String path) throws IOException;
 }

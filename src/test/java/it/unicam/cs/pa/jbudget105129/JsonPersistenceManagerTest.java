@@ -1,10 +1,5 @@
 package it.unicam.cs.pa.jbudget105129;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import it.unicam.cs.pa.jbudget105129.Dependency.LedgerManagerModule;
-import it.unicam.cs.pa.jbudget105129.controller.FamilyLedgerManager;
-import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
@@ -66,8 +61,10 @@ public class JsonPersistenceManagerTest {
         File file = new File("build/tmp/PersistenceTest.txt");
         Ledger loaded = null;
         try {
-            manager.save(ledger,file);
-            loaded = manager.load(file);
+            manager.save(ledger,"build/tmp/PersistenceTest.txt");
+            RoundedMovement.getRegistry().reset();
+            SingleTag.getRegistry().reset();
+            loaded = manager.load("build/tmp/PersistenceTest.txt");
         } catch (IOException e) {
             fail(e);
         }

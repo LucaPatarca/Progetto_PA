@@ -2,8 +2,8 @@ package it.unicam.cs.pa.jbudget105129.controller;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import it.unicam.cs.pa.jbudget105129.Dependency.AppLedger;
-import it.unicam.cs.pa.jbudget105129.Dependency.AppPersistence;
+import it.unicam.cs.pa.jbudget105129.annotations.AppLedger;
+import it.unicam.cs.pa.jbudget105129.annotations.AppPersistence;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
@@ -23,22 +23,22 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class FamilyLedgerManager implements LedgerManager {
-
+    // FIXME: 08/06/20 troppe dipendenze da classi, estendere la dependency injection
     private Ledger ledger;
     private final PersistenceManager persistenceManager;
 
     /**
      * Creates a new {@link FamilyLedgerManager} with the specified parameters. This constructor
-     * can be injected using {@link it.unicam.cs.pa.jbudget105129.Dependency.LedgerManagerModule}.
+     * can be injected using {@link LedgerManagerModule}.
      * @param ledger the ledger this will manage
      * @param persistenceManager the inner manager responsible for persistence
      * @see Ledger
      * @see PersistenceManager
      */
     @Inject
-    public FamilyLedgerManager(@AppLedger Ledger ledger, @AppPersistence PersistenceManager persistenceManager){
+    protected FamilyLedgerManager(@AppLedger Ledger ledger, @AppPersistence PersistenceManager persistenceManager){
         this.ledger=ledger;
-        this.persistenceManager =persistenceManager;
+        this.persistenceManager=persistenceManager;
     }
 
     /**
@@ -243,6 +243,8 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void loadLedger(String file) throws IOException {
+        SingleTag.getRegistry().reset();
+        RoundedMovement.getRegistry().reset();
         ledger= persistenceManager.load(file);
     }
 

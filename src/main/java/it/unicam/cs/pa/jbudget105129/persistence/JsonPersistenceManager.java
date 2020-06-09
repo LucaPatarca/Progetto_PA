@@ -18,7 +18,6 @@ public class JsonPersistenceManager implements PersistenceManager{
         AccountTypeAdapter accountTypeAdapter = new AccountTypeAdapter();
         TagTypeAdapter tagTypeAdapter = new TagTypeAdapter();
 
-        // TODO: 06/06/20 risolvere dipendenze dalle classi (dependency injection?)
         builder.registerTypeAdapter(Movement.class,movementTypeAdapter);
         builder.registerTypeAdapter(Ledger.class,ledgerTypeAdapter);
         builder.registerTypeAdapter(Transaction.class,transactionTypeAdapter);
@@ -34,14 +33,16 @@ public class JsonPersistenceManager implements PersistenceManager{
     }
 
     @Override
-    public void save(Ledger ledger, File file) throws IOException {
+    public void save(Ledger ledger, String path) throws IOException {
+        File file = new File(path);
         String json = gson.toJson(ledger);
         FileOutputStream out = new FileOutputStream(file);
         out.write(json.getBytes());
     }
 
     @Override
-    public Ledger load(File file) throws IOException {
+    public Ledger load(String path) throws IOException {
+        File file = new File(path);
         FileInputStream in = new FileInputStream(file);
         String jsonString = new String(in.readAllBytes());
         return gson.fromJson(jsonString, FamilyLedger.class);

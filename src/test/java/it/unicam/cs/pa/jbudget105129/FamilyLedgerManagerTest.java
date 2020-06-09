@@ -2,7 +2,7 @@ package it.unicam.cs.pa.jbudget105129;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import it.unicam.cs.pa.jbudget105129.Dependency.LedgerManagerModule;
+import it.unicam.cs.pa.jbudget105129.controller.LedgerManagerModule;
 import it.unicam.cs.pa.jbudget105129.controller.FamilyLedgerManager;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;

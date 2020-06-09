@@ -4,8 +4,8 @@ package it.unicam.cs.pa.jbudget105129.model;
 import java.util.Objects;
 
 /**
- * A basic implementation of a Tag. This particular implementation allow only one instance at a time
- * of a tag with the same ID. The creation of a new instance of SingleTag is only possible with the
+ * A basic implementation of a Tag.
+ * The creation of a new instance of SingleTag is only possible with the
  * static method getInstance().
  */
 public class SingleTag implements Tag {
@@ -31,7 +31,6 @@ public class SingleTag implements Tag {
     }
 
     public static SingleTag getInstance(String name, String description){
-        // TODO: 04/06/20 scrivere da qualche parte che il metodo con tutti e tre i parametri non lo metto perche serve solo alla persistenza.
         return getRegistry().getInstance(name,description);
     }
 

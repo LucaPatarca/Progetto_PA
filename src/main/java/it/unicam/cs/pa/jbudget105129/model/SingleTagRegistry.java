@@ -12,14 +12,14 @@ import java.util.Map;
  */
 public class SingleTagRegistry {
 
-    private final Map<Integer, SingleTag> registry;
+    private Map<Integer, SingleTag> registry;
 
     private final SingleTagConstructor factory;
     private static int nextID=0;
 
     /**
      * Creates a new SingleTagRegistry with the constructor as argument.
-     * @param factory the constructor for the registry.
+     * @param factory the constructor used to create new instances of {@link SingleTag}.
      */
     public SingleTagRegistry(SingleTagConstructor factory){
         this.factory=factory;
@@ -28,18 +28,18 @@ public class SingleTagRegistry {
 
     /**
      * Returns an entry of the registry matching the specified ID, null if there is no entry for the ID.
-     * @param ID the ID used to find the tag.
-     * @return the tag in the registry or null if it can't be found.
+     * @param ID the ID used to find the {@link SingleTag}.
+     * @return the {@link SingleTag} in the registry or null if it can't be found.
      */
     public SingleTag getInstance(int ID) {
         return registry.get(ID);
     }
 
     /**
-     * Returns a new instance of SingleTag with the specified parameters and a generated unique ID.
+     * Returns a new instance of {@link SingleTag} with the specified parameters and a generated unique ID.
      * @param name the name of the new tag.
      * @param description the description of the new tag.
-     * @return a new instance of SingleTag.
+     * @return a new instance of {@link SingleTag}.
      */
     public SingleTag getInstance(String name, String description) {
         return this.getInstance(nextID,name,description);
@@ -51,10 +51,12 @@ public class SingleTagRegistry {
      * null otherwise.
      * If the registry does not contain an entry with the same ID:
      * returns a new object and puts it in the registry.
+     *
+     * This method should only be used for persistence purposes.
      * @param ID the id of the tag
      * @param name the name of the tag
      * @param description the description of the tag
-     * @return a tag matching the parameter or null if the ID is already used by a different tag.
+     * @return a {@link SingleTag} matching the parameter or null if the ID is already used by a different tag.
      */
     public SingleTag getInstance(int ID, String name, String description){
         SingleTag o = factory.create(ID,name,description);
@@ -67,5 +69,14 @@ public class SingleTagRegistry {
             nextID=ID+1;
         registry.put(ID,o);
         return o;
+    }
+
+    /**
+     * Resets completely this register by removing all entries from the registry. It should only be used
+     * by a LedgerManager to load a new Ledger while overwriting the old one.
+     */
+    public void reset(){
+        registry=new HashMap<>();
+        nextID=0;
     }
 }

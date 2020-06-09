@@ -16,7 +16,7 @@
             <Menu mnemonicParsing="false" text="Add">
               <items>
                 <MenuItem fx:id="newTransactionItem" mnemonicParsing="false" onAction="#handleNewTransaction" text="New transaction..." />
-                  <MenuItem mnemonicParsing="false" text="New account..." />
+                  <MenuItem fx:id="newAccountMenuItem" mnemonicParsing="false" onAction="#handleNewAccountPressed" text="New account..." />
                   <MenuItem mnemonicParsing="false" text="New scheduled transaction..." />
               </items>
             </Menu>

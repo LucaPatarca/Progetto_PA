@@ -12,7 +12,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-//TODO javadoc
+
+/**
+ * An amount of money that keeps track of the balance and all the {@link Movement} associated whit it.
+ *
+ * This class guarantee that the balance is represented with no more then two decimal places. Supports
+ * a minimum and a maximum value for the balance.
+ */
 public class RoundedAccount implements Account {
 
     private BigDecimal balance;
@@ -25,6 +31,14 @@ public class RoundedAccount implements Account {
     private BigDecimal minAmount;
     private BigDecimal maxAmount;
 
+    /**
+     * Creates a new instance of {@link RoundedAccount} with the specified parameters, the minimum and maximum
+     * amount are always initially set as null but they can be modified via their setters.
+     * @param name the name of the new account
+     * @param description the description of the new account
+     * @param openingBalance the opening balance of the new account, this field is set once for all and does not have a setter
+     * @param type the type of the new account, this field is set once for all and does not have a setter
+     */
     public RoundedAccount(String name, String description, double openingBalance, AccountType type){
         this.name=name;
         this.description=description;
@@ -36,61 +50,115 @@ public class RoundedAccount implements Account {
         maxAmount=null;
     }
 
+    /**
+     * Returns the current balance of the account. This value is calculated as the sum of all movements
+     * applied to the opening balance of this account.
+     *
+     * The balance is not calculated every time you call this method, instead it is saved in memory
+     * and updated every time you add or remove a {@link Movement} from this account. So by calling
+     * this method you just access the value in memory.
+     * @return the current balance
+     */
     @Override
     public double getBalance() {
         return this.balance.doubleValue();
     }
 
+    /**
+     * The balance this account had at the moment of its creation.
+     * @return the opening balance
+     */
     @Override
     public double getOpeningBalance() {
         return this.openingBalance.doubleValue();
     }
 
+    /**
+     * The literal description of this account.
+     * @return a {@link String} representing the description
+     */
     @Override
     public String getDescription() {
         return this.description;
     }
 
+    /**
+     * The name of this account.
+     * @return a {@link String} representing the name
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the name and surname of the owner of this account.
+     * @return The referent's name and surname
+     */
     @Override
     public String getReferent() {
         return this.referent;
     }
 
+    /**
+     * Returns the maximum value the balance of this account can reach, in case of an ASSET
+     * this represents the maximum amount of money this account can contain, in case of a
+     * LIABILITY this represents the maximum amount the debt can reach. The return value
+     * is an {@link Optional} so if an account does not have a maximum value this returns an
+     * empty {@link Optional}.
+     * @return The max amount.
+     */
     @Override
     public Optional<Double> getMaxAmount() {
         if(maxAmount==null) return Optional.empty();
         return Optional.of(maxAmount.doubleValue());
     }
 
+    /**
+     * Returns the minimum value the balance of this account can reach, in case of an ASSET
+     * this represents the minimum amount of money this account can contain (usually zero but
+     * some bank account can handle relatively small negative values), in case of a
+     * LIABILITY this should always return zero. The return value is an {@link Optional} so if
+     * an account does not have a minimum value should return an empty {@link Optional}.
+     * @return The minimum amount.
+     */
     @Override
     public Optional<Double>  getMinAmount() {
         if(minAmount==null) return Optional.empty();
         return Optional.of(minAmount.doubleValue());
     }
 
+    /**
+     * Returns the type of this account (ASSET OR LIABILITY).
+     * @return The type of this account
+     */
     @Override
     public AccountType getType() {
         return this.type;
     }
 
+    /**
+     * Returns the list of {@link Movement} associated with this account.
+     * @return The list of movements
+     */
     @Override
     public List<Movement> getMovements() {
         return this.movements;
     }
 
+    /**
+     * Returns the list of {@link Movement} associated with the account that satisfy a {@link Predicate}
+     * @param predicate The predicate used to filter the movements
+     * @return The list of movements
+     */
     @Override
     public List<Movement> getMovements(Predicate<Movement> predicate) {
         return this.movements.stream().filter(predicate).collect(Collectors.toList());
     }
 
     /**
-     * Adds the movement to the list and update the balance. It also set the movement's account
-     * to this account to make sure everything is ok.
+     * Adds a {@link Movement} to the list and update the balance. It also set the movement's account
+     * to this account to make sure everything is set properly.
      * @param movement The new movement to add
      * @throws AccountException  If the new movement introduces a problem to the account balance
      * (for example if the balance goes below the minimum or above the maximum value).
@@ -112,6 +180,13 @@ public class RoundedAccount implements Account {
         movements.add(movement);
     }
 
+    /**
+     * Removes a {@link Movement} from the account, the balance is recalculated considering the
+     * missing movement.
+     * @param movement The movement to be removed
+     * @throws AccountException If the missing movement introduces a problem to the account balance
+     * (for example if the balance goes below the minimum or above the maximum value).
+     */
     @Override
     public void removeMovement(Movement movement) throws AccountException {
         if(getType()==AccountType.ASSET){
@@ -128,26 +203,48 @@ public class RoundedAccount implements Account {
         movements.remove(movement);
     }
 
+    /**
+     * Changes the referent (the owner of the account).
+     * @param referent The name and surname of the new referent
+     */
     @Override
     public void setReferent(String referent) {
         this.referent=referent;
     }
 
+    /**
+     * Changes the description of the account.
+     * @param description The new description
+     */
     @Override
     public void setDescription(String description) {
         this.description=description;
     }
 
+    /**
+     * Changes the name of the account.
+     * @param name The new name
+     */
     @Override
     public void setName(String name) {
         this.name=name;
     }
 
+    /**
+     * Sets a new value as the maximum value.
+     * @param maxAmount The new maximum value
+     * @throws UnsupportedOperationException if this account does not support a maximum amount
+     */
     @Override
     public void setMaxAmount(double maxAmount) {
         this.maxAmount=new BigDecimal(maxAmount).setScale(2,RoundingMode.HALF_DOWN);
     }
 
+    /**
+     * Sets a new value as the minimum value.
+     * @param minAmount The new minimum value
+     * @throws UnsupportedOperationException if this account does not support a minimum amount
+     */
     @Override
     public void setMinAmount(double minAmount) {
         this.minAmount=new BigDecimal(minAmount).setScale(2,RoundingMode.HALF_DOWN);

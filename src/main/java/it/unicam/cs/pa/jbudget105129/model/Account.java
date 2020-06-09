@@ -8,13 +8,14 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * Represents a sum of money and all its information.
+ * Represents an amount of money and all its information, it keeps track of the balance and all
+ * the {@link Movement} associated with it.
  */
 
 public interface Account {
     /**
-     * Returns the current balance of the account as a double value, this should be equal to the
-     * sum of all movements applied to the account's opening balance.
+     * Returns the current balance of the account as a double value, this is calculated as the
+     * sum of all movements applied to this account's opening balance.
      * @return The current balance
      */
     double getBalance();
@@ -26,50 +27,51 @@ public interface Account {
     double getOpeningBalance();
 
     /**
-     * Returns the description of the account.
-     * @return The description
+     * The literal description of this account.
+     * @return a {@link String} representing the description
      */
     String getDescription();
 
     /**
-     * Returns the name of the account.
-     * @return The name
+     * The name of this account.
+     * @return a {@link String} representing the name
      */
     String getName();
 
     /**
-     * Returns the name and surname of the owner of the account.
-     * @return The referent name and surname
+     * Returns the name and surname of the owner of this account.
+     * @return The referent's name and surname
      */
     String getReferent();
+
     /**
-     * Returns the maximum value the balance of the account can reach, in case of an asset
-     * this represents the maximum amount of money the account can contain, in case of a
-     * liability this represents the maximum amount the debt can reach. The return value
-     * is an {@link Optional} so if an account does not have a maximum value should return an
-     * empty Optional.
+     * Returns the maximum value the balance of this account can reach, in case of an ASSET
+     * this represents the maximum amount of money this account can contain, in case of a
+     * LIABILITY this represents the maximum amount the debt can reach. The return value
+     * is an {@link Optional} so if an account does not have a maximum value this returns an
+     * empty {@link Optional}.
      * @return The max amount.
      */
     Optional<Double>  getMaxAmount();
 
     /**
-     * Returns the minimum value the balance of the account can reach, in case of an asset
-     * this represents the minimum amount of money the account can contain (usually zero but
+     * Returns the minimum value the balance of this account can reach, in case of an ASSET
+     * this represents the minimum amount of money this account can contain (usually zero but
      * some bank account can handle relatively small negative values), in case of a
-     * liability this should always return zero. The return value is an {@link Optional} so if
-     * an account does not have a minimum value should return an empty Optional.
+     * LIABILITY this should always return zero. The return value is an {@link Optional} so if
+     * an account does not have a minimum value should return an empty {@link Optional}.
      * @return The minimum amount.
      */
     Optional<Double> getMinAmount();
 
     /**
-     * Returns the type of the account (ASSET OR LIABILITY).
-     * @return The type of the account
+     * Returns the type of this account (ASSET OR LIABILITY).
+     * @return The type of this account
      */
     AccountType getType();
 
     /**
-     * Returns the list of movements associated with the account.
+     * Returns the list of {@link Movement} associated with this account.
      * @return The list of movements
      */
     List<Movement> getMovements();
@@ -120,14 +122,14 @@ public interface Account {
     /**
      * Sets a new value as the maximum value.
      * @param maxAmount The new maximum value
-     * @throws UnsupportedOperationException if the account does not support a maximum amount
+     * @throws UnsupportedOperationException if this account does not support a maximum amount
      */
     void setMaxAmount(double maxAmount) throws UnsupportedOperationException;
 
     /**
      * Sets a new value as the minimum value.
      * @param minAmount The new minimum value
-     * @throws UnsupportedOperationException if the account does not support a minimum amount
+     * @throws UnsupportedOperationException if this account does not support a minimum amount
      */
     void setMinAmount(double minAmount) throws UnsupportedOperationException;
 }

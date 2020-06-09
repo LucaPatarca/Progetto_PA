@@ -56,13 +56,7 @@ public class LedgerTypeAdapter implements JsonDeserializer<Ledger>, JsonSerializ
     private void deserializeMovements(JsonObject jo, JsonDeserializationContext context){
         JsonArray movements = jo.get("movements").getAsJsonArray();
         for(JsonElement element : movements){
-            JsonObject movement =element.getAsJsonObject();
-            RoundedMovement.getRegistry().getInstance(
-                    movement.get("ID").getAsInt(),
-                    movement.get("description").getAsString(),
-                    movement.get("amount").getAsDouble(),
-                    context.deserialize(movement.get("type"), MovementType.class),
-                    null);
+            context.deserialize(element,Movement.class);
         }
     }
 }
