@@ -13,6 +13,8 @@ import java.util.function.Predicate;
  */
 
 public interface Account {
+    int getID();
+
     /**
      * Returns the current balance of the account as a double value, this is calculated as the
      * sum of all movements applied to this account's opening balance.

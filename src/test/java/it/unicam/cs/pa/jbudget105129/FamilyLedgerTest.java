@@ -44,8 +44,8 @@ public class FamilyLedgerTest {
         ledger.addTransaction(transaction0);
         ledger.addScheduledTransaction(st);
 
-        asset=new RoundedAccount("asset","",0, AccountType.ASSET);
-        liability=new RoundedAccount("liability","",100,AccountType.LIABILITY);
+        asset=RoundedAccount.getInstance("asset","",0, AccountType.ASSET);
+        liability=RoundedAccount.getInstance("liability","",100,AccountType.LIABILITY);
 
         Movement movement1=RoundedMovement.getInstance("",87.66,MovementType.INCOME,liability);
         Movement movement2=RoundedMovement.getInstance("",91.44,MovementType.OUTFLOW,asset);

@@ -25,7 +25,7 @@
               <items>
                 <MenuItem fx:id="newTransactionItem" mnemonicParsing="false" onAction="#handleNewTransaction" text="New transaction..." />
                   <MenuItem fx:id="newAccountMenuItem" mnemonicParsing="false" onAction="#handleNewAccountPressed" text="New account..." />
-                  <MenuItem mnemonicParsing="false" text="New scheduled transaction..." />
+                  <MenuItem fx:id="newSTransactionMenuItem" mnemonicParsing="false" onAction="#handleNewSTransactionPressed" text="New scheduled transaction..." />
               </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Edit">
@@ -56,10 +56,11 @@
                </content></Tab>
           <Tab text="Scheduled transactions">
                <content>
-                  <TreeTableView prefHeight="200.0" prefWidth="200.0">
+                  <TreeTableView fx:id="scheduledTable" prefHeight="200.0" prefWidth="200.0">
                     <columns>
-                      <TreeTableColumn prefWidth="75.0" text="C1" />
-                      <TreeTableColumn prefWidth="75.0" text="C2" />
+                      <TreeTableColumn fx:id="scheduledDescriptionCol" prefWidth="221.0" text="Description" />
+                      <TreeTableColumn fx:id="scheduledDateCol" prefWidth="115.0" text="Date" />
+                        <TreeTableColumn fx:id="scheduledTotalCol" prefWidth="104.0" text="Total" />
                     </columns>
                   </TreeTableView>
                </content></Tab>

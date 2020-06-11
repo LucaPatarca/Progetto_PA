@@ -28,7 +28,7 @@ public class SimpleBudgetReportTest {
         ledger = new FamilyLedger();
         budget = new SimpleBudget();
         bm = new SimpleBudgetManager();
-        Account account = new RoundedAccount("account", "", 0, AccountType.ASSET);
+        Account account = RoundedAccount.getInstance("account", "", 0, AccountType.ASSET);
 
         Transaction transaction0 = new RoundedTransaction("transazione 0", Calendar.getInstance().getTime());
         Transaction transaction1 = new RoundedTransaction("transazione 1", Calendar.getInstance().getTime());

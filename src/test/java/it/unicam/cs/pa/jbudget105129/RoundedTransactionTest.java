@@ -21,8 +21,8 @@ public class RoundedTransactionTest {
     @BeforeAll
     static void init(){
         transaction = new RoundedTransaction("transazione", Calendar.getInstance().getTime());
-        Account account1=new RoundedAccount("account1","account1",0, AccountType.ASSET);
-        Account account2=new RoundedAccount("account2","account2",0,AccountType.LIABILITY);
+        Account account1=RoundedAccount.getInstance("account1","account1",0, AccountType.ASSET);
+        Account account2=RoundedAccount.getInstance("account2","account2",0,AccountType.LIABILITY);
         m1=RoundedMovement.getInstance("m1",0.78,MovementType.INCOME,account1);
         m2=RoundedMovement.getInstance("m2",10.66,MovementType.OUTFLOW,account1);
         m3=RoundedMovement.getInstance("m3",42.8,MovementType.INCOME,account2);

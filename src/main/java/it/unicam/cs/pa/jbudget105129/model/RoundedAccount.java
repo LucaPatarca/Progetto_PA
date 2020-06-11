@@ -30,6 +30,8 @@ public class RoundedAccount implements Account {
     private final AccountType type;
     private BigDecimal minAmount;
     private BigDecimal maxAmount;
+    private int ID;
+    private static RoundedAccountRegistry registry;
 
     /**
      * Creates a new instance of {@link RoundedAccount} with the specified parameters, the minimum and maximum
@@ -39,7 +41,7 @@ public class RoundedAccount implements Account {
      * @param openingBalance the opening balance of the new account, this field is set once for all and does not have a setter
      * @param type the type of the new account, this field is set once for all and does not have a setter
      */
-    public RoundedAccount(String name, String description, double openingBalance, AccountType type){
+    private RoundedAccount(int ID, String name, String description, double openingBalance, AccountType type){
         this.name=name;
         this.description=description;
         this.openingBalance=new BigDecimal(openingBalance).setScale(2, RoundingMode.HALF_DOWN);
@@ -48,6 +50,26 @@ public class RoundedAccount implements Account {
         this.type=type;
         minAmount=null;
         maxAmount=null;
+        this.ID=ID;
+    }
+
+    public static RoundedAccountRegistry getRegistry(){
+        if (registry==null)
+            registry=new RoundedAccountRegistry(RoundedAccount::new);
+        return registry;
+    }
+
+    public static RoundedAccount getInstance(int ID){
+        return getRegistry().getInstance(ID);
+    }
+
+    public static RoundedAccount getInstance(String name, String description, double openingBalance, AccountType type){
+        return getRegistry().getInstance(name,description,openingBalance,type);
+    }
+
+    @Override
+    public int getID() {
+        return ID;
     }
 
     /**

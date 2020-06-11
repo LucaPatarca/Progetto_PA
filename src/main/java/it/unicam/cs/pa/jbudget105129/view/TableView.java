@@ -1,6 +1,5 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
-import com.google.inject.Inject;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

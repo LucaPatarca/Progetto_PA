@@ -40,8 +40,8 @@ public class TransactionWizardFXController implements Initializable {
     @FXML public DatePicker transactionDate;
     @FXML public Button addTransactionButton;
 
-    private final LedgerManager ledgerManager;
-    private final Scene mainScene;
+    protected final LedgerManager ledgerManager;
+    protected final Scene mainScene;
 
     @Inject
     protected TransactionWizardFXController(@MainScene Scene mainScene, LedgerManager ledgerManager){

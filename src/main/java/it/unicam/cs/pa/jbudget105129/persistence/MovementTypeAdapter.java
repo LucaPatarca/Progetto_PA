@@ -49,6 +49,7 @@ public class MovementTypeAdapter implements JsonSerializer<Movement>, JsonDeseri
             jo.addProperty("description",src.getDescription());
             jo.add("type",context.serialize(src.getType()));
             jo.add("tags",context.serialize(src.getTags()));
+            jo.addProperty("account",src.getAccount().getID());
             alreadySaved.add(src.getID());
         }
         return jo;

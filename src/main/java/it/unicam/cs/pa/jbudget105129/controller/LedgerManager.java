@@ -75,11 +75,12 @@ public interface LedgerManager {
     void removeAccount(Account account) throws AccountException;
 
     /**
-     * Adds a new {@link ScheduledTransaction} to the ledger's list. It checks that the {@link ScheduledTransaction}
-     * is not already completed before adding it.
-     * @param scheduledTransaction the scheduled transaction to be added
+     * Adds a new {@link ScheduledTransaction} to the ledger's list from a description and a list
+     * of {@link Transaction}s. The list cannot be null.
+     * @param transactions the list of transaction
+     * @param description the description
      */
-    void addScheduledTransaction(ScheduledTransaction scheduledTransaction);
+    void addScheduledTransaction(String description, List<Transaction> transactions);
 
     /**
      * Removes a {@link ScheduledTransaction} from the ledger.

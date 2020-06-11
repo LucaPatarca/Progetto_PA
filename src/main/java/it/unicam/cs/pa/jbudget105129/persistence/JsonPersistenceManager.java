@@ -17,6 +17,7 @@ public class JsonPersistenceManager implements PersistenceManager{
         TransactionTypeAdapter transactionTypeAdapter = new TransactionTypeAdapter();
         AccountTypeAdapter accountTypeAdapter = new AccountTypeAdapter();
         TagTypeAdapter tagTypeAdapter = new TagTypeAdapter();
+        ScheduledTransactionTypeAdapter scheduledTransactionTypeAdapter = new ScheduledTransactionTypeAdapter();
 
         builder.registerTypeAdapter(Movement.class,movementTypeAdapter);
         builder.registerTypeAdapter(Ledger.class,ledgerTypeAdapter);
@@ -28,6 +29,8 @@ public class JsonPersistenceManager implements PersistenceManager{
         builder.registerTypeAdapter(RoundedTransaction.class,transactionTypeAdapter);
         builder.registerTypeAdapter(RoundedAccount.class,accountTypeAdapter);
         builder.registerTypeAdapter(SingleTag.class,tagTypeAdapter);
+        builder.registerTypeAdapter(ScheduledTransaction.class,scheduledTransactionTypeAdapter);
+        builder.registerTypeAdapter(MapScheduledTransaction.class,scheduledTransactionTypeAdapter);
 
         gson = builder.create();
     }

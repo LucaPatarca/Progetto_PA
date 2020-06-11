@@ -28,7 +28,7 @@ public class FamilyLedgerManagerTest {
     void init(){
         injector = Guice.createInjector(new LedgerManagerModule());
         manager = injector.getInstance(FamilyLedgerManager.class);
-        account = new RoundedAccount("prova","",0, AccountType.ASSET);
+        account = RoundedAccount.getInstance("prova","",0, AccountType.ASSET);
         movement = RoundedMovement.getInstance("movement1",10,MovementType.INCOME,account);
     }
 
@@ -58,7 +58,7 @@ public class FamilyLedgerManagerTest {
         assertThrows(AccountException.class,()->manager.removeAccount(account));
         Transaction transaction = manager.getLedger().getTransactions().get(0);
         manager.removeTransaction(transaction);
-        manager.addScheduledTransaction(new MapScheduledTransaction("prova", List.of(transaction)));
+        manager.addScheduledTransaction("prova", List.of(transaction));
         assertThrows(AccountException.class,()->manager.removeAccount(account));
     }
 

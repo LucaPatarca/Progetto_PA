@@ -18,13 +18,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonPersistenceManagerTest {
-    private static Ledger ledger;
+    private static FamilyLedger ledger;
+    private static RoundedAccount account1;
+    private static RoundedAccount account2;
 
     @BeforeAll
     static void init(){
         ledger = new FamilyLedger();
-        Account account1=new RoundedAccount("banca","mia banca",0, AccountType.ASSET);
-        Account account2=new RoundedAccount("carta","mia carta di debito",0, AccountType.LIABILITY);
+        account1=RoundedAccount.getInstance("banca","mia banca",0, AccountType.ASSET);
+        account2=RoundedAccount.getInstance("carta","mia carta di debito",0, AccountType.LIABILITY);
         List<Movement> movements = new LinkedList<>();
         List<Movement> movements2 = new LinkedList<>();
         movements.add(RoundedMovement.getInstance("movimento1",10.94,MovementType.INCOME,account1));
@@ -53,6 +55,7 @@ public class JsonPersistenceManagerTest {
         } catch (AccountException e) {
             fail(e);
         }
+        addScheduledTransactions();
     }
 
     @Test
@@ -64,11 +67,29 @@ public class JsonPersistenceManagerTest {
             manager.save(ledger,"build/tmp/PersistenceTest.txt");
             RoundedMovement.getRegistry().reset();
             SingleTag.getRegistry().reset();
+            RoundedAccount.getRegistry().reset();
             loaded = manager.load("build/tmp/PersistenceTest.txt");
         } catch (IOException e) {
             fail(e);
         }
-        assertEquals(ledger,loaded);
+        assertTrue(ledger.getTransactions().containsAll(loaded.getTransactions()));
+        assertTrue(ledger.getAccounts().containsAll(loaded.getAccounts()));
+        assertTrue(ledger.getScheduledTransactions().containsAll(loaded.getScheduledTransactions()));
         file.delete();
+    }
+
+    private static void addScheduledTransactions(){
+        RoundedMovement movement1 = RoundedMovement.getInstance("movement1",10.2,MovementType.INCOME,account1);
+        RoundedMovement movement2 = RoundedMovement.getInstance("movement1",15.68,MovementType.OUTFLOW,account2);
+        RoundedMovement movement3 = RoundedMovement.getInstance("movement1",8.68,MovementType.INCOME,account2);
+        RoundedMovement movement4 = RoundedMovement.getInstance("movement1",5.9,MovementType.OUTFLOW,account1);
+        RoundedTransaction transaction1 = new RoundedTransaction("transaction1",Calendar.getInstance().getTime());
+        RoundedTransaction transaction2 = new RoundedTransaction("transaction2",Calendar.getInstance().getTime());
+        transaction1.addMovement(movement1);
+        transaction1.addMovement(movement2);
+        transaction2.addMovement(movement3);
+        transaction2.addMovement(movement4);
+        ScheduledTransaction st = new MapScheduledTransaction("scheduledTransaction",List.of(transaction1,transaction2));
+        ledger.addScheduledTransaction(st);
     }
 }

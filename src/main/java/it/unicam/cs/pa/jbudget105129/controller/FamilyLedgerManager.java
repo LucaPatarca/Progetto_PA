@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class FamilyLedgerManager implements LedgerManager {
-    // FIXME: 08/06/20 troppe dipendenze da classi, estendere la dependency injection
     private Ledger ledger;
     private final PersistenceManager persistenceManager;
 
@@ -110,7 +109,7 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void addAccount(String name, String description, String referent, double opening, AccountType type) {
-        Account account=new RoundedAccount(Objects.requireNonNull(name),
+        Account account=RoundedAccount.getInstance(Objects.requireNonNull(name),
                 Objects.requireNonNull(description),
                 opening,
                 Objects.requireNonNull(type)
@@ -136,7 +135,7 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void addAccount(String name, String description, String referent, double opening, AccountType type, Double min, Double max) {
-        Account account=new RoundedAccount(name,description,opening,type);
+        Account account=RoundedAccount.getInstance(name,description,opening,type);
         if(type.equals(AccountType.LIABILITY)&&min<0)
             throw new IllegalArgumentException("Account of type liability should always have min amount >=0");
         account.setMinAmount(min);
@@ -163,14 +162,15 @@ public class FamilyLedgerManager implements LedgerManager {
     }
 
     /**
-     * Adds a new {@link ScheduledTransaction} to the ledger's list. It checks that the {@link ScheduledTransaction}
-     * is not already completed before adding it.
-     * @param scheduledTransaction the scheduled transaction to be added
+     * Adds a new {@link ScheduledTransaction} to the ledger's list from a description and a list
+     * of {@link Transaction}s. The list cannot be null.
+     * @param transactions the list of transaction
+     * @param description the description
      */
     @Override
-    public void addScheduledTransaction(ScheduledTransaction scheduledTransaction) {
-        if(scheduledTransaction.isCompleted()) throw new IllegalArgumentException("tried to add a completed sheduled transaction");
-        ledger.addScheduledTransaction(scheduledTransaction);
+    public void addScheduledTransaction(String description, List<Transaction> transactions) {
+        if(Objects.requireNonNull(transactions).isEmpty()) throw new IllegalArgumentException("tried to add a completed sheduled transaction");
+        ledger.addScheduledTransaction(new MapScheduledTransaction(description,transactions));
     }
 
     /**
@@ -245,6 +245,7 @@ public class FamilyLedgerManager implements LedgerManager {
     public void loadLedger(String file) throws IOException {
         SingleTag.getRegistry().reset();
         RoundedMovement.getRegistry().reset();
+        RoundedAccount.getRegistry().reset();
         ledger= persistenceManager.load(file);
     }
 

@@ -20,8 +20,8 @@ public class RoundedAccountTest {
 
     @BeforeAll
     static void init(){
-        asset = new RoundedAccount("asset","",0, AccountType.ASSET);
-        liability = new RoundedAccount("liability","", 100,AccountType.LIABILITY);
+        asset = RoundedAccount.getInstance("asset","",0, AccountType.ASSET);
+        liability = RoundedAccount.getInstance("liability","", 100,AccountType.LIABILITY);
     }
 
     @Test

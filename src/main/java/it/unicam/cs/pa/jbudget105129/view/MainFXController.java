@@ -7,6 +7,7 @@ import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.Account;
+import it.unicam.cs.pa.jbudget105129.model.ScheduledTransaction;
 import it.unicam.cs.pa.jbudget105129.model.Transaction;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -15,8 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
@@ -28,7 +28,6 @@ import javafx.stage.Stage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -51,6 +50,11 @@ public class MainFXController implements Initializable, PropertyChangeListener {
     @FXML public TableView<Account> accountTable;
     @FXML public MenuItem saveMenuItem;
     @FXML public MenuItem newAccountMenuItem;
+    @FXML public MenuItem newSTransactionMenuItem;
+    @FXML public TreeTableView<ScheduledTransaction> scheduledTable;
+    @FXML public TreeTableColumn<Transaction,String> scheduledDescriptionCol;
+    @FXML public TreeTableColumn<Transaction,Date> scheduledDateCol;
+    @FXML public TreeTableColumn<Transaction,Double> scheduledTotalCol;
 
     private LedgerManager ledgerManager;
     private Injector injector;
@@ -71,6 +75,7 @@ public class MainFXController implements Initializable, PropertyChangeListener {
         }
         initTransactionTable();
         initAccountTable();
+        initScheduledTable();
     }
 
     private void initTransactionTable(){
@@ -91,6 +96,10 @@ public class MainFXController implements Initializable, PropertyChangeListener {
         accountBalanceCol.setCellValueFactory(new PropertyValueFactory<>("balance"));
         ledgerManager.getLedger().getPropertyChangeSupport().addPropertyChangeListener(this);
         accountTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getAccounts()));
+    }
+
+    private void initScheduledTable(){
+
     }
 
     @Override
@@ -145,5 +154,9 @@ public class MainFXController implements Initializable, PropertyChangeListener {
 
     @FXML public void handleNewAccountPressed(ActionEvent event) {
         loadNewScene("/accountWizard.fxml",400,300,"Adding new account",AccountWizardFXController.class);
+    }
+
+    @FXML public void handleNewSTransactionPressed(ActionEvent event) {
+        loadNewScene("/scheduledTransactionWizard.fxml",750,450,"Adding new scheduled transacion",STWizardFXController.class);
     }
 }
