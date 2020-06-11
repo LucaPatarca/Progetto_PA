@@ -169,7 +169,7 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void addScheduledTransaction(String description, List<Transaction> transactions) {
-        if(Objects.requireNonNull(transactions).isEmpty()) throw new IllegalArgumentException("tried to add a completed sheduled transaction");
+        if(Objects.requireNonNull(transactions).isEmpty()) throw new IllegalArgumentException("tried to add a completed scheduled transaction");
         ledger.addScheduledTransaction(new MapScheduledTransaction(description,transactions));
     }
 
@@ -178,7 +178,7 @@ public class FamilyLedgerManager implements LedgerManager {
      * @param scheduledTransaction the scheduled transaction to be removed
      */
     @Override
-    public void removeScheduledTransaction(ScheduledTransaction scheduledTransaction) {
+    public void removeScheduledTransaction(ScheduledTransaction scheduledTransaction) throws AccountException {
         ledger.removeScheduledTransaction(scheduledTransaction);
     }
 

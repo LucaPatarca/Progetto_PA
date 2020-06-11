@@ -60,7 +60,7 @@ public class MainFXController implements Initializable, PropertyChangeListener {
     @FXML public TableColumn<ScheduledTransaction,String> scheduledDescriptionCol;
     @FXML public TableColumn<ScheduledTransaction,String> scheduledCompletedCol;
     @FXML public TableView<Transaction> sTransactionTable;
-    @FXML public TableColumn<Transaction,Date> sTransactionDateCol;
+    @FXML public TableColumn<Transaction,String> sTransactionDateCol;
     @FXML public TableColumn<Transaction,String> sTransactionDescriptionCol;
     @FXML public TableColumn<Transaction,Double> sTransactionTotalCol;
     @FXML public TableColumn<Transaction,String> sTransactionCompletedCol;
@@ -128,7 +128,18 @@ public class MainFXController implements Initializable, PropertyChangeListener {
         scheduledTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getScheduledTransactions()));
 
         sTransactionDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        sTransactionDateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+        sTransactionDateCol.setCellValueFactory(cellData->{
+            DateFormatter formatter = new DateFormatter();
+            formatter.setFormat(DateFormat.getDateInstance(DateFormat.MEDIUM));
+            String date = "";
+            try {
+                date= formatter.valueToString(cellData.getValue().getDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                // TODO: 11/06/20 log e refactor di questo metodo
+            }
+            return new SimpleStringProperty(date);
+        });
         sTransactionTotalCol.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
         sTransactionCompletedCol.setCellValueFactory(cellData-> {
             if(scheduledTable.getSelectionModel().getSelectedItem().isCompleted(cellData.getValue()))
@@ -142,6 +153,7 @@ public class MainFXController implements Initializable, PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         accountTable.refresh();
         transactionTable.refresh();
+        scheduledTable.refresh();
     }
 
     @FXML public void handleSavePressed() {
@@ -199,5 +211,55 @@ public class MainFXController implements Initializable, PropertyChangeListener {
     @FXML public void handleScheduledMouseClicked(MouseEvent mouseEvent) {
         ScheduledTransaction st = scheduledTable.getSelectionModel().getSelectedItem();
         sTransactionTable.setItems(FXCollections.observableList(st.getTransactions()));
+    }
+
+    @FXML public void handleLoadPressed(ActionEvent event) {
+        try {
+            ledgerManager.loadLedger("ledger.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO: 11/06/20 log e gestire
+        }
+        transactionTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getTransactions()));
+        accountTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getAccounts()));
+        scheduledTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getScheduledTransactions()));
+        ledgerManager.getLedger().getPropertyChangeSupport().addPropertyChangeListener(this);
+    }
+
+    @FXML public void handleAccountClicked(MouseEvent mouseEvent) {
+        // TODO: 11/06/20 menu
+    }
+
+    @FXML public void handleAccountKeyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode().equals(KeyCode.DELETE)){
+            removeSelectedAccount();
+        }
+    }
+
+    private void removeSelectedAccount(){
+        Account account = accountTable.getSelectionModel().getSelectedItem();
+        try {
+            ledgerManager.removeAccount(account);
+        } catch (AccountException e) {
+            e.printStackTrace();
+            // TODO: 11/06/20 gestire e log
+        }
+    }
+
+    @FXML public void handleScheduledKeyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode().equals(KeyCode.DELETE)){
+            removeSelectedScheduledTransaction();
+        }
+    }
+
+    private void removeSelectedScheduledTransaction(){
+        ScheduledTransaction st = scheduledTable.getSelectionModel().getSelectedItem();
+        try {
+            ledgerManager.removeScheduledTransaction(st);
+        } catch (AccountException e) {
+            e.printStackTrace();
+            // TODO: 11/06/20 gestire
+        }
+        sTransactionTable.setItems(FXCollections.emptyObservableList());
     }
 }

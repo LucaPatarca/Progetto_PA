@@ -86,7 +86,7 @@ public interface LedgerManager {
      * Removes a {@link ScheduledTransaction} from the ledger.
      * @param scheduledTransaction the scheduled transaction to be removed
      */
-    void removeScheduledTransaction(ScheduledTransaction scheduledTransaction);
+    void removeScheduledTransaction(ScheduledTransaction scheduledTransaction) throws AccountException;
 
     /**
      * Returns a list of {@link Transaction} matching a given expression from the ledger's list.

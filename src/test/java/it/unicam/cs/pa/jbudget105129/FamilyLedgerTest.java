@@ -39,11 +39,6 @@ public class FamilyLedgerTest {
         st = new MapScheduledTransaction("scheduled transaction",
                 List.of(transaction1,transaction2));
 
-        //ledger init
-        ledger = new FamilyLedger();
-        ledger.addTransaction(transaction0);
-        ledger.addScheduledTransaction(st);
-
         asset=RoundedAccount.getInstance("asset","",0, AccountType.ASSET);
         liability=RoundedAccount.getInstance("liability","",100,AccountType.LIABILITY);
 
@@ -55,6 +50,11 @@ public class FamilyLedgerTest {
         transaction1.addMovement(movement3);
         transaction2.addMovement(movement2);
         transaction2.addMovement(movement4);
+
+        //ledger init
+        ledger = new FamilyLedger();
+        ledger.addTransaction(transaction0);
+        ledger.addScheduledTransaction(st);
     }
 
     @Test
@@ -66,5 +66,16 @@ public class FamilyLedgerTest {
 
         assertEquals(-91.44,asset.getBalance());
         assertEquals(104.65,liability.getBalance());
+    }
+
+    @Test
+    void shouldUpdateAccountsRemovingScheduledTransactions(){
+        try {
+            ledger.removeScheduledTransaction(st);
+        } catch (AccountException e) {
+            fail(e);
+        }
+        assertEquals(100,liability.getBalance());
+        assertEquals(0,asset.getBalance());
     }
 }

@@ -79,7 +79,7 @@ public interface Ledger {
      * on the {@link PropertyChangeSupport}.
      * @param transaction the scheduled transaction to remove
      */
-    void removeScheduledTransaction(ScheduledTransaction transaction);
+    void removeScheduledTransaction(ScheduledTransaction transaction) throws AccountException;
 
     /**
      * Removes a {@link Transaction} from this ledger and fires an event to all the listeners

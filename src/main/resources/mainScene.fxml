@@ -10,14 +10,14 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="mainVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.MainFXController">
+<VBox fx:id="mainVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.MainFXController">
    <children>
       <MenuBar>
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
                   <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#handleSavePressed" text="Save" />
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem fx:id="loadMenuItem" mnemonicParsing="false" onAction="#handleLoadPressed" text="Load" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Add">
@@ -57,25 +57,25 @@
                <content>
                   <SplitPane dividerPositions="0.32666666666666666" prefHeight="200.0" prefWidth="200.0">
                      <items>
-                        <TableView fx:id="scheduledTable" onMouseClicked="#handleScheduledMouseClicked" prefHeight="388.0" prefWidth="178.0">
+                        <TableView fx:id="scheduledTable" onKeyPressed="#handleScheduledKeyPressed" onMouseClicked="#handleScheduledMouseClicked" prefHeight="388.0" prefWidth="178.0">
                           <columns>
-                            <TableColumn fx:id="scheduledDescriptionCol" prefWidth="99.0" text="Description" />
-                            <TableColumn fx:id="scheduledCompletedCol" prefWidth="93.0" text="Completed" />
+                            <TableColumn fx:id="scheduledDescriptionCol" prefWidth="150.0" text="Description" />
+                            <TableColumn fx:id="scheduledCompletedCol" prefWidth="90.0" text="Completed" />
                           </columns>
                         </TableView>
                         <TableView fx:id="sTransactionTable" prefHeight="388.0" prefWidth="399.0">
                           <columns>
-                            <TableColumn fx:id="sTransactionDateCol" prefWidth="75.0" text="Date" />
-                            <TableColumn fx:id="sTransactionDescriptionCol" prefWidth="125.0" text="Description" />
-                              <TableColumn fx:id="sTransactionTotalCol" prefWidth="75.0" text="Total" />
-                              <TableColumn fx:id="sTransactionCompletedCol" prefWidth="88.0" text="Completed" />
+                            <TableColumn fx:id="sTransactionDateCol" prefWidth="131.0" text="Date" />
+                            <TableColumn fx:id="sTransactionDescriptionCol" prefWidth="178.0" text="Description" />
+                              <TableColumn fx:id="sTransactionTotalCol" prefWidth="87.0" text="Total" />
+                              <TableColumn fx:id="sTransactionCompletedCol" prefWidth="97.0" text="Completed" />
                           </columns>
                         </TableView>
                      </items></SplitPane>
                </content></Tab>
             <Tab text="Accounts">
                <content>
-                  <TableView fx:id="accountTable" prefHeight="200.0" prefWidth="200.0">
+                  <TableView fx:id="accountTable" onKeyPressed="#handleAccountKeyPressed" onMouseClicked="#handleAccountClicked" prefHeight="200.0" prefWidth="200.0">
                     <columns>
                       <TableColumn fx:id="accountNameCol" prefWidth="97.0" text="Name" />
                       <TableColumn fx:id="accountDescriptionCol" prefWidth="178.0" text="Description" />

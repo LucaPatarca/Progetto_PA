@@ -5,6 +5,7 @@ import it.unicam.cs.pa.jbudget105129.annotations.MainScene;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.model.*;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,9 +19,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
+import javax.swing.text.DateFormatter;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -34,13 +39,13 @@ public class STWizardFXController implements Initializable {
     @FXML public Button cancelButton;
     @FXML public TableColumn<Transaction,Double> transactionTotalCol;
     @FXML public TableColumn<Transaction,String> transactionDescriptionCol;
-    @FXML public TableColumn<Transaction, Date> transactionDateCol;
+    @FXML public TableColumn<Transaction, String> transactionDateCol;
     @FXML public TableView<Transaction> transactionTable;
     public TableView<Movement> movementTable;
     public TableColumn<Movement,String> movementDescriptionCol;
-    public TableColumn<Movement, MovementType> movementTypeCol;
+    public TableColumn<Movement, String> movementTypeCol;
     public TableColumn<Movement,Double> movementAmountCol;
-    public TableColumn<Movement, Account> movementAccountCol;
+    public TableColumn<Movement, String> movementAccountCol;
     public Button addMovementButton;
     public TextField transactionTextField;
     public DatePicker transactionDatePicker;
@@ -62,14 +67,24 @@ public class STWizardFXController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        transactionDateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+        transactionDateCol.setCellValueFactory(cellData->{
+            DateFormatter formatter = new DateFormatter();
+            formatter.setFormat(DateFormat.getDateInstance(DateFormat.MEDIUM));
+            String date = "";
+            try {
+                date = formatter.valueToString(cellData.getValue().getDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return new SimpleStringProperty(date);
+        });
         transactionDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         transactionTotalCol.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
 
         movementDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        movementTypeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        movementTypeCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getType().toString().toLowerCase()));
         movementAmountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
-        movementAccountCol.setCellValueFactory(new PropertyValueFactory<>("account"));
+        movementAccountCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getAccount().getName()));
     }
 
     @FXML public void handleCancelButtonPressed(ActionEvent event) {
@@ -113,7 +128,29 @@ public class STWizardFXController implements Initializable {
             Parent root = loader.load();
             stage.setScene(new Scene(root));
             movementTypeSelect.setItems(FXCollections.observableArrayList(MovementType.values()));
+            movementTypeSelect.setConverter(new StringConverter<MovementType>() {
+                @Override
+                public String toString(MovementType type) {
+                    return type.toString().toLowerCase();
+                }
+
+                @Override
+                public MovementType fromString(String s) {
+                    return null;
+                }
+            });
             movementAccountSelect.setItems(FXCollections.observableList(manager.getLedger().getAccounts()));
+            movementAccountSelect.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Account account) {
+                    return account.getName()+", "+account.getDescription();
+                }
+
+                @Override
+                public Account fromString(String s) {
+                    return null;
+                }
+            });
             movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(Double.MIN_VALUE,Double.MAX_VALUE,1,0.01));
             stage.showAndWait();
         } catch (IOException e) {

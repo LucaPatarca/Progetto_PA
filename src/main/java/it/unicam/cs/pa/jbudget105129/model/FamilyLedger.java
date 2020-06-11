@@ -130,12 +130,16 @@ public class FamilyLedger implements Ledger {
     /**
      * Removes a {@link ScheduledTransaction} from this ledger and fires an event to all the listeners
      * on the {@link PropertyChangeSupport}.
-     * @param transaction the scheduled transaction to remove
+     * @param st the scheduled st to remove
      */
     @Override
-    public void removeScheduledTransaction(ScheduledTransaction transaction) {
-        scheduledTransactions.remove(transaction);
-        pcs.firePropertyChange("scheduledTransactions",transaction,scheduledTransactions);
+    public void removeScheduledTransaction(ScheduledTransaction st) throws AccountException {
+        List<Transaction> alreadyCompleted = st.getTransactions().stream().filter(st::isCompleted).collect(Collectors.toList());
+        for (Transaction transaction : alreadyCompleted){
+            updateAccountRemoving(transaction);
+        }
+        scheduledTransactions.remove(st);
+        pcs.firePropertyChange("scheduledTransactions",st,scheduledTransactions);
     }
 
     /**
