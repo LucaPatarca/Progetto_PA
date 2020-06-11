@@ -42,12 +42,12 @@
             <TextField fx:id="referentTextField" GridPane.rowIndex="2" />
             <Spinner fx:id="openingBalanceSpinner" amountToStepBy="0.01" editable="true" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
             <ChoiceBox fx:id="typeSelect" prefWidth="150.0" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-            <Spinner fx:id="minAmountSpinner" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-            <Spinner fx:id="maxAmountSpinner" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+            <Spinner fx:id="minAmountSpinner" disable="true" editable="true" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+            <Spinner fx:id="maxAmountSpinner" disable="true" editable="true" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelButtonPressed" text="Cancel" GridPane.rowIndex="7" />
             <Button fx:id="addButton" mnemonicParsing="false" onAction="#addButtonPressed" text="Add" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
-            <CheckBox fx:id="hasMaximumAmountCheckBox" mnemonicParsing="false" GridPane.rowIndex="6" />
-            <CheckBox fx:id="hasMinimumAmountCheckBox" mnemonicParsing="false" GridPane.rowIndex="5" />
+            <CheckBox fx:id="hasMaximumAmountCheckBox" mnemonicParsing="false" onAction="#handleMaxCheckBoxAction" GridPane.rowIndex="6" />
+            <CheckBox fx:id="hasMinimumAmountCheckBox" mnemonicParsing="false" onAction="#handleMinCheckBoxAction" GridPane.rowIndex="5" />
          </children>
          <VBox.margin>
             <Insets />

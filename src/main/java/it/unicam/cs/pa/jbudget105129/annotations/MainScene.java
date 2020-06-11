@@ -1,4 +1,4 @@
-package it.unicam.cs.pa.jbudget105129.view;
+package it.unicam.cs.pa.jbudget105129.annotations;
 
 import com.google.inject.BindingAnnotation;
 

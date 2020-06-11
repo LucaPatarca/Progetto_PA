@@ -1,6 +1,7 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
 import com.google.inject.Inject;
+import it.unicam.cs.pa.jbudget105129.annotations.MainScene;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import javafx.collections.FXCollections;
@@ -8,11 +9,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.InputMethodEvent;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AccountWizardFXController implements Initializable {
@@ -41,6 +41,17 @@ public class AccountWizardFXController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         typeSelect.setItems(FXCollections.observableArrayList(AccountType.values()));
+        typeSelect.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(AccountType type) {
+                return type.toString().toLowerCase();
+            }
+
+            @Override
+            public AccountType fromString(String s) {
+                return null;
+            }
+        });
         openingBalanceSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
                 Double.MIN_VALUE,Double.MAX_VALUE,0.0,0.01));
         minAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
@@ -77,4 +88,11 @@ public class AccountWizardFXController implements Initializable {
         stage.setScene(mainScene);
     }
 
+    public void handleMaxCheckBoxAction(ActionEvent event) {
+        maxAmountSpinner.setDisable(!hasMaximumAmountCheckBox.isSelected());
+    }
+
+    public void handleMinCheckBoxAction(ActionEvent event) {
+        minAmountSpinner.setDisable(!hasMinimumAmountCheckBox.isSelected());
+    }
 }

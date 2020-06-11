@@ -6,6 +6,7 @@ import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
 import it.unicam.cs.pa.jbudget105129.persistence.JsonPersistenceManager;
 import it.unicam.cs.pa.jbudget105129.persistence.PersistenceManager;
+import javafx.scene.Scene;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -72,9 +73,13 @@ public class JsonPersistenceManagerTest {
         } catch (IOException e) {
             fail(e);
         }
-        assertTrue(ledger.getTransactions().containsAll(loaded.getTransactions()));
-        assertTrue(ledger.getAccounts().containsAll(loaded.getAccounts()));
-        assertTrue(ledger.getScheduledTransactions().containsAll(loaded.getScheduledTransactions()));
+        assertTrue(loaded.getTransactions().containsAll(ledger.getTransactions()));
+        assertTrue(loaded.getAccounts().containsAll(ledger.getAccounts()));
+        assertEquals(loaded.getScheduledTransactions().get(0).getDescription(),ledger.getScheduledTransactions().get(0).getDescription());
+        assertTrue(loaded.getScheduledTransactions().get(0).getTransactions().containsAll(ledger.getScheduledTransactions().get(0).getTransactions()));
+        assertFalse(loaded.getScheduledTransactions().get(0).isCompleted());
+        ScheduledTransaction st = loaded.getScheduledTransactions().get(0);
+        assertTrue(st.isCompleted(st.getTransactions().get(1))||st.isCompleted(st.getTransactions().get(0)));
         file.delete();
     }
 
@@ -90,6 +95,7 @@ public class JsonPersistenceManagerTest {
         transaction2.addMovement(movement3);
         transaction2.addMovement(movement4);
         ScheduledTransaction st = new MapScheduledTransaction("scheduledTransaction",List.of(transaction1,transaction2));
+        st.markTransactionAsCompleted(transaction1);
         ledger.addScheduledTransaction(st);
     }
 }

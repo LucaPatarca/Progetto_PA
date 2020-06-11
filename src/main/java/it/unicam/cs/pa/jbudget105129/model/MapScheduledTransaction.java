@@ -10,7 +10,7 @@ public class MapScheduledTransaction implements ScheduledTransaction {
 
     public MapScheduledTransaction(String description, List<Transaction> transactions){
         this.description=description;
-        this.transactions=new HashMap<>();
+        this.transactions=new IdentityHashMap<>();
         transactions.forEach(transaction -> this.transactions.put(transaction,false));
     }
 

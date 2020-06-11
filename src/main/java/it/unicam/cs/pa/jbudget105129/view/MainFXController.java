@@ -7,8 +7,10 @@ import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.Account;
+import it.unicam.cs.pa.jbudget105129.model.RoundedTransaction;
 import it.unicam.cs.pa.jbudget105129.model.ScheduledTransaction;
 import it.unicam.cs.pa.jbudget105129.model.Transaction;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,10 +27,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import javax.swing.text.DateFormatter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -37,24 +42,28 @@ public class MainFXController implements Initializable, PropertyChangeListener {
     @FXML public MenuItem newTransactionItem;
     @FXML public VBox mainVbox;
     @FXML public TableView<Transaction> transactionTable;
-    @FXML public TableColumn<Transaction, Date> transactionDateCol;
+    @FXML public TableColumn<Transaction, String> transactionDateCol;
     @FXML public TableColumn<Transaction,String> transactionDescriptionCol;
-    @FXML public TableColumn<Transaction,Double> transactionTotalCol;
+    @FXML public TableColumn<Transaction,String> transactionTotalCol;
     @FXML public TableColumn<Transaction,String> transactionMovementsCol;
     @FXML public TableColumn<Transaction,String> transactionTagsCol;
     @FXML public TableColumn<Account,String> accountNameCol;
     @FXML public TableColumn<Account,String> accountDescriptionCol;
     @FXML public TableColumn<Account,String> accountReferentCol;
-    @FXML public TableColumn<Account,AccountType> accountTypeCol;
-    @FXML public TableColumn<Account,Double> accountBalanceCol;
+    @FXML public TableColumn<Account,String> accountTypeCol;
+    @FXML public TableColumn<Account,String> accountBalanceCol;
     @FXML public TableView<Account> accountTable;
     @FXML public MenuItem saveMenuItem;
     @FXML public MenuItem newAccountMenuItem;
     @FXML public MenuItem newSTransactionMenuItem;
-    @FXML public TreeTableView<ScheduledTransaction> scheduledTable;
-    @FXML public TreeTableColumn<Transaction,String> scheduledDescriptionCol;
-    @FXML public TreeTableColumn<Transaction,Date> scheduledDateCol;
-    @FXML public TreeTableColumn<Transaction,Double> scheduledTotalCol;
+    @FXML public TableView<ScheduledTransaction> scheduledTable;
+    @FXML public TableColumn<ScheduledTransaction,String> scheduledDescriptionCol;
+    @FXML public TableColumn<ScheduledTransaction,String> scheduledCompletedCol;
+    @FXML public TableView<Transaction> sTransactionTable;
+    @FXML public TableColumn<Transaction,Date> sTransactionDateCol;
+    @FXML public TableColumn<Transaction,String> sTransactionDescriptionCol;
+    @FXML public TableColumn<Transaction,Double> sTransactionTotalCol;
+    @FXML public TableColumn<Transaction,String> sTransactionCompletedCol;
 
     private LedgerManager ledgerManager;
     private Injector injector;
@@ -76,15 +85,26 @@ public class MainFXController implements Initializable, PropertyChangeListener {
         initTransactionTable();
         initAccountTable();
         initScheduledTable();
+        ledgerManager.getLedger().getPropertyChangeSupport().addPropertyChangeListener(this);
     }
 
     private void initTransactionTable(){
-        transactionDateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+        transactionDateCol.setCellValueFactory(cellData-> {
+            DateFormatter formatter = new DateFormatter();
+            formatter.setFormat(DateFormat.getDateInstance(DateFormat.MEDIUM));
+            String date="";
+            try {
+                date = formatter.valueToString(cellData.getValue().getDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                // TODO: 11/06/20 log
+            }
+            return new SimpleObjectProperty<>(date);
+        });
         transactionDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        transactionTotalCol.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
-        transactionMovementsCol.setCellValueFactory(new PropertyValueFactory<>("movements"));
-        transactionTagsCol.setCellValueFactory(new PropertyValueFactory<>("tags"));
-        ledgerManager.getLedger().getPropertyChangeSupport().addPropertyChangeListener(this);
+        transactionTotalCol.setCellValueFactory(cellData->new SimpleStringProperty("€"+cellData.getValue().getTotalAmount()));
+        transactionMovementsCol.setCellValueFactory(cellData-> new SimpleStringProperty(Long.toString((long) cellData.getValue().getMovements().size())));
+        transactionTagsCol.setCellValueFactory(cellData->new SimpleStringProperty(Integer.toString(cellData.getValue().getTags().size())));
         transactionTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getTransactions()));
     }
 
@@ -92,14 +112,30 @@ public class MainFXController implements Initializable, PropertyChangeListener {
         accountNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         accountDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         accountReferentCol.setCellValueFactory(new PropertyValueFactory<>("referent"));
-        accountTypeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        accountBalanceCol.setCellValueFactory(new PropertyValueFactory<>("balance"));
-        ledgerManager.getLedger().getPropertyChangeSupport().addPropertyChangeListener(this);
+        accountTypeCol.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().getType().toString().toLowerCase()));
+        accountBalanceCol.setCellValueFactory(cellData-> new SimpleStringProperty("€"+cellData.getValue().getBalance()));
         accountTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getAccounts()));
     }
 
     private void initScheduledTable(){
+        scheduledDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        scheduledCompletedCol.setCellValueFactory(cellData->{
+            if(cellData.getValue().isCompleted())
+                return new SimpleStringProperty("yes");
+            else
+                return new SimpleStringProperty("no");
+        });
+        scheduledTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getScheduledTransactions()));
 
+        sTransactionDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        sTransactionDateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+        sTransactionTotalCol.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
+        sTransactionCompletedCol.setCellValueFactory(cellData-> {
+            if(scheduledTable.getSelectionModel().getSelectedItem().isCompleted(cellData.getValue()))
+                return new SimpleStringProperty("yes");
+            else
+                return new SimpleStringProperty("no");
+        });
     }
 
     @Override
@@ -153,10 +189,15 @@ public class MainFXController implements Initializable, PropertyChangeListener {
     }
 
     @FXML public void handleNewAccountPressed(ActionEvent event) {
-        loadNewScene("/accountWizard.fxml",400,300,"Adding new account",AccountWizardFXController.class);
+        loadNewScene("/accountWizard.fxml",480,350,"Adding new account",AccountWizardFXController.class);
     }
 
     @FXML public void handleNewSTransactionPressed(ActionEvent event) {
         loadNewScene("/scheduledTransactionWizard.fxml",750,450,"Adding new scheduled transacion",STWizardFXController.class);
+    }
+
+    @FXML public void handleScheduledMouseClicked(MouseEvent mouseEvent) {
+        ScheduledTransaction st = scheduledTable.getSelectionModel().getSelectedItem();
+        sTransactionTable.setItems(FXCollections.observableList(st.getTransactions()));
     }
 }

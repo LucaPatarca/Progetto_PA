@@ -3,12 +3,11 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TreeTableColumn?>
-<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox fx:id="mainVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.MainFXController">
@@ -56,13 +55,23 @@
                </content></Tab>
           <Tab text="Scheduled transactions">
                <content>
-                  <TreeTableView fx:id="scheduledTable" prefHeight="200.0" prefWidth="200.0">
-                    <columns>
-                      <TreeTableColumn fx:id="scheduledDescriptionCol" prefWidth="221.0" text="Description" />
-                      <TreeTableColumn fx:id="scheduledDateCol" prefWidth="115.0" text="Date" />
-                        <TreeTableColumn fx:id="scheduledTotalCol" prefWidth="104.0" text="Total" />
-                    </columns>
-                  </TreeTableView>
+                  <SplitPane dividerPositions="0.32666666666666666" prefHeight="200.0" prefWidth="200.0">
+                     <items>
+                        <TableView fx:id="scheduledTable" onMouseClicked="#handleScheduledMouseClicked" prefHeight="388.0" prefWidth="178.0">
+                          <columns>
+                            <TableColumn fx:id="scheduledDescriptionCol" prefWidth="99.0" text="Description" />
+                            <TableColumn fx:id="scheduledCompletedCol" prefWidth="93.0" text="Completed" />
+                          </columns>
+                        </TableView>
+                        <TableView fx:id="sTransactionTable" prefHeight="388.0" prefWidth="399.0">
+                          <columns>
+                            <TableColumn fx:id="sTransactionDateCol" prefWidth="75.0" text="Date" />
+                            <TableColumn fx:id="sTransactionDescriptionCol" prefWidth="125.0" text="Description" />
+                              <TableColumn fx:id="sTransactionTotalCol" prefWidth="75.0" text="Total" />
+                              <TableColumn fx:id="sTransactionCompletedCol" prefWidth="88.0" text="Completed" />
+                          </columns>
+                        </TableView>
+                     </items></SplitPane>
                </content></Tab>
             <Tab text="Accounts">
                <content>

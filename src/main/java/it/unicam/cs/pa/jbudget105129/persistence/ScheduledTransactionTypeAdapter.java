@@ -19,9 +19,10 @@ public class ScheduledTransactionTypeAdapter implements JsonSerializer<Scheduled
         JsonArray jTransactions = jo.getAsJsonArray("transactions");
         for(JsonElement element:jTransactions){
             JsonObject jTransaction = element.getAsJsonObject();
+            Transaction transaction = context.deserialize(jTransaction.get("transaction"),Transaction.class);
             if(jTransaction.get("completed").getAsBoolean())
-                completed.add(context.deserialize(jTransaction.get("transaction"),Transaction.class));
-            allTransactions.add(context.deserialize(jTransaction.get("transaction"),Transaction.class));
+                completed.add(transaction);
+            allTransactions.add(transaction);
         }
         MapScheduledTransaction st = new MapScheduledTransaction(description,allTransactions);
         completed.forEach(st::markTransactionAsCompleted);

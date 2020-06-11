@@ -1,8 +1,8 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
 import com.google.inject.Inject;
+import it.unicam.cs.pa.jbudget105129.annotations.MainScene;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
-import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.model.*;
 import javafx.collections.FXCollections;

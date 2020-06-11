@@ -1,10 +1,12 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
 import com.google.inject.Inject;
+import it.unicam.cs.pa.jbudget105129.annotations.MainScene;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,9 +15,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.util.StringConverter;
-import javafx.util.converter.DefaultStringConverter;
+import javafx.util.converter.FormatStringConverter;
 
 import java.net.URL;
 import java.util.Calendar;
@@ -53,12 +54,33 @@ public class TransactionWizardFXController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         movementDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         movementAmountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
-        movementAccountCol.setCellValueFactory(new PropertyValueFactory<>("account"));
-        movementTypeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        movementAccountCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getAccount().getName()));
+        movementTypeCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getType().toString().toLowerCase()));
 
         movementTypeSelect.setItems(FXCollections.observableArrayList(MovementType.values()));
+        movementTypeSelect.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(MovementType type) {
+                return type.toString().toLowerCase();
+            }
+
+            @Override
+            public MovementType fromString(String s) {
+                return null;
+            }
+        });
         movementAccountSelect.setItems(FXCollections.observableArrayList(ledgerManager.getLedger().getAccounts()));
-        // FIXME: 08/06/20 capire come visualizzare solo il nome invece del toString()
+        movementAccountSelect.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Account account) {
+                return account.getName()+", "+account.getDescription();
+            }
+
+            @Override
+            public Account fromString(String s) {
+                return null;
+            }
+        });
         movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(Double.MIN_VALUE,Double.MAX_VALUE,1.0,0.01));
     }
 
