@@ -4,15 +4,15 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManagerModule;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
-import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.Account;
-import it.unicam.cs.pa.jbudget105129.model.RoundedTransaction;
 import it.unicam.cs.pa.jbudget105129.model.ScheduledTransaction;
 import it.unicam.cs.pa.jbudget105129.model.Transaction;
+import javafx.application.Application;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -25,7 +25,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 
 import javax.swing.text.DateFormatter;
 import java.beans.PropertyChangeEvent;
@@ -44,14 +47,14 @@ public class MainFXController implements Initializable, PropertyChangeListener {
     @FXML public TableView<Transaction> transactionTable;
     @FXML public TableColumn<Transaction, String> transactionDateCol;
     @FXML public TableColumn<Transaction,String> transactionDescriptionCol;
-    @FXML public TableColumn<Transaction,String> transactionTotalCol;
+    @FXML public TableColumn<Transaction,Double> transactionTotalCol;
     @FXML public TableColumn<Transaction,String> transactionMovementsCol;
     @FXML public TableColumn<Transaction,String> transactionTagsCol;
     @FXML public TableColumn<Account,String> accountNameCol;
     @FXML public TableColumn<Account,String> accountDescriptionCol;
     @FXML public TableColumn<Account,String> accountReferentCol;
     @FXML public TableColumn<Account,String> accountTypeCol;
-    @FXML public TableColumn<Account,String> accountBalanceCol;
+    @FXML public TableColumn<Account,Double> accountBalanceCol;
     @FXML public TableView<Account> accountTable;
     @FXML public MenuItem saveMenuItem;
     @FXML public MenuItem newAccountMenuItem;
@@ -64,23 +67,33 @@ public class MainFXController implements Initializable, PropertyChangeListener {
     @FXML public TableColumn<Transaction,String> sTransactionDescriptionCol;
     @FXML public TableColumn<Transaction,Double> sTransactionTotalCol;
     @FXML public TableColumn<Transaction,String> sTransactionCompletedCol;
+    @FXML public MenuItem loadMenuItem;
+    @FXML public ContextMenu transactionContextMenu;
+    @FXML public MenuItem transactionContextDeleteItem;
+    @FXML public MenuItem transactionContextShowMovementsItem;
 
     private LedgerManager ledgerManager;
     private Injector injector;
+    private boolean unsavedChanges;
 
     @FXML protected void handleNewTransaction() {
-        loadNewScene("/transactionWizard.fxml",750,450,"Adding new transaction",TransactionWizardFXController.class);
+        FXMLLoader loader = createLoader("/transactionWizard.fxml",param->injector.getInstance(TransactionWizardFXController.class));
+        Scene scene = createScene(loader,750,450);
+        loadNewScene(scene,"Adding new transaction");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         injector = Guice.createInjector(new LedgerManagerModule(),new ViewModule());
         ledgerManager=injector.getInstance(LedgerManager.class);
+        unsavedChanges=false;
+        saveMenuItem.setDisable(true);
         try {
             ledgerManager.loadLedger("ledger.txt");
         } catch (Exception e) {
             e.printStackTrace();
-            // TODO: 06/06/20 log e gestire
+            // TODO: 06/06/20 log
+            showAlert("Ledger load error",e.getMessage(), Alert.AlertType.ERROR);
         }
         initTransactionTable();
         initAccountTable();
@@ -102,10 +115,11 @@ public class MainFXController implements Initializable, PropertyChangeListener {
             return new SimpleObjectProperty<>(date);
         });
         transactionDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        transactionTotalCol.setCellValueFactory(cellData->new SimpleStringProperty("€"+cellData.getValue().getTotalAmount()));
+        transactionTotalCol.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
         transactionMovementsCol.setCellValueFactory(cellData-> new SimpleStringProperty(Long.toString((long) cellData.getValue().getMovements().size())));
         transactionTagsCol.setCellValueFactory(cellData->new SimpleStringProperty(Integer.toString(cellData.getValue().getTags().size())));
         transactionTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getTransactions()));
+        transactionTable.setOnContextMenuRequested(event-> transactionContextMenu.show(transactionTable,event.getScreenX(),event.getScreenY()));
     }
 
     private void initAccountTable(){
@@ -113,7 +127,7 @@ public class MainFXController implements Initializable, PropertyChangeListener {
         accountDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         accountReferentCol.setCellValueFactory(new PropertyValueFactory<>("referent"));
         accountTypeCol.setCellValueFactory(cellData-> new SimpleStringProperty(cellData.getValue().getType().toString().toLowerCase()));
-        accountBalanceCol.setCellValueFactory(cellData-> new SimpleStringProperty("€"+cellData.getValue().getBalance()));
+        accountBalanceCol.setCellValueFactory(new PropertyValueFactory<>("balance"));
         accountTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getAccounts()));
     }
 
@@ -154,19 +168,21 @@ public class MainFXController implements Initializable, PropertyChangeListener {
         accountTable.refresh();
         transactionTable.refresh();
         scheduledTable.refresh();
+        unsavedChanges=true;
+        saveMenuItem.setDisable(false);
+        saveMenuItem.getParentMenu().fire();
     }
 
     @FXML public void handleSavePressed() {
         try {
             ledgerManager.saveLedger("ledger.txt");
+            unsavedChanges=false;
+            saveMenuItem.setDisable(true);
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: 06/06/20 gestire e log
+            // TODO: 06/06/20 log
+            showAlert("Ledger save error",e.getMessage(), Alert.AlertType.ERROR);
         }
-    }
-
-    @FXML public void handleTransactionClicked(MouseEvent mouseEvent) {
-        // TODO: 07/06/20 menu contestuale
     }
 
     @FXML public void handleTransactionKeyPressed(KeyEvent keyEvent) {
@@ -181,31 +197,53 @@ public class MainFXController implements Initializable, PropertyChangeListener {
             ledgerManager.removeTransaction(transaction);
         } catch (AccountException e) {
             e.printStackTrace();
-            // TODO: 07/06/20 gestire e log
+            // TODO: 07/06/20 log
+            showAlert("Transaction error",e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
-    private void loadNewScene(String resource,int width, int height,String title, Class<?> controller){
+    private void loadNewScene(Scene scene, String title){
         Stage stage = (Stage) mainVbox.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
-        loader.setControllerFactory(param -> injector.getInstance(controller));
+        stage.setTitle(title);
+        stage.setScene(scene);
+    }
+
+    private void showNewStage(Scene scene, String title){
+        Stage stage = new Stage();
+        stage.setTitle(title);
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(transactionTable.getScene().getWindow());
+        stage.showAndWait();
+    }
+
+    private Scene createScene(FXMLLoader loader, int width, int height){
         try {
-            Parent root=loader.load();
-            Scene scene = new Scene(root,width,height);
-            stage.setTitle(title);
-            stage.setScene(scene);
+            Parent root = loader.load();
+            return new Scene(root,width,height);
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: 05/06/20 log
+            // TODO: 15/06/2020 log
         }
+        return null;
+    }
+
+    private FXMLLoader createLoader(String resource, Callback<Class<?>,Object> factory){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+        loader.setControllerFactory(factory);
+        return loader;
     }
 
     @FXML public void handleNewAccountPressed(ActionEvent event) {
-        loadNewScene("/accountWizard.fxml",480,350,"Adding new account",AccountWizardFXController.class);
+        FXMLLoader loader = createLoader("/accountWizard.fxml",param->injector.getInstance(AccountWizardFXController.class));
+        Scene scene = createScene(loader,480,350);
+        loadNewScene(scene,"Adding new account");
     }
 
     @FXML public void handleNewSTransactionPressed(ActionEvent event) {
-        loadNewScene("/scheduledTransactionWizard.fxml",750,450,"Adding new scheduled transacion",STWizardFXController.class);
+        FXMLLoader loader = createLoader("/scheduledTransactionWizard.fxml",param->injector.getInstance(STWizardFXController.class));
+        Scene scene = createScene(loader,750,450);
+        loadNewScene(scene,"Adding new scheduled transacion");
     }
 
     @FXML public void handleScheduledMouseClicked(MouseEvent mouseEvent) {
@@ -218,7 +256,8 @@ public class MainFXController implements Initializable, PropertyChangeListener {
             ledgerManager.loadLedger("ledger.txt");
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: 11/06/20 log e gestire
+            // TODO: 11/06/20 log
+            showAlert("Ledger load error",e.getMessage(), Alert.AlertType.ERROR);
         }
         transactionTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getTransactions()));
         accountTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getAccounts()));
@@ -242,7 +281,8 @@ public class MainFXController implements Initializable, PropertyChangeListener {
             ledgerManager.removeAccount(account);
         } catch (AccountException e) {
             e.printStackTrace();
-            // TODO: 11/06/20 gestire e log
+            // TODO: 11/06/20 log
+            showAlert("Account error",e.getLocalizedMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -258,8 +298,28 @@ public class MainFXController implements Initializable, PropertyChangeListener {
             ledgerManager.removeScheduledTransaction(st);
         } catch (AccountException e) {
             e.printStackTrace();
-            // TODO: 11/06/20 gestire
+            // TODO: 11/06/20 log
+            showAlert("Scheduled transaction error",e.getMessage(), Alert.AlertType.ERROR);
         }
         sTransactionTable.setItems(FXCollections.emptyObservableList());
+    }
+
+    private void showAlert(String title, String content, Alert.AlertType type){
+        Alert alert = new Alert(type);
+        alert.setHeaderText(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    @FXML public void handleTransactionContextDeletePressed(ActionEvent actionEvent) {
+        removeSelectedTransaction();
+    }
+
+    @FXML public void transactionContextShowMovementsPressed(ActionEvent actionEvent) {
+        Transaction selected = transactionTable.getSelectionModel().getSelectedItem();
+        FXMLLoader loader = createLoader("/movementsPopup.fxml",
+                param->new MovementsPopupFXController(selected.getMovements()));
+        Scene scene = createScene(loader,400,300);
+        showNewStage(scene,selected.getDescription());
     }
 }

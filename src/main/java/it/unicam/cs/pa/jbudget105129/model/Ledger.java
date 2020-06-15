@@ -104,4 +104,5 @@ public interface Ledger {
      * @return the {@link PropertyChangeSupport} object
      */
     PropertyChangeSupport getPropertyChangeSupport();
+    // FIXME: 15/06/2020 non dovrebbe mai dipendere da una classe
 }

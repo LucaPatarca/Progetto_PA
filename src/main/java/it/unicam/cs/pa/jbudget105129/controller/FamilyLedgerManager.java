@@ -136,9 +136,12 @@ public class FamilyLedgerManager implements LedgerManager {
     @Override
     public void addAccount(String name, String description, String referent, double opening, AccountType type, Double min, Double max) {
         Account account=RoundedAccount.getInstance(name,description,opening,type);
-        if(type.equals(AccountType.LIABILITY)&&min<0)
-            throw new IllegalArgumentException("Account of type liability should always have min amount >=0");
         account.setMinAmount(min);
+        if(type.equals(AccountType.LIABILITY))
+            if(min==null)
+                account.setMinAmount(0.0);
+            else if(min<0)
+                throw new IllegalArgumentException("Account of type liability should always have min amount >=0");
         account.setMaxAmount(max);
         account.setReferent(referent);
         ledger.addAccount(account);
