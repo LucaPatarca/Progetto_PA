@@ -27,7 +27,7 @@ public class MiniTransactionWizardFXController {
     public void handleDonePressed(ActionEvent actionEvent) {
         list.add(new RoundedTransaction(
                 descriptionTextField.getText(),
-                Calendar.getInstance().getTime()
+                datePicker.getValue()
         ));
         closePopup();
     }

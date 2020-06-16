@@ -9,31 +9,19 @@ import it.unicam.cs.pa.jbudget105129.model.Tag;
 import javax.swing.text.DateFormatter;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public class LedgerPrinter {
 
-    private final DateFormatter dateFormatter;
-
-    public LedgerPrinter(){
-        dateFormatter=new DateFormatter();
-        dateFormatter.setFormat(DateFormat.getDateInstance(DateFormat.MEDIUM));
-    }
-
     public String stringOf(Account account){
         return account.getName()+", "+account.getDescription();
     }
 
-    public String stringOf(Date date) {
-        String toReturn="";
-        try {
-            toReturn= dateFormatter.valueToString(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return toReturn;
+    public String stringOf(LocalDate date) {
+        return date.toString();
     }
 
     public String stringOfMovements(List<Movement> movements){

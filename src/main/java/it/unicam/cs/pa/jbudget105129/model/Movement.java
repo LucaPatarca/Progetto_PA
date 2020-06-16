@@ -2,6 +2,7 @@ package it.unicam.cs.pa.jbudget105129.model;
 
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public interface Movement extends Tagged{
      * this movement, instead it should be obtained from the movement's transaction.
      * @return the date of this movement
      */
-    Date getDate();
+    LocalDate getDate();
 
     /**
      * Returns a reference to the transaction this movement is part of.

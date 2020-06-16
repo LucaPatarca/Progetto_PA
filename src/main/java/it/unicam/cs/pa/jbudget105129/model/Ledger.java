@@ -2,6 +2,7 @@ package it.unicam.cs.pa.jbudget105129.model;
 
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import java.beans.PropertyChangeSupport;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
@@ -95,7 +96,7 @@ public interface Ledger {
      * @param date the date to be scheduled.
      * @throws AccountException if one of the account refuses the movement
      */
-    void schedule(Date date) throws AccountException;
+    void schedule(LocalDate date) throws AccountException;
 
     /**
      * Returns the inner {@link PropertyChangeSupport} used to notify listener objects.

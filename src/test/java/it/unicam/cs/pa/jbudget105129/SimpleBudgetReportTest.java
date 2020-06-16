@@ -9,6 +9,7 @@ import it.unicam.cs.pa.jbudget105129.model.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,10 +31,10 @@ public class SimpleBudgetReportTest {
         bm = new SimpleBudgetManager();
         Account account = RoundedAccount.getInstance("account", "", 0, AccountType.ASSET);
 
-        Transaction transaction0 = new RoundedTransaction("transazione 0", Calendar.getInstance().getTime());
-        Transaction transaction1 = new RoundedTransaction("transazione 1", Calendar.getInstance().getTime());
-        Transaction transaction2 = new RoundedTransaction("transazione 2", Calendar.getInstance().getTime());
-        Transaction transaction3 = new RoundedTransaction("transazione 3", Calendar.getInstance().getTime());
+        Transaction transaction0 = new RoundedTransaction("transazione 0", LocalDate.now());
+        Transaction transaction1 = new RoundedTransaction("transazione 1", LocalDate.now());
+        Transaction transaction2 = new RoundedTransaction("transazione 2", LocalDate.now());
+        Transaction transaction3 = new RoundedTransaction("transazione 3", LocalDate.now());
 
         Movement movement1 = RoundedMovement.getInstance("",2.5,MovementType.INCOME, account);
         Movement movement2 = RoundedMovement.getInstance("",4.64,MovementType.OUTFLOW, account);

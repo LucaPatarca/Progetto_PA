@@ -1,5 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 // TODO: 07/06/20 add test for persistence
@@ -26,7 +27,7 @@ public interface ScheduledTransaction {
      * @param includeCompleted if this value is true all completed transactions are included in the result
      * @return the list of {@link Transaction}
      */
-    List<Transaction> getTransactions(Date date, boolean includeCompleted);
+    List<Transaction> getTransactions(LocalDate date, boolean includeCompleted);
 
     /**
      * Set the transaction as completed. This can't be undone.

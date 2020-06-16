@@ -4,6 +4,7 @@ import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -106,7 +107,7 @@ public class RoundedMovement implements Movement {
     }
 
     @Override
-    public Date getDate() {
+    public LocalDate getDate() {
         if(transaction==null) return null;
         return transaction.getDate();
     }

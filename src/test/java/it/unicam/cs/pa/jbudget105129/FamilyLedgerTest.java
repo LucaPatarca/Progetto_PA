@@ -7,6 +7,7 @@ import it.unicam.cs.pa.jbudget105129.model.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 
@@ -25,17 +26,14 @@ public class FamilyLedgerTest {
     @BeforeAll
     static void init() throws AccountException {
         //calendar init
-        Calendar oneMonthAgo = Calendar.getInstance();
-        oneMonthAgo.roll(Calendar.MONTH,false);
-        Calendar oneMonthHence = Calendar.getInstance();
-        oneMonthHence.roll(Calendar.MONTH,true);
-        Calendar oneDayAgo = Calendar.getInstance();
-        oneDayAgo.roll(Calendar.DAY_OF_YEAR,false);
+        LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+        LocalDate oneMonthHence = LocalDate.now().plusMonths(1);
+        LocalDate oneDayAgo = LocalDate.now().minusDays(1);
 
         //transactions init
-        transaction0 = new RoundedTransaction("transazione base",oneMonthAgo.getTime());
-        transaction1 = new RoundedTransaction("transazione futura",oneMonthHence.getTime());
-        transaction2 = new RoundedTransaction("transazione passata",oneDayAgo.getTime());
+        transaction0 = new RoundedTransaction("transazione base",oneMonthAgo);
+        transaction1 = new RoundedTransaction("transazione futura",oneMonthHence);
+        transaction2 = new RoundedTransaction("transazione passata",oneDayAgo);
         st = new MapScheduledTransaction("scheduled transaction",
                 List.of(transaction1,transaction2));
 
@@ -59,7 +57,7 @@ public class FamilyLedgerTest {
 
     @Test
     void shouldSchedule() throws AccountException {
-        ledger.schedule(Calendar.getInstance().getTime());
+        ledger.schedule(LocalDate.now());
 
         assertTrue(st.isCompleted(transaction2));
         assertFalse(st.isCompleted(transaction1));

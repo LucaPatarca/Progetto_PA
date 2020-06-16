@@ -7,6 +7,7 @@ import it.unicam.cs.pa.jbudget105129.model.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,16 +19,11 @@ public class MapScheduledTransactionTest {
     @BeforeEach
     void init(){
         list = new LinkedList<>();
-        list.add(new RoundedTransaction("transaction0", new GregorianCalendar(
-                2020,Calendar.JANUARY,24,11,0).getTime()));
-        list.add(new RoundedTransaction("transaction1", new GregorianCalendar(
-                2020,Calendar.JANUARY,24,13,0).getTime()));
-        list.add(new RoundedTransaction("transaction2", new GregorianCalendar(
-                2020,Calendar.JANUARY,30,8,0).getTime()));
-        list.add(new RoundedTransaction("transaction3", new GregorianCalendar(
-                2020,Calendar.FEBRUARY,10,8,0).getTime()));
-        list.add(new RoundedTransaction("transaction4", new GregorianCalendar(
-                2020,Calendar.MARCH,5,8,0).getTime()));
+        list.add(new RoundedTransaction("transaction0", LocalDate.of(2020,1,24)));
+        list.add(new RoundedTransaction("transaction1", LocalDate.of(2020,1,24)));
+        list.add(new RoundedTransaction("transaction2", LocalDate.of(2020,1,30)));
+        list.add(new RoundedTransaction("transaction3", LocalDate.of(2020,2,10)));
+        list.add(new RoundedTransaction("transaction4", LocalDate.of(2020,3,5)));
         st=new MapScheduledTransaction("test",list);
     }
 
@@ -43,8 +39,8 @@ public class MapScheduledTransactionTest {
     @Test
     void shouldNotReturnCompletedTransactions(){
         st.markTransactionAsCompleted(list.get(1));
-        List<Transaction> result = st.getTransactions(new GregorianCalendar(
-                2020,Calendar.FEBRUARY,1,8,0).getTime(),
+        List<Transaction> result = st.getTransactions(
+                LocalDate.of(2020,2,1),
                 false);
         assertFalse(result.contains(list.get(1)));
         assertFalse(result.contains(list.get(3)));
@@ -56,8 +52,8 @@ public class MapScheduledTransactionTest {
     @Test
     void shouldReturnCompletedTransactions(){
         st.markTransactionAsCompleted(list.get(1));
-        List<Transaction> result = st.getTransactions(new GregorianCalendar(
-                        2020,Calendar.FEBRUARY,1,8,0).getTime(),
+        List<Transaction> result = st.getTransactions(
+                LocalDate.of(2020,2,1),
                 true);
         assertTrue(result.contains(list.get(0)));
         assertTrue(result.contains(list.get(1)));

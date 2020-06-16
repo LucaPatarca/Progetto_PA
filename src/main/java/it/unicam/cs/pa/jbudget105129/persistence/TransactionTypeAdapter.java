@@ -6,6 +6,7 @@ import it.unicam.cs.pa.jbudget105129.model.RoundedTransaction;
 import it.unicam.cs.pa.jbudget105129.model.Transaction;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class TransactionTypeAdapter implements JsonDeserializer<Transaction>, JsonSerializer<Transaction>{
@@ -14,7 +15,7 @@ public class TransactionTypeAdapter implements JsonDeserializer<Transaction>, Js
         JsonObject jo = json.getAsJsonObject();
         RoundedTransaction transaction=new RoundedTransaction(
                 jo.get("description").getAsString(),
-                new Date(jo.get("date").getAsLong())
+                LocalDate.parse(jo.get("date").getAsString())
         );
         JsonArray array = jo.get("movements").getAsJsonArray();
         for (JsonElement element: array) {
@@ -28,7 +29,7 @@ public class TransactionTypeAdapter implements JsonDeserializer<Transaction>, Js
     public JsonElement serialize(Transaction src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jo = new JsonObject();
         jo.addProperty("description",src.getDescription());
-        jo.addProperty("date",src.getDate().getTime());
+        jo.addProperty("date",src.getDate().toString());
         jo.addProperty("totalAmount",src.getTotalAmount());
         jo.add("movements",context.serialize(src.getMovements()));
         return jo;

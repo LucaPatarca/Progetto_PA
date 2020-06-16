@@ -4,6 +4,7 @@ import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 //TODO javadoc
@@ -11,10 +12,10 @@ public class RoundedTransaction implements Transaction {
 
     private final String description;
     private final List<Movement> movements;
-    private Date date;
+    private LocalDate date;
     private BigDecimal totalAmount;
 
-    public RoundedTransaction(String description, Date date){
+    public RoundedTransaction(String description, LocalDate date){
         this.date=date;
         this.movements=new ArrayList<>();
         this.description=description;
@@ -38,7 +39,7 @@ public class RoundedTransaction implements Transaction {
     }
 
     @Override
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
@@ -71,7 +72,7 @@ public class RoundedTransaction implements Transaction {
     }
 
     @Override
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date=date;
     }
 

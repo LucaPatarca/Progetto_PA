@@ -2,6 +2,7 @@ package it.unicam.cs.pa.jbudget105129.model;
 
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import java.beans.PropertyChangeSupport;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -161,7 +162,7 @@ public class FamilyLedger implements Ledger {
      * @throws AccountException if one of the account refuses the movement
      */
     @Override
-    public void schedule(Date date) throws AccountException {
+    public void schedule(LocalDate date) throws AccountException {
         for (ScheduledTransaction st : scheduledTransactions) {
             if (st.isCompleted())
                 return;

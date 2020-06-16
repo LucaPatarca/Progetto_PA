@@ -10,6 +10,7 @@ import it.unicam.cs.pa.jbudget105129.model.*;
 import it.unicam.cs.pa.jbudget105129.persistence.PersistenceManager;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +69,7 @@ public class FamilyLedgerManager implements LedgerManager {
      * @see Ledger
      */
     @Override
-    public void addTransaction(String description, Date date, List<Movement> movements, List<Tag> tags) throws AccountException {
+    public void addTransaction(String description, LocalDate date, List<Movement> movements, List<Tag> tags) throws AccountException {
         if (description==null||date==null||movements==null) throw new NullPointerException();
         if (movements.isEmpty()) throw new IllegalArgumentException();
         if(movements.parallelStream().anyMatch(m->m.getAccount()==null))
@@ -231,7 +232,7 @@ public class FamilyLedgerManager implements LedgerManager {
      * @see Ledger
      */
     @Override
-    public void schedule(Date date) throws AccountException {
+    public void schedule(LocalDate date) throws AccountException {
         ledger.schedule(date);
     }
 
@@ -241,7 +242,7 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void schedule() throws AccountException {
-        ledger.schedule(Calendar.getInstance().getTime());
+        ledger.schedule(LocalDate.now());
     }
 
     /**

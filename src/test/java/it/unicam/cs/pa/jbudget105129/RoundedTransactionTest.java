@@ -6,6 +6,7 @@ import it.unicam.cs.pa.jbudget105129.model.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +21,7 @@ public class RoundedTransactionTest {
 
     @BeforeAll
     static void init(){
-        transaction = new RoundedTransaction("transazione", Calendar.getInstance().getTime());
+        transaction = new RoundedTransaction("transazione", LocalDate.now());
         Account account1=RoundedAccount.getInstance("account1","account1",0, AccountType.ASSET);
         Account account2=RoundedAccount.getInstance("account2","account2",0,AccountType.LIABILITY);
         m1=RoundedMovement.getInstance("m1",0.78,MovementType.INCOME,account1);

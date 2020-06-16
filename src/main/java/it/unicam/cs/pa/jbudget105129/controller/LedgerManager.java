@@ -6,6 +6,7 @@ import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.persistence.PersistenceManager;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public interface LedgerManager {
      * @throws AccountException if is not possible to add the new transaction to the ledger
      * @see Ledger
      */
-    void addTransaction(String description, Date date, List<Movement> movements, List<Tag> tags) throws AccountException;
+    void addTransaction(String description, LocalDate date, List<Movement> movements, List<Tag> tags) throws AccountException;
 
     /**
      * Removes a given {@link Transaction} from the {@link Ledger} list.
@@ -109,7 +110,7 @@ public interface LedgerManager {
      * @param date the date to be scheduled
      * @see Ledger
      */
-    void schedule(Date date) throws AccountException;
+    void schedule(LocalDate date) throws AccountException;
 
     /**
      * Schedules the ledger to the current date

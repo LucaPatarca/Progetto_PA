@@ -1,5 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface Transaction extends Tagged{
      * Returns the {@link Date} object representing the time on which this transaction was (or will be) applied.
      * @return the transaction's date
      */
-    Date getDate();
+    LocalDate getDate();
 
     /**
      * Returns the total resulting amount of this transaction. It is calculated as the sum of all
@@ -68,5 +69,5 @@ public interface Transaction extends Tagged{
      * Changes the date of this transaction.
      * @param date the new date
      */
-    void setDate(Date date);
+    void setDate(LocalDate date);
 }

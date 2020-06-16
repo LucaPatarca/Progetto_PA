@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,8 +45,8 @@ public class JsonPersistenceManagerTest {
         tags1.add(SingleTag.getInstance("prova2","description2"));
         tags2.add(SingleTag.getInstance("prova3","description3"));
         tags2.add(SingleTag.getInstance("prova4","description4"));
-        Transaction transaction1 = new RoundedTransaction("transazione1",Calendar.getInstance().getTime());
-        Transaction transaction2 = new RoundedTransaction("transazione2",Calendar.getInstance().getTime());
+        Transaction transaction1 = new RoundedTransaction("transazione1", LocalDate.now());
+        Transaction transaction2 = new RoundedTransaction("transazione2",LocalDate.now());
         movements.forEach(transaction1::addMovement);
         movements2.forEach(transaction2::addMovement);
         tags1.forEach(transaction1::addTag);
@@ -88,8 +89,8 @@ public class JsonPersistenceManagerTest {
         RoundedMovement movement2 = RoundedMovement.getInstance("movement1",15.68,MovementType.OUTFLOW,account2);
         RoundedMovement movement3 = RoundedMovement.getInstance("movement1",8.68,MovementType.INCOME,account2);
         RoundedMovement movement4 = RoundedMovement.getInstance("movement1",5.9,MovementType.OUTFLOW,account1);
-        RoundedTransaction transaction1 = new RoundedTransaction("transaction1",Calendar.getInstance().getTime());
-        RoundedTransaction transaction2 = new RoundedTransaction("transaction2",Calendar.getInstance().getTime());
+        RoundedTransaction transaction1 = new RoundedTransaction("transaction1",LocalDate.now());
+        RoundedTransaction transaction2 = new RoundedTransaction("transaction2",LocalDate.now());
         transaction1.addMovement(movement1);
         transaction1.addMovement(movement2);
         transaction2.addMovement(movement3);

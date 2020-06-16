@@ -1,5 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 //TODO javadoc
@@ -25,14 +26,14 @@ public class MapScheduledTransaction implements ScheduledTransaction {
     }
 
     @Override
-    public List<Transaction> getTransactions(Date date,boolean includeCompleted) {
+    public List<Transaction> getTransactions(LocalDate date, boolean includeCompleted) {
         if (includeCompleted)
             return transactions.keySet().stream()
-                .filter(t->t.getDate().before(date))
+                .filter(t->t.getDate().isBefore(date))
                 .collect(Collectors.toList());
         else
             return transactions.keySet().stream()
-                    .filter(t->t.getDate().before(date))
+                    .filter(t->t.getDate().isBefore(date))
                     .filter(t -> !isCompleted(t))
                     .collect(Collectors.toList());
     }

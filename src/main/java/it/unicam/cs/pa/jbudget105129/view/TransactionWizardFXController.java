@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.temporal.TemporalField;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,7 +90,7 @@ public class TransactionWizardFXController implements Initializable {
         try {
             ledgerManager.addTransaction(
                     transactionDescriptionTextField.getText(),
-                    Calendar.getInstance().getTime(),
+                    transactionDate.getValue(),
                     List.copyOf(movementTable.getItems()),
                     new LinkedList<>()
             );
