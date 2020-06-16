@@ -1,17 +1,14 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
-import com.google.inject.Inject;
-import it.unicam.cs.pa.jbudget105129.annotations.MainScene;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
-import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.model.*;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,18 +16,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
-import javax.swing.text.DateFormatter;
 import java.io.IOException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.ResourceBundle;
 
-// TODO: 10/06/20 dividere i due conroller dei mini wizard
 public class STWizardFXController implements Initializable {
 
     @FXML public Button addButton;
@@ -47,42 +37,25 @@ public class STWizardFXController implements Initializable {
     public TableColumn<Movement,Double> movementAmountCol;
     public TableColumn<Movement, String> movementAccountCol;
     public Button addMovementButton;
-    public TextField transactionTextField;
-    public DatePicker transactionDatePicker;
-    public Button transactionDoneButton;
-    public Button transactionCancelButton;
-    public TextField movementTextField;
-    public ChoiceBox<MovementType> movementTypeSelect;
-    public Spinner<Double> movementAmountSpinner;
-    public ChoiceBox<Account> movementAccountSelect;
 
     private final Scene mainScene;
     private final LedgerManager manager;
+    private final LedgerPrinter printer;
 
-    @Inject
-    protected STWizardFXController(@MainScene Scene scene, LedgerManager manager){
+    protected STWizardFXController(Scene scene, LedgerManager manager){
         this.mainScene=scene;
         this.manager=manager;
+        printer = new LedgerPrinter();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        transactionDateCol.setCellValueFactory(cellData->{
-            DateFormatter formatter = new DateFormatter();
-            formatter.setFormat(DateFormat.getDateInstance(DateFormat.MEDIUM));
-            String date = "";
-            try {
-                date = formatter.valueToString(cellData.getValue().getDate());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return new SimpleStringProperty(date);
-        });
+        transactionDateCol.setCellValueFactory(cellData->new ReadOnlyStringWrapper(printer.stringOf(cellData.getValue().getDate())));
         transactionDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         transactionTotalCol.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
 
         movementDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        movementTypeCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getType().toString().toLowerCase()));
+        movementTypeCol.setCellValueFactory(cellData->new SimpleStringProperty(printer.stringOf(cellData.getValue().getType())));
         movementAmountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
         movementAccountCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getAccount().getName()));
     }
@@ -93,7 +66,7 @@ public class STWizardFXController implements Initializable {
 
     @FXML public void handleAddTransactionButtonPressed(ActionEvent event) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/miniTransactionWizard.fxml"));
-        loader.setController(this);
+        loader.setControllerFactory(param->new MiniTransactionWizardFXController(transactionTable.getItems()));
         Stage stage = new Stage();
         try {
             Parent root = loader.load();
@@ -111,6 +84,7 @@ public class STWizardFXController implements Initializable {
 
     private void returnToMainScene(){
         Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.setTitle("Jbudget");
         stage.setScene(mainScene);
     }
 
@@ -122,74 +96,20 @@ public class STWizardFXController implements Initializable {
 
     public void handleAddMovementPressed(ActionEvent event) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/miniMovementWizard.fxml"));
-        loader.setController(this);
+        loader.setControllerFactory(param->new MiniMovementWizardFXController(
+                transactionTable.getSelectionModel().getSelectedItem(),
+                manager.getLedger().getAccounts()
+        ));
         Stage stage = new Stage();
         try {
             Parent root = loader.load();
             stage.setScene(new Scene(root));
-            movementTypeSelect.setItems(FXCollections.observableArrayList(MovementType.values()));
-            movementTypeSelect.setConverter(new StringConverter<MovementType>() {
-                @Override
-                public String toString(MovementType type) {
-                    return type.toString().toLowerCase();
-                }
-
-                @Override
-                public MovementType fromString(String s) {
-                    return null;
-                }
-            });
-            movementAccountSelect.setItems(FXCollections.observableList(manager.getLedger().getAccounts()));
-            movementAccountSelect.setConverter(new StringConverter<>() {
-                @Override
-                public String toString(Account account) {
-                    return account.getName()+", "+account.getDescription();
-                }
-
-                @Override
-                public Account fromString(String s) {
-                    return null;
-                }
-            });
-            movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(Double.MIN_VALUE,Double.MAX_VALUE,1,0.01));
             stage.showAndWait();
+            transactionTable.refresh();
+            movementTable.refresh();
         } catch (IOException e) {
             e.printStackTrace();
+            // TODO: 16/06/2020 log e gestire
         }
-    }
-
-    public void handleTransactionDonePressed(ActionEvent event) {
-        transactionTable.getItems().add(new RoundedTransaction(
-                transactionTextField.getText(),
-                Calendar.getInstance().getTime()
-        ));
-        closePopup(event.getSource());
-    }
-
-    public void handleTransactionCancelPressed(ActionEvent event) {
-        closePopup(event.getSource());
-    }
-
-    public void handleMovementCancelPressed(ActionEvent event){
-        closePopup(event.getSource());
-    }
-
-    public void handleMovementDonePressed(ActionEvent event){
-        Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
-        transaction.addMovement(RoundedMovement.getInstance(
-                movementTextField.getText(),
-                movementAmountSpinner.getValue(),
-                movementTypeSelect.getValue(),
-                movementAccountSelect.getValue()
-        ));
-        transactionTable.refresh();
-        movementTable.refresh();
-        closePopup(event.getSource());
-    }
-
-    private void closePopup(Object source){
-        Node node = (Node) source;
-        Stage stage = (Stage) node.getScene().getWindow();
-        stage.close();
     }
 }

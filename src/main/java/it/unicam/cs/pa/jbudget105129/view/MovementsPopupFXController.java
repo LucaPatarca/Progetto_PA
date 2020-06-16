@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 
 public class MovementsPopupFXController implements Initializable {
     private final List<Movement> movements;
+    private final LedgerPrinter printer;
 
     @FXML public TableView<Movement> movementTable;
     @FXML public TableColumn<Movement,String> descriptionCol;
@@ -24,6 +25,7 @@ public class MovementsPopupFXController implements Initializable {
 
     public MovementsPopupFXController(List<Movement> movements){
         this.movements=movements;
+        this.printer=new LedgerPrinter();
     }
 
 
@@ -31,7 +33,7 @@ public class MovementsPopupFXController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         movementTable.setItems(FXCollections.observableList(movements));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        typeCol.setCellValueFactory(cellData->new ReadOnlyStringWrapper(cellData.getValue().getType().toString().toLowerCase()));
+        typeCol.setCellValueFactory(cellData->new ReadOnlyStringWrapper(printer.stringOf(cellData.getValue().getType())));
         amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
         accountCol.setCellValueFactory(cellData-> new ReadOnlyStringWrapper(cellData.getValue().getAccount().getName()));
     }

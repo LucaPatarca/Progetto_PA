@@ -13,21 +13,22 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="mainVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.MainFXController">
+<VBox fx:id="mainVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.TableView">
    <children>
       <MenuBar>
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
                   <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#handleSavePressed" text="Save" />
-              <MenuItem fx:id="loadMenuItem" mnemonicParsing="false" onAction="#handleLoadPressed" text="Load" />
+                  <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#handleSaveAsPressed" text="Save as..." />
+              <MenuItem fx:id="loadMenuItem" mnemonicParsing="false" onAction="#handleLoadPressed" text="Load..." />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Add">
               <items>
                 <MenuItem fx:id="newTransactionItem" mnemonicParsing="false" onAction="#handleNewTransaction" text="New transaction..." />
                   <MenuItem fx:id="newAccountMenuItem" mnemonicParsing="false" onAction="#handleNewAccountPressed" text="New account..." />
-                  <MenuItem fx:id="newSTransactionMenuItem" mnemonicParsing="false" onAction="#handleNewSTransactionPressed" text="New scheduled transaction..." />
+                  <MenuItem fx:id="newSTransactionMenuItem" mnemonicParsing="false" onAction="#handleNewScheduledPressed" text="New scheduled transaction..." />
               </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Edit">
@@ -97,6 +98,13 @@
                                     <TableColumn fx:id="sTransactionTotalCol" prefWidth="87.0" text="Total" />
                                     <TableColumn fx:id="sTransactionCompletedCol" prefWidth="97.0" text="Completed" />
                                 </columns>
+                                 <contextMenu>
+                                    <ContextMenu fx:id="scheduledContextMenu">
+                                      <items>
+                                        <MenuItem mnemonicParsing="false" onAction="#handleScheduledShowMovementsPressed" text="Show movements" />
+                                      </items>
+                                    </ContextMenu>
+                                 </contextMenu>
                               </TableView>
                            </children>
                         </VBox>
@@ -104,13 +112,26 @@
                </content></Tab>
             <Tab text="Accounts">
                <content>
-                  <TableView fx:id="accountTable" onKeyPressed="#handleAccountKeyPressed" onMouseClicked="#handleAccountClicked" prefHeight="200.0" prefWidth="200.0">
+                  <TableView fx:id="accountTable" onKeyPressed="#handleAccountKeyPressed" prefHeight="200.0" prefWidth="200.0">
                     <columns>
                       <TableColumn fx:id="accountNameCol" prefWidth="97.0" text="Name" />
                       <TableColumn fx:id="accountDescriptionCol" prefWidth="178.0" text="Description" />
                         <TableColumn fx:id="accountReferentCol" prefWidth="116.0" text="Referent" />
                         <TableColumn fx:id="accountTypeCol" prefWidth="101.0" text="Type" />
                         <TableColumn fx:id="accountBalanceCol" prefWidth="102.0" text="Balance" />
+                        <TableColumn fx:id="accountMinCol" prefWidth="75.0" text="Min" />
+                        <TableColumn fx:id="accountMaxCol" prefWidth="75.0" text="Max" />
+                    </columns>
+                  </TableView>
+               </content>
+            </Tab>
+            <Tab text="Budget">
+               <content>
+                  <TableView fx:id="budgetTable" prefHeight="200.0" prefWidth="200.0">
+                    <columns>
+                        <TableColumn fx:id="budgetNameCol" prefWidth="140.0" text="Category name" />
+                      <TableColumn fx:id="budgetDescriptionCol" prefWidth="278.0" text="Category description" />
+                      <TableColumn fx:id="budgetExpectedCol" prefWidth="143.0" text="Budget" />
                     </columns>
                   </TableView>
                </content>

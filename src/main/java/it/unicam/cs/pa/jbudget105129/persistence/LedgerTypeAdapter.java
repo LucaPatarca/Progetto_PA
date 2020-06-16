@@ -41,9 +41,9 @@ public class LedgerTypeAdapter implements JsonDeserializer<Ledger>, JsonSerializ
     @Override
     public JsonElement serialize(Ledger src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jo = new JsonObject();
-        List<Movement> movements = src.getTransactions().stream().map(Transaction::getMovements).flatMap(List::stream).distinct().collect(Collectors.toList());
+        List<Movement> movements = src.getTransactions().stream().map(Transaction::getMovements).flatMap(List::stream).collect(Collectors.toList());
         movements.addAll(src.getScheduledTransactions().stream().map(ScheduledTransaction::getTransactions)
-        .flatMap(List::stream).map(Transaction::getMovements).flatMap(List::stream).distinct().collect(Collectors.toList()));
+        .flatMap(List::stream).map(Transaction::getMovements).flatMap(List::stream).collect(Collectors.toList()));
         List<Tag> tags = movements.stream().map(Movement::getTags).flatMap(List::stream).distinct().collect(Collectors.toList());
         jo.add("tags",context.serialize(tags));
         jo.add("movements",context.serialize(movements));

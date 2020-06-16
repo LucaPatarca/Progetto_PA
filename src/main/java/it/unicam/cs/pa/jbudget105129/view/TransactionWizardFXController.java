@@ -41,13 +41,14 @@ public class TransactionWizardFXController implements Initializable {
     @FXML public DatePicker transactionDate;
     @FXML public Button addTransactionButton;
 
-    protected final LedgerManager ledgerManager;
-    protected final Scene mainScene;
+    private final LedgerManager ledgerManager;
+    private final Scene mainScene;
+    private final LedgerPrinter ledgerPrinter;
 
-    @Inject
-    protected TransactionWizardFXController(@MainScene Scene mainScene, LedgerManager ledgerManager){
+    public TransactionWizardFXController(Scene mainScene, LedgerManager ledgerManager){
         this.ledgerManager=ledgerManager;
         this.mainScene=mainScene;
+        ledgerPrinter = new LedgerPrinter();
     }
 
     @Override
@@ -55,33 +56,14 @@ public class TransactionWizardFXController implements Initializable {
         movementDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         movementAmountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
         movementAccountCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getAccount().getName()));
-        movementTypeCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getType().toString().toLowerCase()));
+        movementTypeCol.setCellValueFactory(cellData->new SimpleStringProperty(ledgerPrinter.stringOf(cellData.getValue().getType())));
 
         movementTypeSelect.setItems(FXCollections.observableArrayList(MovementType.values()));
-        movementTypeSelect.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(MovementType type) {
-                return type.toString().toLowerCase();
-            }
-
-            @Override
-            public MovementType fromString(String s) {
-                return null;
-            }
-        });
+        movementTypeSelect.setConverter(new MovementTypeConverter());
         movementAccountSelect.setItems(FXCollections.observableArrayList(ledgerManager.getLedger().getAccounts()));
-        movementAccountSelect.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(Account account) {
-                return account.getName()+", "+account.getDescription();
-            }
-
-            @Override
-            public Account fromString(String s) {
-                return null;
-            }
-        });
-        movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(Double.MIN_VALUE,Double.MAX_VALUE,1.0,0.01));
+        movementAccountSelect.setConverter(new AccountConverter());
+        movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
+                Double.MIN_VALUE,Double.MAX_VALUE,1.0,0.01));
     }
 
     @FXML protected void handleAddMovementPressed() {

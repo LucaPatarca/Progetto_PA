@@ -1,7 +1,5 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
-import com.google.inject.Inject;
-import it.unicam.cs.pa.jbudget105129.annotations.MainScene;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import javafx.collections.FXCollections;
@@ -10,7 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,6 +16,7 @@ public class AccountWizardFXController implements Initializable {
 
     private final Scene mainScene;
     private final LedgerManager manager;
+
     public TextField nameTextField;
     public TextField descriptionTextField;
     public TextField referentTextField;
@@ -31,35 +29,21 @@ public class AccountWizardFXController implements Initializable {
     public CheckBox hasMaximumAmountCheckBox;
     public CheckBox hasMinimumAmountCheckBox;
 
-    @Inject
-    protected AccountWizardFXController(@MainScene Scene mainScene, LedgerManager manager){
+    protected AccountWizardFXController(Scene mainScene, LedgerManager manager){
         this.mainScene=mainScene;
         this.manager=manager;
     }
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         typeSelect.setItems(FXCollections.observableArrayList(AccountType.values()));
-        typeSelect.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(AccountType type) {
-                return type.toString().toLowerCase();
-            }
-
-            @Override
-            public AccountType fromString(String s) {
-                return null;
-            }
-        });
+        typeSelect.setConverter(new AccountTypeConverter());
         openingBalanceSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
-                Double.MIN_VALUE,Double.MAX_VALUE,0.0,0.01));
+                -Double.MAX_VALUE,Double.MAX_VALUE,0.0,0.01));
         minAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
-                Double.MIN_VALUE,Double.MAX_VALUE,0.0,0.01));
+                -Double.MAX_VALUE,Double.MAX_VALUE,0.0,0.01));
         maxAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
-                Double.MIN_VALUE,Double.MAX_VALUE,0.0,0.01));
-
-
+                -Double.MAX_VALUE,Double.MAX_VALUE,0.0,0.01));
     }
 
     public void cancelButtonPressed(ActionEvent event) {
@@ -85,6 +69,7 @@ public class AccountWizardFXController implements Initializable {
 
     private void returnToMainScene(){
         Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.setTitle("Jbudget");
         stage.setScene(mainScene);
     }
 
