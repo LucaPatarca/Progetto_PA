@@ -13,14 +13,14 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="468.0" prefWidth="633.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.STWizardFXController">
    <children>
-      <TableView fx:id="transactionTable" editable="true" onMouseClicked="#handleTransactionMouseClicked" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <TableView fx:id="transactionTable" editable="true" onKeyPressed="#handleTransactionKeyPressed" onMouseClicked="#handleTransactionMouseClicked" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn fx:id="transactionDateCol" prefWidth="140.0" text="Date" />
           <TableColumn fx:id="transactionDescriptionCol" prefWidth="171.0" text="Description" />
             <TableColumn fx:id="transactionTotalCol" prefWidth="112.0" text="Total" />
         </columns>
       </TableView>
-      <TableView fx:id="movementTable" editable="true" prefHeight="200.0" prefWidth="200.0">
+      <TableView fx:id="movementTable" editable="true" onKeyPressed="#handleMovementKeyPressed" prefHeight="200.0" prefWidth="200.0">
         <columns>
           <TableColumn fx:id="movementDescriptionCol" prefWidth="223.0" text="Description" />
           <TableColumn fx:id="movementTypeCol" prefWidth="125.0" text="Type" />

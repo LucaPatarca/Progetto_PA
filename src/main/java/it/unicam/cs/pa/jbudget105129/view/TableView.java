@@ -8,7 +8,6 @@ import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -29,14 +28,11 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
-import javax.swing.text.DateFormatter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -383,7 +379,7 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     private void showEditTagsPopup(Tagged element){
         FXMLLoader loader = createLoader("/editTagsPopup.fxml",
-                param->new EditMovementTagsFXController(element,ledgerManager.getAllUsedTags()));
+                param->new EditTagsFXController(element,ledgerManager.getAllUsedTags()));
         Scene scene = createScene(loader,600,400);
         showNewStage(scene,"Edit tags");
     }

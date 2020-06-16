@@ -14,6 +14,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -31,12 +33,12 @@ public class STWizardFXController implements Initializable {
     @FXML public TableColumn<Transaction,String> transactionDescriptionCol;
     @FXML public TableColumn<Transaction, String> transactionDateCol;
     @FXML public TableView<Transaction> transactionTable;
-    public TableView<Movement> movementTable;
-    public TableColumn<Movement,String> movementDescriptionCol;
-    public TableColumn<Movement, String> movementTypeCol;
-    public TableColumn<Movement,Double> movementAmountCol;
-    public TableColumn<Movement, String> movementAccountCol;
-    public Button addMovementButton;
+    @FXML public TableView<Movement> movementTable;
+    @FXML public TableColumn<Movement,String> movementDescriptionCol;
+    @FXML public TableColumn<Movement, String> movementTypeCol;
+    @FXML public TableColumn<Movement,Double> movementAmountCol;
+    @FXML public TableColumn<Movement, String> movementAccountCol;
+    @FXML public Button addMovementButton;
 
     private final Scene mainScene;
     private final LedgerManager manager;
@@ -82,19 +84,13 @@ public class STWizardFXController implements Initializable {
         returnToMainScene();
     }
 
-    private void returnToMainScene(){
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.setTitle("Jbudget");
-        stage.setScene(mainScene);
-    }
-
-    public void handleTransactionMouseClicked(MouseEvent mouseEvent) {
+    @FXML public void handleTransactionMouseClicked(MouseEvent mouseEvent) {
         movementTable.setItems(FXCollections.observableList(
                 transactionTable.getSelectionModel().getSelectedItem().getMovements()
         ));
     }
 
-    public void handleAddMovementPressed(ActionEvent event) {
+    @FXML public void handleAddMovementPressed(ActionEvent event) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/miniMovementWizard.fxml"));
         loader.setControllerFactory(param->new MiniMovementWizardFXController(
                 transactionTable.getSelectionModel().getSelectedItem(),
@@ -111,5 +107,28 @@ public class STWizardFXController implements Initializable {
             e.printStackTrace();
             // TODO: 16/06/2020 log e gestire
         }
+    }
+
+    @FXML public void handleTransactionKeyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode().equals(KeyCode.DELETE)){
+            Transaction toRemove = transactionTable.getSelectionModel().getSelectedItem();
+            transactionTable.getItems().remove(toRemove);
+            movementTable.getItems().clear();
+        }
+    }
+
+    @FXML public void handleMovementKeyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode().equals(KeyCode.DELETE)){
+            Movement toRemove = movementTable.getSelectionModel().getSelectedItem();
+            Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
+            transaction.removeMovement(toRemove);
+            movementTable.refresh();
+        }
+    }
+
+    private void returnToMainScene(){
+        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.setTitle("Jbudget");
+        stage.setScene(mainScene);
     }
 }

@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class EditMovementTagsFXController implements Initializable {
+public class EditTagsFXController implements Initializable {
     private final List<Tag> available;
     private final Tagged element;
 
@@ -34,7 +34,7 @@ public class EditMovementTagsFXController implements Initializable {
     public TextField newDescriptionTextField;
     public Button newAddButton;
 
-    public EditMovementTagsFXController(Tagged element, List<Tag> available){
+    public EditTagsFXController(Tagged element, List<Tag> available){
         this.available=available;
         this.element = element;
         this.element.getTags().forEach(this.available::remove);

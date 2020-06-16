@@ -15,6 +15,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -80,7 +82,7 @@ public class TransactionWizardFXController implements Initializable {
     }
 
     @FXML public void handleCancelPressed() {
-        returnToMainView();
+        returnToMainScene();
     }
 
     @FXML public void handleAddTransactionPressed() {
@@ -91,21 +93,21 @@ public class TransactionWizardFXController implements Initializable {
                     List.copyOf(movementTable.getItems()),
                     new LinkedList<>()
             );
-            returnToMainView();
+            returnToMainScene();
         } catch (AccountException e) {
             e.printStackTrace();
             // TODO: 05/06/20 gestire
         }
     }
 
-    private void returnToMainView(){
+    private void returnToMainScene(){
         Stage stage= (Stage) cancelButton.getScene().getWindow();
         stage.setScene(mainScene);
     }
 
     @FXML public void handleMovementEditTagPressed(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/editTagsPopup.fxml"));
-        loader.setControllerFactory(param->new EditMovementTagsFXController(
+        loader.setControllerFactory(param->new EditTagsFXController(
                 movementTable.getSelectionModel().getSelectedItem(),
                 ledgerManager.getAllUsedTags()
         ));
@@ -117,6 +119,13 @@ public class TransactionWizardFXController implements Initializable {
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML public void movementTableKeyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode().equals(KeyCode.DELETE)){
+            Movement toRemove = movementTable.getSelectionModel().getSelectedItem();
+            movementTable.getItems().remove(toRemove);
         }
     }
 }

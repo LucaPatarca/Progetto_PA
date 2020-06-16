@@ -28,7 +28,7 @@ public class MovementsPopupFXController implements Initializable {
         this.printer=new LedgerPrinter();
     }
 
-
+    // TODO: 16/06/2020 add edit tags
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         movementTable.setItems(FXCollections.observableList(movements));

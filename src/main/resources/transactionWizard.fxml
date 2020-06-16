@@ -55,7 +55,7 @@
       </GridPane>
       <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <content>
-            <TableView fx:id="movementTable" prefHeight="200.0" prefWidth="200.0">
+            <TableView fx:id="movementTable" onKeyPressed="#movementTableKeyPressed" prefHeight="200.0" prefWidth="200.0">
               <columns>
                 <TableColumn fx:id="movementDescriptionCol" prefWidth="260.0" text="Description" />
                 <TableColumn fx:id="movementTypeCol" prefWidth="115.0" text="Type" />
