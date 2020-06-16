@@ -2,7 +2,6 @@ package it.unicam.cs.pa.jbudget105129.persistence;
 
 import it.unicam.cs.pa.jbudget105129.model.Ledger;
 
-import java.io.File;
 import java.io.IOException;
 
 /**

@@ -185,6 +185,12 @@ public class FamilyLedgerManager implements LedgerManager {
         ledger.removeScheduledTransaction(scheduledTransaction);
     }
 
+    @Override
+    public List<Tag> getAllUsedTags() {
+        return ledger.getTransactions().stream().map(Transaction::getTags).flatMap(List::stream)
+                .distinct().collect(Collectors.toList());
+    }
+
     /**
      * Returns a list of {@link Transaction} matching a given expression from the ledger's list. The expression is compared with:
      * the tag's name, the tag's description, the transaction's description and the transaction's movements description.

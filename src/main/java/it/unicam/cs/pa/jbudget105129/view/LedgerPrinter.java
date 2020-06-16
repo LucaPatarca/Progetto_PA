@@ -49,7 +49,7 @@ public class LedgerPrinter {
         // FIXME: 16/06/2020 togliere la virgola finale
         String toReturn="";
         for(Tag m : tags){
-            toReturn=toReturn.concat(m.getDescription()+", ");
+            toReturn=toReturn.concat(m.getName()+", ");
         }
         return toReturn;
     }

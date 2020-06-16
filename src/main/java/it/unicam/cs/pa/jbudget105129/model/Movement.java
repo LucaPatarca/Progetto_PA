@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Represents a change in the balance of an {@link Account}.
  */
-public interface Movement {
+public interface Movement extends Tagged{
     /**
      * Returns the unique number identifier of this movement.
      * @return the ID of this account

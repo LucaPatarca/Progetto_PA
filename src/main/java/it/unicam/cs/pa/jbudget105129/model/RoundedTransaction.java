@@ -29,7 +29,7 @@ public class RoundedTransaction implements Transaction {
     @Override
     public List<Tag> getTags() {
         return movements.parallelStream().map(Movement::getTags)
-                .flatMap(List::stream).collect(Collectors.toList());
+                .flatMap(List::stream).distinct().collect(Collectors.toList());
     }
 
     @Override

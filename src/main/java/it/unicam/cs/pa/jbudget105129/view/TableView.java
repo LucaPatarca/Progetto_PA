@@ -79,6 +79,7 @@ public class TableView extends Application implements Initializable,PropertyChan
     @FXML public TableColumn<Tag,String> budgetDescriptionCol;
     @FXML public TableColumn<Tag,Double> budgetExpectedCol;
     @FXML public MenuItem saveAsMenuItem;
+    @FXML public MenuItem transactionContextEditTagsItem;
 
     private static Scene mainScene;
     private Stage primaryStage;
@@ -207,11 +208,14 @@ public class TableView extends Application implements Initializable,PropertyChan
     }
 
     @FXML public void transactionContextShowMovementsPressed(ActionEvent actionEvent) {
-        Transaction selected = transactionTable.getSelectionModel().getSelectedItem();
-        FXMLLoader loader = createLoader("/movementsPopup.fxml",
-                param->new MovementsPopupFXController(selected.getMovements()));
-        Scene scene = createScene(loader,400,300);
-        showNewStage(scene,selected.getDescription());
+        showMovementPopup(transactionTable.getSelectionModel().getSelectedItem());
+    }
+
+    @FXML public void transactionContextEditTagsPressed(ActionEvent actionEvent) {
+        unsavedChanges=true;
+        saveMenuItem.setDisable(false);
+        showEditTagsPopup(transactionTable.getSelectionModel().getSelectedItem());
+        transactionTable.refresh();
     }
 
     @FXML public void handleTransactionContextDeletePressed(ActionEvent actionEvent) {
@@ -236,11 +240,13 @@ public class TableView extends Application implements Initializable,PropertyChan
     }
 
     @FXML public void handleScheduledShowMovementsPressed(ActionEvent actionEvent) {
-        Transaction selected = sTransactionTable.getSelectionModel().getSelectedItem();
-        FXMLLoader loader = createLoader("/movementsPopup.fxml",
-                param->new MovementsPopupFXController(selected.getMovements()));
-        Scene scene = createScene(loader,400,300);
-        showNewStage(scene,selected.getDescription());
+        showMovementPopup(sTransactionTable.getSelectionModel().getSelectedItem());
+    }
+
+    @FXML public void handleScheduledEditTagsPressed(ActionEvent actionEvent) {
+        unsavedChanges=true;
+        saveMenuItem.setDisable(false);
+        showEditTagsPopup(sTransactionTable.getSelectionModel().getSelectedItem());
     }
 
     private void removeSelectedTransaction(){
@@ -366,5 +372,19 @@ public class TableView extends Application implements Initializable,PropertyChan
                     event.consume();
             }
         }
+    }
+
+    private void showMovementPopup(Transaction selected){
+        FXMLLoader loader = createLoader("/movementsPopup.fxml",
+                param->new MovementsPopupFXController(selected.getMovements()));
+        Scene scene = createScene(loader,400,300);
+        showNewStage(scene,selected.getDescription());
+    }
+
+    private void showEditTagsPopup(Tagged element){
+        FXMLLoader loader = createLoader("/editTagsPopup.fxml",
+                param->new EditMovementTagsFXController(element,ledgerManager.getAllUsedTags()));
+        Scene scene = createScene(loader,600,400);
+        showNewStage(scene,"Edit tags");
     }
 }

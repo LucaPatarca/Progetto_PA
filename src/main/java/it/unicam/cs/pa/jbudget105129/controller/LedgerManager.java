@@ -88,6 +88,8 @@ public interface LedgerManager {
      */
     void removeScheduledTransaction(ScheduledTransaction scheduledTransaction) throws AccountException;
 
+    List<Tag> getAllUsedTags();
+
     /**
      * Returns a list of {@link Transaction} matching a given expression from the ledger's list.
      * @param expression the string used to find matching transactions

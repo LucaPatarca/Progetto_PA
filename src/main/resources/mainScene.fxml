@@ -50,8 +50,8 @@
                   <TableView fx:id="transactionTable" onKeyPressed="#handleTransactionKeyPressed" tableMenuButtonVisible="true">
                     <columns>
                       <TableColumn fx:id="transactionDateCol" prefWidth="96.0" text="Date" />
-                      <TableColumn fx:id="transactionDescriptionCol" prefWidth="178.0" text="Description" />
-                        <TableColumn fx:id="transactionTotalCol" prefWidth="74.0" text="Total" />
+                      <TableColumn fx:id="transactionDescriptionCol" prefWidth="182.0" text="Description" />
+                        <TableColumn fx:id="transactionTotalCol" prefWidth="70.0" text="Total" />
                         <TableColumn fx:id="transactionMovementsCol" prefWidth="121.0" text="Movements" />
                         <TableColumn fx:id="transactionTagsCol" prefWidth="111.0" text="Tags" />
                     </columns>
@@ -60,6 +60,7 @@
                           <items>
                             <MenuItem fx:id="transactionContextDeleteItem" mnemonicParsing="false" onAction="#handleTransactionContextDeletePressed" text="Delete" />
                               <MenuItem fx:id="transactionContextShowMovementsItem" mnemonicParsing="false" onAction="#transactionContextShowMovementsPressed" text="Show movements" />
+                              <MenuItem fx:id="transactionContextEditTagsItem" mnemonicParsing="false" onAction="#transactionContextEditTagsPressed" text="Edit tags" />
                           </items>
                         </ContextMenu>
                      </contextMenu>
@@ -93,8 +94,8 @@
                               </Label>
                               <TableView fx:id="sTransactionTable" prefHeight="388.0" prefWidth="399.0">
                                 <columns>
-                                  <TableColumn fx:id="sTransactionDateCol" prefWidth="131.0" text="Date" />
-                                  <TableColumn fx:id="sTransactionDescriptionCol" prefWidth="178.0" text="Description" />
+                                  <TableColumn fx:id="sTransactionDateCol" prefWidth="138.0" text="Date" />
+                                  <TableColumn fx:id="sTransactionDescriptionCol" prefWidth="171.0" text="Description" />
                                     <TableColumn fx:id="sTransactionTotalCol" prefWidth="87.0" text="Total" />
                                     <TableColumn fx:id="sTransactionCompletedCol" prefWidth="97.0" text="Completed" />
                                 </columns>
@@ -102,6 +103,7 @@
                                     <ContextMenu fx:id="scheduledContextMenu">
                                       <items>
                                         <MenuItem mnemonicParsing="false" onAction="#handleScheduledShowMovementsPressed" text="Show movements" />
+                                          <MenuItem mnemonicParsing="false" onAction="#handleScheduledEditTagsPressed" text="Edit Tags" />
                                       </items>
                                     </ContextMenu>
                                  </contextMenu>

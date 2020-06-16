@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Represents a set of {@link Movement} that is considered as an atomic operation.
  */
-public interface Transaction {
+public interface Transaction extends Tagged{
     /**
      * Returns the description of this transaction.
      * @return the description

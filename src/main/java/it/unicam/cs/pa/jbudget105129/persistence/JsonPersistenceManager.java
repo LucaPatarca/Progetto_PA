@@ -8,9 +8,23 @@ import java.io.*;
 
 public class JsonPersistenceManager implements PersistenceManager{
 
-    private final Gson gson;
+    @Override
+    public void save(Ledger ledger, String path) throws IOException {
+        File file = new File(path);
+        String json = getNewGson().toJson(ledger);
+        FileOutputStream out = new FileOutputStream(file);
+        out.write(json.getBytes());
+    }
 
-    public JsonPersistenceManager(){
+    @Override
+    public Ledger load(String path) throws IOException {
+        File file = new File(path);
+        FileInputStream in = new FileInputStream(file);
+        String jsonString = new String(in.readAllBytes());
+        return getNewGson().fromJson(jsonString, FamilyLedger.class);
+    }
+
+    private Gson getNewGson(){
         GsonBuilder builder = new GsonBuilder();
         MovementTypeAdapter movementTypeAdapter = new MovementTypeAdapter();
         LedgerTypeAdapter ledgerTypeAdapter = new LedgerTypeAdapter();
@@ -32,22 +46,6 @@ public class JsonPersistenceManager implements PersistenceManager{
         builder.registerTypeAdapter(ScheduledTransaction.class,scheduledTransactionTypeAdapter);
         builder.registerTypeAdapter(MapScheduledTransaction.class,scheduledTransactionTypeAdapter);
 
-        gson = builder.create();
-    }
-
-    @Override
-    public void save(Ledger ledger, String path) throws IOException {
-        File file = new File(path);
-        String json = gson.toJson(ledger);
-        FileOutputStream out = new FileOutputStream(file);
-        out.write(json.getBytes());
-    }
-
-    @Override
-    public Ledger load(String path) throws IOException {
-        File file = new File(path);
-        FileInputStream in = new FileInputStream(file);
-        String jsonString = new String(in.readAllBytes());
-        return gson.fromJson(jsonString, FamilyLedger.class);
+        return builder.create();
     }
 }

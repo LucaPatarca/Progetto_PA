@@ -1,23 +1,23 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
-import com.google.inject.Inject;
-import it.unicam.cs.pa.jbudget105129.annotations.MainScene;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
-import javafx.util.converter.FormatStringConverter;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -40,6 +40,8 @@ public class TransactionWizardFXController implements Initializable {
     @FXML public TextField transactionDescriptionTextField;
     @FXML public DatePicker transactionDate;
     @FXML public Button addTransactionButton;
+    @FXML public ContextMenu movementsContextMenu;
+    @FXML public MenuItem editTagsMovementMenuItem;
 
     private final LedgerManager ledgerManager;
     private final Scene mainScene;
@@ -64,6 +66,8 @@ public class TransactionWizardFXController implements Initializable {
         movementAccountSelect.setConverter(new AccountConverter());
         movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
                 Double.MIN_VALUE,Double.MAX_VALUE,1.0,0.01));
+        movementTable.setOnContextMenuRequested(event->movementsContextMenu.show(movementTable,event.getScreenX(),event.getScreenY()));
+
     }
 
     @FXML protected void handleAddMovementPressed() {
@@ -97,5 +101,22 @@ public class TransactionWizardFXController implements Initializable {
     private void returnToMainView(){
         Stage stage= (Stage) cancelButton.getScene().getWindow();
         stage.setScene(mainScene);
+    }
+
+    @FXML public void handleMovementEditTagPressed(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/editTagsPopup.fxml"));
+        loader.setControllerFactory(param->new EditMovementTagsFXController(
+                movementTable.getSelectionModel().getSelectedItem(),
+                ledgerManager.getAllUsedTags()
+        ));
+        Stage stage = new Stage();
+        try {
+            Parent root = loader.load();
+            Scene scene=new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
