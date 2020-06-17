@@ -26,6 +26,7 @@ public class LedgerPrinter {
 
     public String stringOfMovements(List<Movement> movements){
         String toReturn="";
+        if(movements.isEmpty()) return toReturn;
         for(Movement m : movements){
             toReturn=toReturn.concat(m.getDescription()+", ");
         }
@@ -34,6 +35,7 @@ public class LedgerPrinter {
 
     public String stringOfTags(List<Tag> tags){
         String toReturn="";
+        if(tags.isEmpty()) return toReturn;
         for(Tag t : tags){
             toReturn=toReturn.concat(t.getName()+", ");
         }

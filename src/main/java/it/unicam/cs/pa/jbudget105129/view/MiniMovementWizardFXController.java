@@ -65,7 +65,8 @@ public class MiniMovementWizardFXController implements Initializable {
         return Objects.nonNull(descriptionTextField.getText()) &&
                 Objects.nonNull(amountSpinner.getValue()) &&
                 Objects.nonNull(typeSelect.getValue()) &&
-                Objects.nonNull(accountSelect.getValue());
+                Objects.nonNull(accountSelect.getValue()) &&
+                !descriptionTextField.getText().equals("");
     }
 
     private void showAlert() {

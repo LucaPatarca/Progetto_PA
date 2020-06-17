@@ -100,7 +100,7 @@ public class TransactionWizardFXController implements Initializable {
                         new LinkedList<>()
                 );
                 returnToMainScene();
-            } catch (AccountException e) {
+            } catch (Exception e) {
                 showAlert("Error while adding transaction", e.getLocalizedMessage());
             }
         }else{
@@ -144,12 +144,14 @@ public class TransactionWizardFXController implements Initializable {
         return Objects.nonNull(movementDescriptionTextfield.getText()) &&
                 Objects.nonNull(movementTypeSelect.getValue()) &&
                 Objects.nonNull(movementAmountSpinner.getValue()) &&
-                Objects.nonNull(movementAccountSelect.getValue());
+                Objects.nonNull(movementAccountSelect.getValue()) &&
+                !movementDescriptionTextfield.getText().equals("");
     }
 
     private boolean checkTransactionInput(){
         return Objects.nonNull(transactionDescriptionTextField.getText()) &&
-                Objects.nonNull(transactionDate.getValue());
+                Objects.nonNull(transactionDate.getValue()) &&
+                !transactionDescriptionTextField.getText().equals("");
     }
 
     private void showAlert(String title, String content) {

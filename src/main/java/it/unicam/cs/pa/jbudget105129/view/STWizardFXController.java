@@ -67,12 +67,16 @@ public class STWizardFXController implements Initializable {
     }
 
     @FXML public void handleAddTransactionButtonPressed() {
-        loadNewScene("miniTransactionWizard.fxml", p->new MiniTransactionWizardFXController(transactionTable.getItems()));
+        loadNewScene("/miniTransactionWizard.fxml", p->new MiniTransactionWizardFXController(transactionTable.getItems()));
     }
 
     @FXML public void handleAddButtonPressed() {
-        manager.addScheduledTransaction(descriptionTextField.getText(),transactionTable.getItems());
-        returnToMainScene();
+        if(!descriptionTextField.getText().equals("")){
+            manager.addScheduledTransaction(descriptionTextField.getText(), transactionTable.getItems());
+            returnToMainScene();
+        }else {
+            showAlert("Scheduled Transaction Information Error", "Check new scheduled transaction's information");
+        }
     }
 
     @FXML public void handleTransactionMouseClicked() {
@@ -84,7 +88,7 @@ public class STWizardFXController implements Initializable {
     @FXML public void handleAddMovementPressed() {
         Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
         if(Objects.isNull(transaction)){
-            showAlert();
+            showAlert("No Transaction Selected","Please select a transaction to add a movement");
         } else{
             loadNewScene("/miniMovementWizard.fxml",p->new MiniMovementWizardFXController(
                     transaction, manager.getLedger().getAccounts()
@@ -133,10 +137,10 @@ public class STWizardFXController implements Initializable {
         }
     }
 
-    private void showAlert(){
+    private void showAlert(String title,String content){
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText("No Transaction Selected");
-        alert.setContentText("Please select a transaction to add a movement");
+        alert.setHeaderText(title);
+        alert.setContentText(content);
         alert.showAndWait();
     }
 }

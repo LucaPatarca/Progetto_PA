@@ -57,7 +57,8 @@ public class MiniTransactionWizardFXController implements Initializable {
 
     private boolean checkInput(){
         return Objects.nonNull(descriptionTextField.getText()) &&
-                Objects.nonNull(datePicker.getValue());
+                Objects.nonNull(datePicker.getValue()) &&
+                !descriptionTextField.getText().equals("");
     }
 
     private void showAlert() {

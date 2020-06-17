@@ -274,7 +274,6 @@ public class TableView extends Application implements Initializable,PropertyChan
         try {
             ledgerManager.removeAccount(account);
         } catch (AccountException e) {
-            e.printStackTrace();
             // TODO: 11/06/20 log
             showAlert("Account error",e.getLocalizedMessage(), Alert.AlertType.ERROR);
         }
