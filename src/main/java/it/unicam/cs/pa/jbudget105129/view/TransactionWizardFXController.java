@@ -91,20 +91,17 @@ public class TransactionWizardFXController implements Initializable {
     }
 
     @FXML public void handleAddTransactionPressed() {
-        if(checkTransactionInput()){
-            try {
-                ledgerManager.addTransaction(
-                        transactionDescriptionTextField.getText(),
-                        transactionDate.getValue(),
-                        List.copyOf(movementTable.getItems()),
-                        new LinkedList<>()
-                );
-                returnToMainScene();
-            } catch (Exception e) {
-                showAlert("Error while adding transaction", e.getLocalizedMessage());
-            }
-        }else{
-            showAlert("Transaction Input Error","Check information of the new transaction");
+        try {
+            ledgerManager.addTransaction(
+                    transactionDescriptionTextField.getText(),
+                    transactionDate.getValue(),
+                    List.copyOf(movementTable.getItems()),
+                    new LinkedList<>()
+            );
+            returnToMainScene();
+        } catch (Exception e) {
+            showAlert("Error while adding transaction",
+                    e.getLocalizedMessage()+"\nCheck new transaction's information");
         }
     }
 
@@ -146,12 +143,6 @@ public class TransactionWizardFXController implements Initializable {
                 Objects.nonNull(movementAmountSpinner.getValue()) &&
                 Objects.nonNull(movementAccountSelect.getValue()) &&
                 !movementDescriptionTextfield.getText().equals("");
-    }
-
-    private boolean checkTransactionInput(){
-        return Objects.nonNull(transactionDescriptionTextField.getText()) &&
-                Objects.nonNull(transactionDate.getValue()) &&
-                !transactionDescriptionTextField.getText().equals("");
     }
 
     private void showAlert(String title, String content) {

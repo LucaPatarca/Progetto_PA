@@ -71,11 +71,12 @@ public class STWizardFXController implements Initializable {
     }
 
     @FXML public void handleAddButtonPressed() {
-        if(!descriptionTextField.getText().equals("")){
+        try{
             manager.addScheduledTransaction(descriptionTextField.getText(), transactionTable.getItems());
             returnToMainScene();
-        }else {
-            showAlert("Scheduled Transaction Information Error", "Check new scheduled transaction's information");
+        }catch (IllegalArgumentException e){
+            showAlert("Scheduled Transaction Information Error",
+                    e.getLocalizedMessage()+"\nCheck new scheduled transaction's information");
         }
     }
 

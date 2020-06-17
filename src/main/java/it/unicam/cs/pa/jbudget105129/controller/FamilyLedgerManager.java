@@ -68,9 +68,10 @@ public class FamilyLedgerManager implements LedgerManager {
     @Override
     public void addTransaction(String description, LocalDate date, List<Movement> movements, List<Tag> tags) throws AccountException {
         if (description==null||date==null||movements==null) throw new NullPointerException();
-        if (movements.isEmpty()) throw new IllegalArgumentException();
-        if(movements.parallelStream().anyMatch(m->m.getAccount()==null))
-            throw new IllegalArgumentException();
+        if (description.equals("")) throw new IllegalArgumentException("transaction cannot have empty description");
+        if (movements.isEmpty()) throw new IllegalArgumentException("transactions must have at least one movement");
+        if(movements.parallelStream().anyMatch(m->Objects.isNull(m.getAccount())))
+            throw new IllegalArgumentException("one of the movements has a null account");
         Transaction transaction = new RoundedTransaction(description,date);
         movements.forEach(transaction::addMovement);
         tags.forEach(transaction::addTag);
@@ -132,7 +133,9 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void addAccount(String name, String description, String referent, double opening, AccountType type, Double min, Double max) {
-        Account account=RoundedAccount.getInstance(name,description,opening,type);
+        Account account=RoundedAccount.getInstance(Objects.requireNonNull(name),
+                Objects.requireNonNull(description),opening,Objects.requireNonNull(type));
+        if(name.equals("")) throw new IllegalArgumentException("Account cannot have empty name");
         account.setMinAmount(min);
         if(type.equals(AccountType.LIABILITY))
             if(min==null)
@@ -140,7 +143,7 @@ public class FamilyLedgerManager implements LedgerManager {
             else if(min<0)
                 throw new IllegalArgumentException("Account of type liability should always have min amount >=0");
         account.setMaxAmount(max);
-        account.setReferent(referent);
+        account.setReferent(Objects.requireNonNull(referent));
         ledger.addAccount(account);
     }
 
@@ -169,7 +172,8 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void addScheduledTransaction(String description, List<Transaction> transactions) {
-        if(Objects.requireNonNull(transactions).isEmpty()) throw new IllegalArgumentException("tried to add a completed scheduled transaction");
+        if(Objects.requireNonNull(transactions).isEmpty()) throw new IllegalArgumentException("tried to add an empty scheduled transaction");
+        if(Objects.requireNonNull(description).equals("")) throw new IllegalArgumentException("scheduled transaction cannot have empty description");
         ledger.addScheduledTransaction(new MapScheduledTransaction(description,transactions));
     }
 

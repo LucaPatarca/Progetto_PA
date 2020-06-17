@@ -57,7 +57,7 @@ public class AccountWizardFXController implements Initializable {
         Double minAmount = null;
         if (hasMaximumAmountCheckBox.isSelected()) maxAmount=maxAmountSpinner.getValue();
         if (hasMinimumAmountCheckBox.isSelected()) minAmount=minAmountSpinner.getValue();
-        if(checkInput()){
+        try{
             manager.addAccount(
                     nameTextField.getText(),
                     descriptionTextField.getText(),
@@ -68,8 +68,8 @@ public class AccountWizardFXController implements Initializable {
                     maxAmount
             );
             returnToMainScene();
-        }else{
-            showAlert();
+        }catch (IllegalArgumentException | NullPointerException e){
+            showAlert(e.getLocalizedMessage());
         }
     }
 
@@ -87,17 +87,10 @@ public class AccountWizardFXController implements Initializable {
         stage.setScene(mainScene);
     }
 
-    private boolean checkInput(){
-        return Objects.nonNull(nameTextField.getText()) &&
-                !nameTextField.getText().equals("") &&
-                Objects.nonNull(openingBalanceSpinner.getValue()) &&
-                Objects.nonNull(typeSelect.getValue());
-    }
-
-    private void showAlert() {
+    private void showAlert(String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText("Account Input Error");
-        alert.setContentText("Check new account's information");
+        alert.setContentText(content+"\nCheck new account's information");
         alert.showAndWait();
     }
 }
