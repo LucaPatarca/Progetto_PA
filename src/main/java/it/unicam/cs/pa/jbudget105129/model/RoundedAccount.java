@@ -211,6 +211,8 @@ public class RoundedAccount implements Account {
      */
     @Override
     public void removeMovement(Movement movement) throws AccountException {
+        if(!movements.contains(movement)) return;
+
         if(getType()==AccountType.ASSET){
             if(movement.getType()==MovementType.INCOME)
                 subtract(movement);

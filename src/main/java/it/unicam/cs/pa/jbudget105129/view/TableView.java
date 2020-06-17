@@ -80,7 +80,6 @@ public class TableView extends Application implements Initializable,PropertyChan
     private static Scene mainScene;
     private Stage primaryStage;
     private LedgerManager ledgerManager;
-    private Injector injector;
     private static boolean unsavedChanges;
     private LedgerPrinter ledgerPrinter;
     private File currentFile;
@@ -99,8 +98,8 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        injector= Guice.createInjector(new LedgerManagerModule());
-        ledgerManager=injector.getInstance(LedgerManager.class);
+        Injector injector = Guice.createInjector(new LedgerManagerModule());
+        ledgerManager= injector.getInstance(LedgerManager.class);
         unsavedChanges=false;
         ledgerPrinter=new LedgerPrinter();
         saveMenuItem.setDisable(true);
@@ -108,7 +107,7 @@ public class TableView extends Application implements Initializable,PropertyChan
         initAccountTable();
         initScheduledTable();
         initBudgetTable();
-        ledgerManager.getLedger().getPropertyChangeSupport().addPropertyChangeListener(this);
+        ledgerManager.getLedger().addListener(this);
     }
 
     private void initTransactionTable(){
@@ -152,12 +151,12 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-        accountTable.refresh();
-        transactionTable.refresh();
-        scheduledTable.refresh();
+        accountTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getAccounts()));
+        transactionTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getTransactions()));
+        scheduledTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getScheduledTransactions()));
         unsavedChanges=true;
         saveMenuItem.setDisable(false);
-        // FIXME: 16/06/2020 saveMenuItem often remains disabled
+        // FIXME: 16/06/2020 saveMenuItem remains disabled
     }
 
     @FXML public void handleSavePressed() {
@@ -176,7 +175,7 @@ public class TableView extends Application implements Initializable,PropertyChan
         transactionTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getTransactions()));
         accountTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getAccounts()));
         scheduledTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getScheduledTransactions()));
-        ledgerManager.getLedger().getPropertyChangeSupport().addPropertyChangeListener(this);
+        ledgerManager.getLedger().addListener(this);
     }
 
     @FXML protected void handleNewTransaction() {
@@ -348,10 +347,13 @@ public class TableView extends Application implements Initializable,PropertyChan
         currentFile = fileChooser.showOpenDialog(primaryStage);
         try {
             ledgerManager.loadLedger(currentFile.getAbsolutePath());
+            ledgerManager.schedule();
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: 11/06/20 log
             showAlert("Ledger load error",e.getMessage(), Alert.AlertType.ERROR);
+        } catch (AccountException e) {
+            showAlert("Ledger schedule error",e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 

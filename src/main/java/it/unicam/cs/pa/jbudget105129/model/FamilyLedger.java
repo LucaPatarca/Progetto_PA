@@ -1,6 +1,8 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
+
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.util.*;
@@ -178,14 +180,13 @@ public class FamilyLedger implements Ledger {
     }
 
     /**
-     * Returns the inner {@link PropertyChangeSupport} used to notify listener objects.
-     * To listen for this ledger an object needs to implement {@link java.beans.PropertyChangeListener}
-     * interface and than add itself to the listener of this return object.
-     * @return the {@link PropertyChangeSupport} object
+     * Adds a new listener to the Ledger's list, this operation is delegated to a {@link PropertyChangeSupport}
+     * that is responsible for managing the listener list.
+     * @param listener the new listener to add
      */
     @Override
-    public PropertyChangeSupport getPropertyChangeSupport() {
-        return pcs;
+    public void addListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
     }
 
     @Override

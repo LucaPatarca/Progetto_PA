@@ -69,7 +69,7 @@ public class AccountWizardFXController implements Initializable {
 
     private void returnToMainScene(){
         Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.setTitle("Jbudget");
+        stage.setTitle("JBudget");
         stage.setScene(mainScene);
     }
 

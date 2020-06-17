@@ -103,6 +103,7 @@ public class TransactionWizardFXController implements Initializable {
 
     private void returnToMainScene(){
         Stage stage= (Stage) cancelButton.getScene().getWindow();
+        stage.setTitle("JBudget");
         stage.setScene(mainScene);
     }
 

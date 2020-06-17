@@ -30,6 +30,7 @@ public class FamilyLedgerManagerTest {
         injector = Guice.createInjector(new LedgerManagerModule());
         manager = injector.getInstance(FamilyLedgerManager.class);
         account = RoundedAccount.getInstance("prova","",0, AccountType.ASSET);
+        account.setMinAmount(0.0);
         movement = RoundedMovement.getInstance("movement1",10,MovementType.INCOME,account);
     }
 
@@ -42,6 +43,13 @@ public class FamilyLedgerManagerTest {
         assertEquals("test",manager.getLedger().getTransactions().get(0).getDescription());
         assertTrue(manager.getLedger().getAccounts().contains(account));
         assertEquals(10,account.getBalance());
+    }
+
+    @Test
+    void shouldRemoveTransactionIfFails(){
+        Movement movement2=RoundedMovement.getInstance("impossible",1000,MovementType.OUTFLOW,account);
+        assertThrows(AccountException.class,()->manager.addTransaction("transaction",LocalDate.now(),List.of(movement,movement2),new LinkedList<>()));
+        assertEquals(0,account.getBalance());
     }
 
     @Test

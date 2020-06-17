@@ -102,7 +102,8 @@ public class STWizardFXController implements Initializable {
             stage.setScene(new Scene(root));
             stage.showAndWait();
             transactionTable.refresh();
-            movementTable.refresh();
+            movementTable.setItems(FXCollections.observableList(
+                    transactionTable.getSelectionModel().getSelectedItem().getMovements()));
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: 16/06/2020 log e gestire
@@ -122,13 +123,14 @@ public class STWizardFXController implements Initializable {
             Movement toRemove = movementTable.getSelectionModel().getSelectedItem();
             Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
             transaction.removeMovement(toRemove);
-            movementTable.refresh();
+            movementTable.setItems(FXCollections.observableList(
+                    transactionTable.getSelectionModel().getSelectedItem().getMovements()));
         }
     }
 
     private void returnToMainScene(){
         Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.setTitle("Jbudget");
+        stage.setTitle("JBudget");
         stage.setScene(mainScene);
     }
 }

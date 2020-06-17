@@ -1,6 +1,8 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
+
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.util.Date;
@@ -99,11 +101,11 @@ public interface Ledger {
     void schedule(LocalDate date) throws AccountException;
 
     /**
-     * Returns the inner {@link PropertyChangeSupport} used to notify listener objects.
-     * To listen for this ledger an object needs to implement {@link java.beans.PropertyChangeListener}
-     * interface and than add itself to the listener of this return object.
-     * @return the {@link PropertyChangeSupport} object
+     * Adds a new listener to the Ledger's list, each implementing class is responsible for choosing how
+     * to manage the listener list. However this should be delegated to an external class
+     * like {@link PropertyChangeSupport}
+     * @param listener the new listener to add
      */
-    PropertyChangeSupport getPropertyChangeSupport();
+    void addListener(PropertyChangeListener listener);
     // FIXME: 15/06/2020 non dovrebbe mai dipendere da una classe
 }

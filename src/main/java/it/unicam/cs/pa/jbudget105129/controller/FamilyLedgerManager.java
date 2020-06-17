@@ -11,10 +11,7 @@ import it.unicam.cs.pa.jbudget105129.persistence.PersistenceManager;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -81,7 +78,6 @@ public class FamilyLedgerManager implements LedgerManager {
             ledger.addTransaction(transaction);
         } catch (AccountException e){
             this.removeTransaction(transaction);
-            // TODO: 07/06/20 testare questa cosa
             throw e;
         }
     }
@@ -188,7 +184,11 @@ public class FamilyLedgerManager implements LedgerManager {
 
     @Override
     public List<Tag> getAllUsedTags() {
-        return ledger.getTransactions().stream().map(Transaction::getTags).flatMap(List::stream)
+        List<Transaction> transactions = new ArrayList<>(ledger.getTransactions());
+        transactions.addAll(ledger.getScheduledTransactions().stream()
+                .map(ScheduledTransaction::getTransactions).flatMap(List::stream)
+                .collect(Collectors.toList()));
+        return transactions.stream().map(Transaction::getTags).flatMap(List::stream)
                 .distinct().collect(Collectors.toList());
     }
 
