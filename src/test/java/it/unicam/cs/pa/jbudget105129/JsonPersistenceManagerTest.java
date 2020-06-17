@@ -89,14 +89,18 @@ public class JsonPersistenceManagerTest {
         RoundedMovement movement2 = RoundedMovement.getInstance("movement1",15.68,MovementType.OUTFLOW,account2);
         RoundedMovement movement3 = RoundedMovement.getInstance("movement1",8.68,MovementType.INCOME,account2);
         RoundedMovement movement4 = RoundedMovement.getInstance("movement1",5.9,MovementType.OUTFLOW,account1);
-        RoundedTransaction transaction1 = new RoundedTransaction("transaction1",LocalDate.now());
-        RoundedTransaction transaction2 = new RoundedTransaction("transaction2",LocalDate.now());
+        RoundedTransaction transaction1 = new RoundedTransaction("past",LocalDate.now().minusDays(1));
+        RoundedTransaction transaction2 = new RoundedTransaction("future",LocalDate.now().plusDays(1));
         transaction1.addMovement(movement1);
         transaction1.addMovement(movement2);
         transaction2.addMovement(movement3);
         transaction2.addMovement(movement4);
         ScheduledTransaction st = new MapScheduledTransaction("scheduledTransaction",List.of(transaction1,transaction2));
-        st.markTransactionAsCompleted(transaction1);
         ledger.addScheduledTransaction(st);
+        try {
+            ledger.schedule(LocalDate.now());
+        } catch (AccountException e) {
+            fail(e);
+        }
     }
 }
