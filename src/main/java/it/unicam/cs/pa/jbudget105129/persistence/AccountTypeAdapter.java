@@ -23,7 +23,6 @@ public class AccountTypeAdapter implements JsonDeserializer<Account>, JsonSerial
         JsonObject jo = json.getAsJsonObject();
         if(jo.has("lazyID"))
             return RoundedAccount.getInstance(jo.get("lazyID").getAsInt());
-
         RoundedAccount account= RoundedAccount.getRegistry().getInstance(
                 jo.get("ID").getAsInt(),
                 jo.get("name").getAsString(),
@@ -38,7 +37,6 @@ public class AccountTypeAdapter implements JsonDeserializer<Account>, JsonSerial
             Movement movement = context.deserialize(element,Movement.class);
             movement.setAccount(account);
         }
-        account.getMovements().forEach(m->m.setAccount(account));
         return account;
     }
 
@@ -57,6 +55,7 @@ public class AccountTypeAdapter implements JsonDeserializer<Account>, JsonSerial
             jo.add("minAmount",context.serialize(src.getMinAmount()));
             jo.addProperty("referent",src.getReferent());
             jo.add("type",context.serialize(src.getType()));
+            alreadySaved.add(src.getID());
         }
         return jo;
     }

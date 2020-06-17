@@ -157,6 +157,9 @@ public class TableView extends Application implements Initializable,PropertyChan
         accountTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getAccounts()));
         transactionTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getTransactions()));
         scheduledTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getScheduledTransactions()));
+        accountTable.refresh();
+        transactionTable.refresh();
+        scheduledTable.refresh();
         unsavedChanges=true;
         saveMenuItem.setDisable(false);
     }

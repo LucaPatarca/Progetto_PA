@@ -1,13 +1,16 @@
 package it.unicam.cs.pa.jbudget105129.persistence;
 
 import com.google.gson.*;
+import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.MapScheduledTransaction;
+import it.unicam.cs.pa.jbudget105129.model.Movement;
 import it.unicam.cs.pa.jbudget105129.model.ScheduledTransaction;
 import it.unicam.cs.pa.jbudget105129.model.Transaction;
 
 import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ScheduledTransactionTypeAdapter implements JsonSerializer<ScheduledTransaction>, JsonDeserializer<ScheduledTransaction> {
     @Override
@@ -26,6 +29,7 @@ public class ScheduledTransactionTypeAdapter implements JsonSerializer<Scheduled
         }
         MapScheduledTransaction st = new MapScheduledTransaction(description,allTransactions);
         completed.forEach(st::markTransactionAsCompleted);
+        addMovementsToAccount(completed);
         return st;
     }
 
@@ -42,5 +46,18 @@ public class ScheduledTransactionTypeAdapter implements JsonSerializer<Scheduled
         }
         jo.add("transactions",ja);
         return jo;
+    }
+
+    private void addMovementsToAccount(List<Transaction> transactions){
+        List<Movement> movements = transactions.stream().map(Transaction::getMovements).flatMap(List::stream)
+                .collect(Collectors.toList());
+        movements.forEach(m-> {
+            try {
+                m.getAccount().addMovement(m);
+            } catch (AccountException e) {
+                e.printStackTrace();
+                // TODO: 17/06/2020 log
+            }
+        });
     }
 }
