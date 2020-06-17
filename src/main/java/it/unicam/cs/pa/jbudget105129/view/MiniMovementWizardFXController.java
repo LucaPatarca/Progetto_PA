@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MiniMovementWizardFXController implements Initializable {
@@ -32,25 +33,6 @@ public class MiniMovementWizardFXController implements Initializable {
         this.accounts=accounts;
     }
 
-    public void handleCancelPressed(ActionEvent actionEvent) {
-        closePopup();
-    }
-
-    public void handleDonePressed(ActionEvent actionEvent) {
-        transaction.addMovement(RoundedMovement.getInstance(
-                descriptionTextField.getText(),
-                amountSpinner.getValue(),
-                typeSelect.getValue(),
-                accountSelect.getValue()
-        ));
-        closePopup();
-    }
-
-    private void closePopup(){
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         typeSelect.setItems(FXCollections.observableArrayList(MovementType.values()));
@@ -59,5 +41,42 @@ public class MiniMovementWizardFXController implements Initializable {
         accountSelect.setConverter(new AccountConverter());
         amountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
                 Double.MIN_VALUE,Double.MAX_VALUE,1,0.01));
+    }
+
+    @FXML public void handleCancelPressed(ActionEvent actionEvent) {
+        closePopup();
+    }
+
+    @FXML public void handleDonePressed(ActionEvent actionEvent) {
+        if(checkInput()){
+            transaction.addMovement(RoundedMovement.getInstance(
+                    descriptionTextField.getText(),
+                    amountSpinner.getValue(),
+                    typeSelect.getValue(),
+                    accountSelect.getValue()
+            ));
+            closePopup();
+        } else {
+            showAlert();
+        }
+    }
+
+    private boolean checkInput(){
+        return Objects.nonNull(descriptionTextField.getText()) &&
+                Objects.nonNull(amountSpinner.getValue()) &&
+                Objects.nonNull(typeSelect.getValue()) &&
+                Objects.nonNull(accountSelect.getValue());
+    }
+
+    private void showAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Movement Input Error");
+        alert.setContentText("check new movement's information");
+        alert.showAndWait();
+    }
+
+    private void closePopup(){
+        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.close();
     }
 }

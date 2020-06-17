@@ -5,7 +5,6 @@ import it.unicam.cs.pa.jbudget105129.model.*;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,11 +15,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class STWizardFXController implements Initializable {
@@ -62,51 +62,36 @@ public class STWizardFXController implements Initializable {
         movementAccountCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getAccount().getName()));
     }
 
-    @FXML public void handleCancelButtonPressed(ActionEvent event) {
+    @FXML public void handleCancelButtonPressed() {
         returnToMainScene();
     }
 
-    @FXML public void handleAddTransactionButtonPressed(ActionEvent event) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/miniTransactionWizard.fxml"));
-        loader.setControllerFactory(param->new MiniTransactionWizardFXController(transactionTable.getItems()));
-        Stage stage = new Stage();
-        try {
-            Parent root = loader.load();
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @FXML public void handleAddTransactionButtonPressed() {
+        loadNewScene("miniTransactionWizard.fxml", p->new MiniTransactionWizardFXController(transactionTable.getItems()));
     }
 
-    @FXML public void handleAddButtonPressed(ActionEvent event) {
+    @FXML public void handleAddButtonPressed() {
         manager.addScheduledTransaction(descriptionTextField.getText(),transactionTable.getItems());
         returnToMainScene();
     }
 
-    @FXML public void handleTransactionMouseClicked(MouseEvent mouseEvent) {
+    @FXML public void handleTransactionMouseClicked() {
         movementTable.setItems(FXCollections.observableList(
                 transactionTable.getSelectionModel().getSelectedItem().getMovements()
         ));
     }
 
-    @FXML public void handleAddMovementPressed(ActionEvent event) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/miniMovementWizard.fxml"));
-        loader.setControllerFactory(param->new MiniMovementWizardFXController(
-                transactionTable.getSelectionModel().getSelectedItem(),
-                manager.getLedger().getAccounts()
-        ));
-        Stage stage = new Stage();
-        try {
-            Parent root = loader.load();
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
+    @FXML public void handleAddMovementPressed() {
+        Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
+        if(Objects.isNull(transaction)){
+            showAlert();
+        } else{
+            loadNewScene("/miniMovementWizard.fxml",p->new MiniMovementWizardFXController(
+                    transaction, manager.getLedger().getAccounts()
+            ));
             transactionTable.refresh();
             movementTable.setItems(FXCollections.observableList(
                     transactionTable.getSelectionModel().getSelectedItem().getMovements()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: 16/06/2020 log e gestire
         }
     }
 
@@ -132,5 +117,26 @@ public class STWizardFXController implements Initializable {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.setTitle("JBudget");
         stage.setScene(mainScene);
+    }
+
+    private void loadNewScene(String resource, Callback<Class<?>,Object> controllerFactory){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+        loader.setControllerFactory(controllerFactory);
+        Stage stage = new Stage();
+        try {
+            Parent root = loader.load();
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO: 16/06/2020 log
+        }
+    }
+
+    private void showAlert(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("No Transaction Selected");
+        alert.setContentText("Please select a transaction to add a movement");
+        alert.showAndWait();
     }
 }

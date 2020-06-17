@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MovementsPopupFXController implements Initializable {
@@ -54,9 +55,11 @@ public class MovementsPopupFXController implements Initializable {
     }
 
     @FXML public void handleEditTagPressed(ActionEvent actionEvent) {
+        Movement movement = movementTable.getSelectionModel().getSelectedItem();
+        if(Objects.isNull(movement)) return;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/editTagsPopup.fxml"));
         loader.setControllerFactory(p->new EditTagsFXController(
-                movementTable.getSelectionModel().getSelectedItem(),
+                movement,
                 ledgerManager.getAllUsedTags()
         ));
         Stage stage = new Stage();
@@ -72,7 +75,7 @@ public class MovementsPopupFXController implements Initializable {
             movementTable.refresh();
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: 17/06/2020 gestire e log
+            // TODO: 17/06/2020 log
         }
     }
 }

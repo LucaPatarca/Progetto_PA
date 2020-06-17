@@ -4,12 +4,14 @@ import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AccountWizardFXController implements Initializable {
@@ -29,7 +31,7 @@ public class AccountWizardFXController implements Initializable {
     public CheckBox hasMaximumAmountCheckBox;
     public CheckBox hasMinimumAmountCheckBox;
 
-    protected AccountWizardFXController(Scene mainScene, LedgerManager manager){
+    public AccountWizardFXController(Scene mainScene, LedgerManager manager){
         this.mainScene=mainScene;
         this.manager=manager;
     }
@@ -46,25 +48,37 @@ public class AccountWizardFXController implements Initializable {
                 -Double.MAX_VALUE,Double.MAX_VALUE,0.0,0.01));
     }
 
-    public void cancelButtonPressed(ActionEvent event) {
+    @FXML public void cancelButtonPressed() {
         returnToMainScene();
     }
 
-    public void addButtonPressed(ActionEvent event) {
+    @FXML public void addButtonPressed() {
         Double maxAmount = null;
         Double minAmount = null;
         if (hasMaximumAmountCheckBox.isSelected()) maxAmount=maxAmountSpinner.getValue();
         if (hasMinimumAmountCheckBox.isSelected()) minAmount=minAmountSpinner.getValue();
-        manager.addAccount(
-                nameTextField.getText(),
-                descriptionTextField.getText(),
-                referentTextField.getText(),
-                openingBalanceSpinner.getValue(),
-                typeSelect.getValue(),
-                minAmount,
-                maxAmount
-        );
-        returnToMainScene();
+        if(checkInput()){
+            manager.addAccount(
+                    nameTextField.getText(),
+                    descriptionTextField.getText(),
+                    referentTextField.getText(),
+                    openingBalanceSpinner.getValue(),
+                    typeSelect.getValue(),
+                    minAmount,
+                    maxAmount
+            );
+            returnToMainScene();
+        }else{
+            showAlert();
+        }
+    }
+
+    @FXML public void handleMaxCheckBoxAction(ActionEvent event) {
+        maxAmountSpinner.setDisable(!hasMaximumAmountCheckBox.isSelected());
+    }
+
+    @FXML public void handleMinCheckBoxAction(ActionEvent event) {
+        minAmountSpinner.setDisable(!hasMinimumAmountCheckBox.isSelected());
     }
 
     private void returnToMainScene(){
@@ -73,11 +87,17 @@ public class AccountWizardFXController implements Initializable {
         stage.setScene(mainScene);
     }
 
-    public void handleMaxCheckBoxAction(ActionEvent event) {
-        maxAmountSpinner.setDisable(!hasMaximumAmountCheckBox.isSelected());
+    private boolean checkInput(){
+        return Objects.nonNull(nameTextField.getText()) &&
+                !nameTextField.getText().equals("") &&
+                Objects.nonNull(openingBalanceSpinner.getValue()) &&
+                Objects.nonNull(typeSelect.getValue());
     }
 
-    public void handleMinCheckBoxAction(ActionEvent event) {
-        minAmountSpinner.setDisable(!hasMinimumAmountCheckBox.isSelected());
+    private void showAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Account Input Error");
+        alert.setContentText("Check new account's information");
+        alert.showAndWait();
     }
 }

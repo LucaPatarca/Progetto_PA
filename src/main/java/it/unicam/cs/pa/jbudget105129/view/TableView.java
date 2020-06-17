@@ -1,5 +1,8 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
@@ -156,7 +159,6 @@ public class TableView extends Application implements Initializable,PropertyChan
         scheduledTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getScheduledTransactions()));
         unsavedChanges=true;
         saveMenuItem.setDisable(false);
-        // FIXME: 16/06/2020 saveMenuItem remains disabled
     }
 
     @FXML public void handleSavePressed() {
@@ -203,14 +205,18 @@ public class TableView extends Application implements Initializable,PropertyChan
     }
 
     @FXML public void transactionContextShowMovementsPressed(ActionEvent actionEvent) {
-        showMovementPopup(transactionTable.getSelectionModel().getSelectedItem());
+        Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
+        if(transaction==null) return;
+        showMovementPopup(transaction);
         transactionTable.refresh();
     }
 
     @FXML public void transactionContextEditTagsPressed(ActionEvent actionEvent) {
         unsavedChanges=true;
         saveMenuItem.setDisable(false);
-        showEditTagsPopup(transactionTable.getSelectionModel().getSelectedItem());
+        Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
+        if(transaction==null) return;
+        showEditTagsPopup(transaction);
         transactionTable.refresh();
     }
 
@@ -226,6 +232,7 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     @FXML public void handleScheduledMouseClicked(MouseEvent mouseEvent) {
         ScheduledTransaction st = scheduledTable.getSelectionModel().getSelectedItem();
+        if(st==null) return;
         sTransactionTable.setItems(FXCollections.observableList(st.getTransactions()));
     }
 
@@ -236,17 +243,22 @@ public class TableView extends Application implements Initializable,PropertyChan
     }
 
     @FXML public void handleScheduledShowMovementsPressed(ActionEvent actionEvent) {
-        showMovementPopup(sTransactionTable.getSelectionModel().getSelectedItem());
+        Transaction transaction = sTransactionTable.getSelectionModel().getSelectedItem();
+        if(transaction==null) return;
+        showMovementPopup(transaction);
     }
 
     @FXML public void handleScheduledEditTagsPressed(ActionEvent actionEvent) {
         unsavedChanges=true;
         saveMenuItem.setDisable(false);
-        showEditTagsPopup(sTransactionTable.getSelectionModel().getSelectedItem());
+        Transaction transaction = sTransactionTable.getSelectionModel().getSelectedItem();
+        if (transaction==null) return;
+        showEditTagsPopup(transaction);
     }
 
     private void removeSelectedTransaction(){
         Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
+        if(transaction==null) return;
         try {
             ledgerManager.removeTransaction(transaction);
         } catch (AccountException e) {
@@ -258,6 +270,7 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     private void removeSelectedAccount(){
         Account account = accountTable.getSelectionModel().getSelectedItem();
+        if (account==null) return;
         try {
             ledgerManager.removeAccount(account);
         } catch (AccountException e) {
@@ -269,6 +282,7 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     private void removeSelectedScheduledTransaction(){
         ScheduledTransaction st = scheduledTable.getSelectionModel().getSelectedItem();
+        if(st==null) return;
         try {
             ledgerManager.removeScheduledTransaction(st);
         } catch (AccountException e) {
@@ -336,7 +350,9 @@ public class TableView extends Application implements Initializable,PropertyChan
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("JBudget file","*.jb")
         );
-        currentFile=fileChooser.showSaveDialog(primaryStage);
+        File file = fileChooser.showSaveDialog(primaryStage);
+        if(file==null) return;
+        currentFile=file;
         save();
     }
 
@@ -345,16 +361,22 @@ public class TableView extends Application implements Initializable,PropertyChan
         fileChooser.setTitle("Open Ledger File");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("JBudget file","*.jb"));
-        currentFile = fileChooser.showOpenDialog(primaryStage);
+        File file = fileChooser.showOpenDialog(primaryStage);
+        if(file==null) return;
+        currentFile=file;
         try {
             ledgerManager.loadLedger(currentFile.getAbsolutePath());
             ledgerManager.schedule();
+            unsavedChanges=false;
+            saveMenuItem.setDisable(true);
         } catch (IOException e) {
             e.printStackTrace();
             // TODO: 11/06/20 log
             showAlert("Ledger load error",e.getMessage(), Alert.AlertType.ERROR);
         } catch (AccountException e) {
             showAlert("Ledger schedule error",e.getMessage(), Alert.AlertType.ERROR);
+        } catch (JsonParseException e){
+            showAlert("File error",e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 

@@ -6,14 +6,16 @@ import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -21,13 +23,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.temporal.TemporalField;
-import java.util.Calendar;
-import java.util.LinkedList;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class TransactionWizardFXController implements Initializable {
+
+    private final LedgerManager ledgerManager;
+    private final Scene mainScene;
+    private final LedgerPrinter ledgerPrinter;
 
     @FXML public TableColumn<Movement, String> movementDescriptionCol;
     @FXML public TableColumn<Movement,String> movementTypeCol;
@@ -46,13 +50,9 @@ public class TransactionWizardFXController implements Initializable {
     @FXML public ContextMenu movementsContextMenu;
     @FXML public MenuItem editTagsMovementMenuItem;
 
-    private final LedgerManager ledgerManager;
-    private final Scene mainScene;
-    private final LedgerPrinter ledgerPrinter;
-
     public TransactionWizardFXController(Scene mainScene, LedgerManager ledgerManager){
-        this.ledgerManager=ledgerManager;
-        this.mainScene=mainScene;
+        this.ledgerManager= Objects.requireNonNull(ledgerManager);
+        this.mainScene=Objects.requireNonNull(mainScene);
         ledgerPrinter = new LedgerPrinter();
     }
 
@@ -70,16 +70,20 @@ public class TransactionWizardFXController implements Initializable {
         movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
                 Double.MIN_VALUE,Double.MAX_VALUE,1.0,0.01));
         movementTable.setOnContextMenuRequested(event->movementsContextMenu.show(movementTable,event.getScreenX(),event.getScreenY()));
-
+        transactionDate.setValue(LocalDate.now());
     }
 
     @FXML protected void handleAddMovementPressed() {
-        movementTable.getItems().add(RoundedMovement.getInstance(
-                movementDescriptionTextfield.getText(),
-                movementAmountSpinner.getValue(),
-                movementTypeSelect.getValue(),
-                movementAccountSelect.getValue()
-        ));
+        if (checkMovementInput()) {
+            movementTable.getItems().add(RoundedMovement.getInstance(
+                    movementDescriptionTextfield.getText(),
+                    movementAmountSpinner.getValue(),
+                    movementTypeSelect.getValue(),
+                    movementAccountSelect.getValue()
+            ));
+        } else {
+            showAlert("Movement Input Error", "Check information of the new movement");
+        }
     }
 
     @FXML public void handleCancelPressed() {
@@ -87,17 +91,20 @@ public class TransactionWizardFXController implements Initializable {
     }
 
     @FXML public void handleAddTransactionPressed() {
-        try {
-            ledgerManager.addTransaction(
-                    transactionDescriptionTextField.getText(),
-                    transactionDate.getValue(),
-                    List.copyOf(movementTable.getItems()),
-                    new LinkedList<>()
-            );
-            returnToMainScene();
-        } catch (AccountException e) {
-            e.printStackTrace();
-            // TODO: 05/06/20 gestire
+        if(checkTransactionInput()){
+            try {
+                ledgerManager.addTransaction(
+                        transactionDescriptionTextField.getText(),
+                        transactionDate.getValue(),
+                        List.copyOf(movementTable.getItems()),
+                        new LinkedList<>()
+                );
+                returnToMainScene();
+            } catch (AccountException e) {
+                showAlert("Error while adding transaction", e.getLocalizedMessage());
+            }
+        }else{
+            showAlert("Transaction Input Error","Check information of the new transaction");
         }
     }
 
@@ -107,10 +114,12 @@ public class TransactionWizardFXController implements Initializable {
         stage.setScene(mainScene);
     }
 
-    @FXML public void handleMovementEditTagPressed(ActionEvent actionEvent) {
+    @FXML public void handleMovementEditTagPressed() {
+        Movement movement = movementTable.getSelectionModel().getSelectedItem();
+        if (Objects.isNull(movement)) return;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/editTagsPopup.fxml"));
         loader.setControllerFactory(param->new EditTagsFXController(
-                movementTable.getSelectionModel().getSelectedItem(),
+                movement,
                 ledgerManager.getAllUsedTags()
         ));
         Stage stage = new Stage();
@@ -129,5 +138,24 @@ public class TransactionWizardFXController implements Initializable {
             Movement toRemove = movementTable.getSelectionModel().getSelectedItem();
             movementTable.getItems().remove(toRemove);
         }
+    }
+
+    private boolean checkMovementInput(){
+        return Objects.nonNull(movementDescriptionTextfield.getText()) &&
+                Objects.nonNull(movementTypeSelect.getValue()) &&
+                Objects.nonNull(movementAmountSpinner.getValue()) &&
+                Objects.nonNull(movementAccountSelect.getValue());
+    }
+
+    private boolean checkTransactionInput(){
+        return Objects.nonNull(transactionDescriptionTextField.getText()) &&
+                Objects.nonNull(transactionDate.getValue());
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(title);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
