@@ -204,6 +204,7 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     @FXML public void transactionContextShowMovementsPressed(ActionEvent actionEvent) {
         showMovementPopup(transactionTable.getSelectionModel().getSelectedItem());
+        transactionTable.refresh();
     }
 
     @FXML public void transactionContextEditTagsPressed(ActionEvent actionEvent) {
@@ -374,8 +375,8 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     private void showMovementPopup(Transaction selected){
         FXMLLoader loader = createLoader("/movementsPopup.fxml",
-                param->new MovementsPopupFXController(selected.getMovements()));
-        Scene scene = createScene(loader,400,300);
+                param->new MovementsPopupFXController(selected.getMovements(),ledgerManager));
+        Scene scene = createScene(loader,550,300);
         showNewStage(scene,selected.getDescription());
     }
 

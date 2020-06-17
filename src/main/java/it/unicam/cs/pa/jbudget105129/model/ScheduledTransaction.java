@@ -3,7 +3,6 @@ package it.unicam.cs.pa.jbudget105129.model;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-// TODO: 07/06/20 add test for persistence
 /**
  * Represent a set of programmed {@link Transaction}. This object must have a way to distinguish completed
  * transactions from not completed ones.

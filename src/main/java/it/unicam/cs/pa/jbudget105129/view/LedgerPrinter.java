@@ -25,21 +25,19 @@ public class LedgerPrinter {
     }
 
     public String stringOfMovements(List<Movement> movements){
-        // FIXME: 16/06/2020 togliere la virgola finale
         String toReturn="";
         for(Movement m : movements){
             toReturn=toReturn.concat(m.getDescription()+", ");
         }
-        return toReturn;
+        return toReturn.subSequence(0,toReturn.length()-2).toString();
     }
 
     public String stringOfTags(List<Tag> tags){
-        // FIXME: 16/06/2020 togliere la virgola finale
         String toReturn="";
-        for(Tag m : tags){
-            toReturn=toReturn.concat(m.getName()+", ");
+        for(Tag t : tags){
+            toReturn=toReturn.concat(t.getName()+", ");
         }
-        return toReturn;
+        return toReturn.subSequence(0,toReturn.length()-2).toString();
     }
 
     public String stringOf(AccountType type){

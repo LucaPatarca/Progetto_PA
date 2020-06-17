@@ -107,5 +107,4 @@ public interface Ledger {
      * @param listener the new listener to add
      */
     void addListener(PropertyChangeListener listener);
-    // FIXME: 15/06/2020 non dovrebbe mai dipendere da una classe
 }
