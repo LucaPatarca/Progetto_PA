@@ -10,9 +10,17 @@ import it.unicam.cs.pa.jbudget105129.model.Transaction;
 import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class ScheduledTransactionTypeAdapter implements JsonSerializer<ScheduledTransaction>, JsonDeserializer<ScheduledTransaction> {
+
+    private static Logger logger;
+
+    public ScheduledTransactionTypeAdapter(){
+        logger = Logger.getLogger("it.unicam.cs.pa.jbudget105129.persistence.ScheduledTransactionTypeAdapter");
+    }
+
     @Override
     public ScheduledTransaction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jo = json.getAsJsonObject();
@@ -55,8 +63,7 @@ public class ScheduledTransactionTypeAdapter implements JsonSerializer<Scheduled
             try {
                 m.getAccount().addMovement(m);
             } catch (AccountException e) {
-                e.printStackTrace();
-                // TODO: 17/06/2020 log
+                logger.severe(e.getMessage());
             }
         });
     }

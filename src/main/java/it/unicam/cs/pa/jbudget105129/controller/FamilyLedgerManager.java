@@ -272,9 +272,4 @@ public class FamilyLedgerManager implements LedgerManager {
     public void saveLedger(String file) throws IOException {
         persistenceManager.save(ledger,file);
     }
-
-    @Override
-    public void setLogLevel() {
-        // TODO: 04/06/20 implementare
-    }
 }

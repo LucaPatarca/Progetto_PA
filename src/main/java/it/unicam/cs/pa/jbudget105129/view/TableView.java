@@ -1,8 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
@@ -13,7 +11,6 @@ import javafx.application.Application;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,7 +20,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -38,6 +34,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class TableView extends Application implements Initializable,PropertyChangeListener {
 
@@ -81,9 +78,10 @@ public class TableView extends Application implements Initializable,PropertyChan
     @FXML public MenuItem transactionContextEditTagsItem;
 
     private static Scene mainScene;
+    private static boolean unsavedChanges;
+    private static Logger logger;
     private Stage primaryStage;
     private LedgerManager ledgerManager;
-    private static boolean unsavedChanges;
     private LedgerPrinter ledgerPrinter;
     private File currentFile;
 
@@ -105,6 +103,7 @@ public class TableView extends Application implements Initializable,PropertyChan
         ledgerManager= injector.getInstance(LedgerManager.class);
         unsavedChanges=false;
         ledgerPrinter=new LedgerPrinter();
+        logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.TableView");
         saveMenuItem.setDisable(true);
         initTransactionTable();
         initAccountTable();
@@ -154,6 +153,7 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+        logger.fine("Ledger changed");
         accountTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getAccounts()));
         transactionTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getTransactions()));
         scheduledTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getScheduledTransactions()));
@@ -171,11 +171,11 @@ public class TableView extends Application implements Initializable,PropertyChan
             saveAs();
     }
 
-    @FXML public void handleSaveAsPressed(ActionEvent actionEvent) {
+    @FXML public void handleSaveAsPressed() {
         saveAs();
     }
 
-    @FXML public void handleLoadPressed(ActionEvent event) {
+    @FXML public void handleLoadPressed() {
         load();
         transactionTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getTransactions()));
         accountTable.setItems(FXCollections.observableList(ledgerManager.getLedger().getAccounts()));
@@ -186,19 +186,19 @@ public class TableView extends Application implements Initializable,PropertyChan
     @FXML protected void handleNewTransaction() {
         FXMLLoader loader = createLoader("/transactionWizard.fxml",param->new TransactionWizardFXController(mainScene,ledgerManager));
         Scene scene = createScene(loader,750,450);
-        loadNewScene(scene,"Adding new transaction");
+        loadScene(scene,"Adding new transaction");
     }
 
-    @FXML public void handleNewAccountPressed(ActionEvent event) {
+    @FXML public void handleNewAccountPressed() {
         FXMLLoader loader = createLoader("/accountWizard.fxml",param->new AccountWizardFXController(mainScene,ledgerManager));
         Scene scene = createScene(loader,480,350);
-        loadNewScene(scene,"Adding new account");
+        loadScene(scene,"Adding new account");
     }
 
-    @FXML public void handleNewScheduledPressed(ActionEvent event) {
+    @FXML public void handleNewScheduledPressed() {
         FXMLLoader loader = createLoader("/scheduledTransactionWizard.fxml",param->new STWizardFXController(mainScene,ledgerManager));
         Scene scene = createScene(loader,750,450);
-        loadNewScene(scene,"Adding new scheduled transacion");
+        loadScene(scene,"Adding new scheduled transacion");
     }
 
     @FXML public void handleTransactionKeyPressed(KeyEvent keyEvent) {
@@ -207,14 +207,14 @@ public class TableView extends Application implements Initializable,PropertyChan
         }
     }
 
-    @FXML public void transactionContextShowMovementsPressed(ActionEvent actionEvent) {
+    @FXML public void transactionContextShowMovementsPressed() {
         Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
         if(transaction==null) return;
         showMovementPopup(transaction);
         transactionTable.refresh();
     }
 
-    @FXML public void transactionContextEditTagsPressed(ActionEvent actionEvent) {
+    @FXML public void transactionContextEditTagsPressed() {
         unsavedChanges=true;
         saveMenuItem.setDisable(false);
         Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
@@ -223,7 +223,7 @@ public class TableView extends Application implements Initializable,PropertyChan
         transactionTable.refresh();
     }
 
-    @FXML public void handleTransactionContextDeletePressed(ActionEvent actionEvent) {
+    @FXML public void handleTransactionContextDeletePressed() {
         removeSelectedTransaction();
     }
 
@@ -233,7 +233,7 @@ public class TableView extends Application implements Initializable,PropertyChan
         }
     }
 
-    @FXML public void handleScheduledMouseClicked(MouseEvent mouseEvent) {
+    @FXML public void handleScheduledMouseClicked() {
         ScheduledTransaction st = scheduledTable.getSelectionModel().getSelectedItem();
         if(st==null) return;
         sTransactionTable.setItems(FXCollections.observableList(st.getTransactions()));
@@ -245,13 +245,13 @@ public class TableView extends Application implements Initializable,PropertyChan
         }
     }
 
-    @FXML public void handleScheduledShowMovementsPressed(ActionEvent actionEvent) {
+    @FXML public void handleScheduledShowMovementsPressed() {
         Transaction transaction = sTransactionTable.getSelectionModel().getSelectedItem();
         if(transaction==null) return;
         showMovementPopup(transaction);
     }
 
-    @FXML public void handleScheduledEditTagsPressed(ActionEvent actionEvent) {
+    @FXML public void handleScheduledEditTagsPressed() {
         unsavedChanges=true;
         saveMenuItem.setDisable(false);
         Transaction transaction = sTransactionTable.getSelectionModel().getSelectedItem();
@@ -264,9 +264,10 @@ public class TableView extends Application implements Initializable,PropertyChan
         if(transaction==null) return;
         try {
             ledgerManager.removeTransaction(transaction);
+            logger.info("Transaction removed: "+transaction.getDescription());
         } catch (AccountException e) {
-            // TODO: 07/06/20 log
-            showAlert("Transaction error",e.getMessage(), Alert.AlertType.ERROR);
+            logger.warning(e.getMessage());
+            showErrorAlert("Transaction error", e.getMessage());
         }
     }
 
@@ -275,9 +276,10 @@ public class TableView extends Application implements Initializable,PropertyChan
         if (account==null) return;
         try {
             ledgerManager.removeAccount(account);
+            logger.info("Account removed: "+ledgerPrinter.stringOf(account));
         } catch (AccountException e) {
-            // TODO: 11/06/20 log
-            showAlert("Account error",e.getLocalizedMessage(), Alert.AlertType.ERROR);
+            logger.warning(e.getMessage());
+            showErrorAlert("Account error",e.getLocalizedMessage());
         }
     }
 
@@ -286,18 +288,19 @@ public class TableView extends Application implements Initializable,PropertyChan
         if(st==null) return;
         try {
             ledgerManager.removeScheduledTransaction(st);
+            logger.info("ScheduledTransaction removed: "+st.getDescription());
         } catch (AccountException e) {
-            e.printStackTrace();
-            // TODO: 11/06/20 log
-            showAlert("Scheduled transaction error",e.getMessage(), Alert.AlertType.ERROR);
+            logger.warning(e.getMessage());
+            showErrorAlert("Scheduled transaction error",e.getMessage());
         }
         sTransactionTable.setItems(FXCollections.emptyObservableList());
     }
 
-    private void loadNewScene(Scene scene, String title){
+    private void loadScene(Scene scene, String title){
         Stage stage = (Stage) mainVbox.getScene().getWindow();
         stage.setTitle(title);
         stage.setScene(scene);
+        logger.fine("New scene loaded '"+title+"'");
     }
 
     private void showNewStage(Scene scene, String title){
@@ -306,16 +309,17 @@ public class TableView extends Application implements Initializable,PropertyChan
         stage.setScene(scene);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initOwner(transactionTable.getScene().getWindow());
+        logger.fine("New stage opened '"+title+"'");
         stage.showAndWait();
     }
 
     private Scene createScene(FXMLLoader loader, int width, int height){
         try {
             Parent root = loader.load();
+            logger.fine("New scene created");
             return new Scene(root,width,height);
         } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: 15/06/2020 log
+            logger.severe(e.getMessage());
         }
         return null;
     }
@@ -323,11 +327,12 @@ public class TableView extends Application implements Initializable,PropertyChan
     private FXMLLoader createLoader(String resource, Callback<Class<?>,Object> factory){
         FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
         loader.setControllerFactory(factory);
+        logger.fine("New loader created from '"+resource+"'");
         return loader;
     }
 
-    private void showAlert(String title, String content, Alert.AlertType type) {
-        Alert alert = new Alert(type);
+    private void showErrorAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText(title);
         alert.setContentText(content);
         alert.showAndWait();
@@ -335,13 +340,14 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     private void save(){
         try {
+            logger.info("Try to save ledger to '"+currentFile.getAbsolutePath()+"'");
             ledgerManager.saveLedger(currentFile.getAbsolutePath());
             unsavedChanges=false;
             saveMenuItem.setDisable(true);
+            logger.info("Ledger successfully saved to '"+currentFile.getAbsolutePath()+"'");
         } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: 06/06/20 log
-            showAlert("Ledger save error",e.getMessage(), Alert.AlertType.ERROR);
+            logger.severe(e.getMessage());
+            showErrorAlert("Ledger save error",e.getLocalizedMessage());
         }
     }
 
@@ -352,7 +358,10 @@ public class TableView extends Application implements Initializable,PropertyChan
                 new FileChooser.ExtensionFilter("JBudget file","*.jb")
         );
         File file = fileChooser.showSaveDialog(primaryStage);
-        if(file==null) return;
+        if(file==null) {
+            logger.info("Operation 'save as' aborted");
+            return;
+        }
         currentFile=file;
         save();
     }
@@ -363,21 +372,27 @@ public class TableView extends Application implements Initializable,PropertyChan
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("JBudget file","*.jb"));
         File file = fileChooser.showOpenDialog(primaryStage);
-        if(file==null) return;
+        if(file==null) {
+            logger.info("Ledger load aborted");
+            return;
+        }
         currentFile=file;
         try {
+            logger.info("Try to load ledger from '"+currentFile.getAbsolutePath()+"'");
             ledgerManager.loadLedger(currentFile.getAbsolutePath());
             ledgerManager.schedule();
             unsavedChanges=false;
             saveMenuItem.setDisable(true);
+            logger.info("Ledger successfully loaded from '"+currentFile.getAbsolutePath()+"'");
         } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: 11/06/20 log
-            showAlert("Ledger load error",e.getMessage(), Alert.AlertType.ERROR);
+            logger.severe(e.getMessage());
+            showErrorAlert("Ledger load error",e.getLocalizedMessage());
         } catch (AccountException e) {
-            showAlert("Ledger schedule error",e.getMessage(), Alert.AlertType.ERROR);
+            logger.severe(e.getMessage());
+            showErrorAlert("Ledger schedule error",e.getLocalizedMessage());
         } catch (JsonParseException e){
-            showAlert("File error",e.getMessage(), Alert.AlertType.ERROR);
+            logger.severe(e.getMessage());
+            showErrorAlert("File error",e.getLocalizedMessage());
         }
     }
 

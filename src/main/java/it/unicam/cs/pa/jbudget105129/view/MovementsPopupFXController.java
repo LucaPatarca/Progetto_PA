@@ -23,11 +23,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class MovementsPopupFXController implements Initializable {
     private final List<Movement> movements;
     private final LedgerPrinter printer;
     private final LedgerManager ledgerManager;
+    private final Logger logger;
 
     @FXML public TableView<Movement> movementTable;
     @FXML public TableColumn<Movement,String> descriptionCol;
@@ -42,6 +44,7 @@ public class MovementsPopupFXController implements Initializable {
         this.movements=movements;
         this.printer=new LedgerPrinter();
         this.ledgerManager=manager;
+        this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.MovementsPopupFXController");
     }
 
     @Override
@@ -74,8 +77,7 @@ public class MovementsPopupFXController implements Initializable {
             movementTable.setItems(FXCollections.observableList(movements));
             movementTable.refresh();
         } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: 17/06/2020 log
+            logger.severe("Unable to load editTags scene: "+e.getMessage());
         }
     }
 }

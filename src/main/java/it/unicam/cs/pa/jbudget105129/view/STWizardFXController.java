@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class STWizardFXController implements Initializable {
 
@@ -43,11 +44,13 @@ public class STWizardFXController implements Initializable {
     private final Scene mainScene;
     private final LedgerManager manager;
     private final LedgerPrinter printer;
+    private final Logger logger;
 
     protected STWizardFXController(Scene scene, LedgerManager manager){
         this.mainScene=scene;
         this.manager=manager;
         printer = new LedgerPrinter();
+        this.logger = Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.STWizardFXController");
     }
 
     @Override
@@ -133,8 +136,7 @@ public class STWizardFXController implements Initializable {
             stage.setScene(new Scene(root));
             stage.showAndWait();
         } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: 16/06/2020 log
+            logger.severe("Unable to open '"+resource+"' scene: "+e.getMessage());
         }
     }
 

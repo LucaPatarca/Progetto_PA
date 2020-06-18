@@ -8,12 +8,25 @@ package it.unicam.cs.pa.jbudget105129;
 import it.unicam.cs.pa.jbudget105129.view.TableView;
 import javafx.application.Application;
 
+import java.io.IOException;
+import java.util.logging.*;
+
 public class App {
+    private static final Logger logger = Logger.getLogger("it.unicam.cs.pa.jbudget105129");
+
     public String getGreeting() {
-        return "Hello world.";
+        return "Progetto_PA";
     }
 
     public static void main(String[] args) {
+        try {
+            Handler handler = new FileHandler("app.log",1000000,3,true);
+            handler.setFormatter(new SimpleFormatter());
+            logger.addHandler(handler);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        logger.setLevel(Level.FINEST);
         Application.launch(TableView.class,args);
     }
 }

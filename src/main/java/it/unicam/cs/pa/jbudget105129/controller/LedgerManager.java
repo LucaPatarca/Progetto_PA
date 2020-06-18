@@ -132,6 +132,4 @@ public interface LedgerManager {
      * @see PersistenceManager
      */
     void saveLedger(String file) throws IOException;
-
-    void setLogLevel();
 }

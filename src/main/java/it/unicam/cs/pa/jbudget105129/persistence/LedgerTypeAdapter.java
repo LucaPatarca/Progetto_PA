@@ -9,14 +9,17 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class LedgerTypeAdapter implements JsonDeserializer<Ledger>, JsonSerializer<Ledger>{
 
-    Map<Integer,Integer> movementAccount;
+    private final Map<Integer,Integer> movementAccount;
+    private static Logger logger;
 
     public LedgerTypeAdapter(){
         movementAccount=new HashMap<>();
+        logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.persistence.LedgerTypeAdapter");
     }
 
     @Override
@@ -59,8 +62,7 @@ public class LedgerTypeAdapter implements JsonDeserializer<Ledger>, JsonSerializ
             try {
                 ledger.addTransaction(context.deserialize(element,Transaction.class));
             } catch (AccountException e) {
-                // TODO: 03/06/20 log
-                e.printStackTrace();
+                logger.severe(e.getMessage());
             }
         }
     }
