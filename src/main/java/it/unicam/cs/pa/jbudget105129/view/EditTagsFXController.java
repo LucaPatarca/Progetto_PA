@@ -15,10 +15,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class EditTagsFXController implements Initializable {
+
     private final List<Tag> available;
     private final Tagged element;
+    private final Logger logger;
 
     public TableView<Tag> availableTable;
     public TableColumn<Tag,String> availableDescriptionCol;
@@ -37,10 +40,12 @@ public class EditTagsFXController implements Initializable {
         this.available=available;
         this.element = element;
         this.element.getTags().forEach(this.available::remove);
+        this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.EditTagsFXController");
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        logger.info("opening edit tags popup");
         availableNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         availableDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         currentNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -55,6 +60,7 @@ public class EditTagsFXController implements Initializable {
         availableTable.getItems().remove(tag);
         element.addTag(tag);
         currentTable.setItems(FXCollections.observableList(element.getTags()));
+        logger.info("available tag '"+tag.getName()+"' added");
     }
 
     public void handleRemovePressed() {
@@ -63,20 +69,24 @@ public class EditTagsFXController implements Initializable {
         element.removeTag(tag);
         availableTable.getItems().add(tag);
         currentTable.setItems(FXCollections.observableList(element.getTags()));
+        logger.info("tag '"+tag.getName()+"' removed from element");
     }
 
     public void handleDonePressed() {
+        logger.info("closing edit tags popup");
         Stage stage = (Stage) doneButton.getScene().getWindow();
         stage.close();
     }
 
     public void handleAddNewPressed() {
-        if(newNameTextField.getText().equals("")){
+        if(newNameTextField.getText().isBlank()){
+            logger.warning("tried to add a new tag with blank name");
             showAlert();
         }else {
             Tag tag = SingleTag.getInstance(newNameTextField.getText(), newDescriptionTextField.getText());
             element.addTag(tag);
             currentTable.setItems(FXCollections.observableList(element.getTags()));
+            logger.info("new tag added: '"+tag.getName()+"', '"+tag.getDescription()+"'");
         }
     }
 

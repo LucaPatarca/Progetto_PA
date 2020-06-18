@@ -87,6 +87,8 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        logger.info("starting application");
+
         this.primaryStage=primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("/mainScene.fxml"));
         mainScene = new Scene(root,750,450);
@@ -98,7 +100,14 @@ public class TableView extends Application implements Initializable,PropertyChan
     }
 
     @Override
+    public void stop() throws Exception {
+        logger.info("closing application");
+        super.stop();
+    }
+
+    @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        logger.fine("initializing main view");
         Injector injector = Guice.createInjector(new LedgerManagerModule());
         ledgerManager= injector.getInstance(LedgerManager.class);
         unsavedChanges=false;
@@ -398,6 +407,7 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     private void handleClose(WindowEvent event){
         if(unsavedChanges){
+            logger.fine("closing with unsaved changes");
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Quit application");
             alert.setContentText("Close without saving?");
@@ -405,9 +415,13 @@ public class TableView extends Application implements Initializable,PropertyChan
             Optional<ButtonType> res = alert.showAndWait();
 
             if (res.isPresent()) {
-                if (res.get().equals(ButtonType.CANCEL))
+                if (res.get().equals(ButtonType.CANCEL)) {
+                    logger.fine("aborting application close");
                     event.consume();
-            }
+                } else {
+                    logger.fine("exiting without saving");
+                }
+            }else logger.fine("exiting without saving");
         }
     }
 

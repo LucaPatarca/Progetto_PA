@@ -15,11 +15,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class MiniMovementWizardFXController implements Initializable {
 
     private final Transaction transaction;
     private final List<Account> accounts;
+    private final Logger logger;
 
     @FXML public Button cancelButton;
     @FXML public Button doneButton;
@@ -31,10 +33,12 @@ public class MiniMovementWizardFXController implements Initializable {
     public MiniMovementWizardFXController(Transaction transaction, List<Account> accounts){
         this.transaction=transaction;
         this.accounts=accounts;
+        this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.MiniMovementWizardFXController");
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        logger.info("opening mini movement wizard");
         typeSelect.setItems(FXCollections.observableArrayList(MovementType.values()));
         typeSelect.setConverter(new MovementTypeConverter());
         accountSelect.setItems(FXCollections.observableList(accounts));
@@ -49,14 +53,21 @@ public class MiniMovementWizardFXController implements Initializable {
 
     @FXML public void handleDonePressed(ActionEvent actionEvent) {
         if(checkInput()){
-            transaction.addMovement(RoundedMovement.getInstance(
+            RoundedMovement movement = RoundedMovement.getInstance(
                     descriptionTextField.getText(),
                     amountSpinner.getValue(),
                     typeSelect.getValue(),
                     accountSelect.getValue()
-            ));
+            );
+            transaction.addMovement(movement);
+            logger.info("added new movement: "+movement);
             closePopup();
         } else {
+            logger.warning("tried to add a movement with wrong parameter: '"
+                            +descriptionTextField.getText()+"', '"
+                    +amountSpinner.getValue()+"', '"
+                    +typeSelect.getValue()+"', '"
+                    +accountSelect.getValue()+"'");
             showAlert();
         }
     }
@@ -66,7 +77,7 @@ public class MiniMovementWizardFXController implements Initializable {
                 Objects.nonNull(amountSpinner.getValue()) &&
                 Objects.nonNull(typeSelect.getValue()) &&
                 Objects.nonNull(accountSelect.getValue()) &&
-                !descriptionTextField.getText().equals("");
+                !descriptionTextField.getText().isBlank();
     }
 
     private void showAlert() {
@@ -77,6 +88,7 @@ public class MiniMovementWizardFXController implements Initializable {
     }
 
     private void closePopup(){
+        logger.info("closing mini movement wizard");
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
     }

@@ -4,7 +4,6 @@ import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.model.Movement;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -49,6 +48,7 @@ public class MovementsPopupFXController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        logger.info("opening movements popup");
         movementTable.setItems(FXCollections.observableList(movements));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         typeCol.setCellValueFactory(cellData->new ReadOnlyStringWrapper(printer.stringOf(cellData.getValue().getType())));
@@ -57,7 +57,7 @@ public class MovementsPopupFXController implements Initializable {
         tagsCol.setCellValueFactory(cellData-> new ReadOnlyStringWrapper(printer.stringOfTags(cellData.getValue().getTags())));
     }
 
-    @FXML public void handleEditTagPressed(ActionEvent actionEvent) {
+    @FXML public void handleEditTagPressed() {
         Movement movement = movementTable.getSelectionModel().getSelectedItem();
         if(Objects.isNull(movement)) return;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/editTagsPopup.fxml"));

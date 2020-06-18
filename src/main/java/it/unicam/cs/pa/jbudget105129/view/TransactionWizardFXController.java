@@ -26,12 +26,14 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class TransactionWizardFXController implements Initializable {
 
     private final LedgerManager ledgerManager;
     private final Scene mainScene;
     private final LedgerPrinter ledgerPrinter;
+    private final Logger logger;
 
     @FXML public TableColumn<Movement, String> movementDescriptionCol;
     @FXML public TableColumn<Movement,String> movementTypeCol;
@@ -53,11 +55,13 @@ public class TransactionWizardFXController implements Initializable {
     public TransactionWizardFXController(Scene mainScene, LedgerManager ledgerManager){
         this.ledgerManager= Objects.requireNonNull(ledgerManager);
         this.mainScene=Objects.requireNonNull(mainScene);
-        ledgerPrinter = new LedgerPrinter();
+        this.ledgerPrinter = new LedgerPrinter();
+        this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.TransactionWizardFXController");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        logger.info("opening transaction wizard");
         movementDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         movementAmountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
         movementAccountCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getAccount().getName()));
@@ -75,13 +79,16 @@ public class TransactionWizardFXController implements Initializable {
 
     @FXML protected void handleAddMovementPressed() {
         if (checkMovementInput()) {
-            movementTable.getItems().add(RoundedMovement.getInstance(
+            RoundedMovement movement = RoundedMovement.getInstance(
                     movementDescriptionTextfield.getText(),
                     movementAmountSpinner.getValue(),
                     movementTypeSelect.getValue(),
                     movementAccountSelect.getValue()
-            ));
+            );
+            movementTable.getItems().add(movement);
+            logger.info("added new movement: "+ movement);
         } else {
+            logger.warning("cannot add new movement");
             showAlert("Movement Input Error", "Check information of the new movement");
         }
     }
@@ -98,14 +105,17 @@ public class TransactionWizardFXController implements Initializable {
                     List.copyOf(movementTable.getItems()),
                     new LinkedList<>()
             );
+            logger.info("added new transaction");
             returnToMainScene();
         } catch (Exception e) {
+            logger.info("cannot add new transaction");
             showAlert("Error while adding transaction",
                     e.getLocalizedMessage()+"\nCheck new transaction's information");
         }
     }
 
     private void returnToMainScene(){
+        logger.info("closing transaction wizard");
         Stage stage= (Stage) cancelButton.getScene().getWindow();
         stage.setTitle("JBudget");
         stage.setScene(mainScene);
@@ -126,14 +136,16 @@ public class TransactionWizardFXController implements Initializable {
             stage.setScene(scene);
             stage.showAndWait();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe("cannot load edit tags scene: "+ e.getMessage());
         }
     }
 
     @FXML public void movementTableKeyPressed(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.DELETE)){
             Movement toRemove = movementTable.getSelectionModel().getSelectedItem();
-            movementTable.getItems().remove(toRemove);
+            if(Objects.nonNull(toRemove)) {
+                movementTable.getItems().remove(toRemove);
+            }
         }
     }
 
@@ -142,7 +154,7 @@ public class TransactionWizardFXController implements Initializable {
                 Objects.nonNull(movementTypeSelect.getValue()) &&
                 Objects.nonNull(movementAmountSpinner.getValue()) &&
                 Objects.nonNull(movementAccountSelect.getValue()) &&
-                !movementDescriptionTextfield.getText().equals("");
+                !movementDescriptionTextfield.getText().isBlank();
     }
 
     private void showAlert(String title, String content) {

@@ -13,11 +13,13 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class AccountWizardFXController implements Initializable {
 
     private final Scene mainScene;
     private final LedgerManager manager;
+    private final Logger logger;
 
     public TextField nameTextField;
     public TextField descriptionTextField;
@@ -34,10 +36,12 @@ public class AccountWizardFXController implements Initializable {
     public AccountWizardFXController(Scene mainScene, LedgerManager manager){
         this.mainScene=mainScene;
         this.manager=manager;
+        this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.AccountWizardFXController");
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        logger.info("opening account wizard");
         typeSelect.setItems(FXCollections.observableArrayList(AccountType.values()));
         typeSelect.setConverter(new AccountTypeConverter());
         openingBalanceSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
@@ -67,8 +71,10 @@ public class AccountWizardFXController implements Initializable {
                     minAmount,
                     maxAmount
             );
+            logger.info("new account successfully added");
             returnToMainScene();
         }catch (IllegalArgumentException | NullPointerException e){
+            logger.warning("Error trying to add new account: "+e.getMessage());
             showAlert(e.getLocalizedMessage());
         }
     }
@@ -82,6 +88,7 @@ public class AccountWizardFXController implements Initializable {
     }
 
     private void returnToMainScene(){
+        logger.info("closing account wizard");
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.setTitle("JBudget");
         stage.setScene(mainScene);

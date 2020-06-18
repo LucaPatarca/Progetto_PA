@@ -55,6 +55,7 @@ public class STWizardFXController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        logger.info("opening new scheduled transaction wizard");
         transactionDateCol.setCellValueFactory(cellData->new ReadOnlyStringWrapper(printer.stringOf(cellData.getValue().getDate())));
         transactionDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         transactionTotalCol.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
@@ -76,16 +77,20 @@ public class STWizardFXController implements Initializable {
     @FXML public void handleAddButtonPressed() {
         try{
             manager.addScheduledTransaction(descriptionTextField.getText(), transactionTable.getItems());
+            logger.info("added a new scheduled transaction");
             returnToMainScene();
         }catch (IllegalArgumentException e){
+            logger.warning("unable to add new scheduled transaction: "+e.getMessage());
             showAlert("Scheduled Transaction Information Error",
                     e.getLocalizedMessage()+"\nCheck new scheduled transaction's information");
         }
     }
 
     @FXML public void handleTransactionMouseClicked() {
+        Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
+        if(Objects.isNull(transaction)) return;
         movementTable.setItems(FXCollections.observableList(
-                transactionTable.getSelectionModel().getSelectedItem().getMovements()
+                transaction.getMovements()
         ));
     }
 
@@ -106,15 +111,19 @@ public class STWizardFXController implements Initializable {
     @FXML public void handleTransactionKeyPressed(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.DELETE)){
             Transaction toRemove = transactionTable.getSelectionModel().getSelectedItem();
-            transactionTable.getItems().remove(toRemove);
-            movementTable.getItems().clear();
+            if(Objects.nonNull(toRemove)) {
+                transactionTable.getItems().remove(toRemove);
+                movementTable.getItems().clear();
+            }
         }
     }
 
     @FXML public void handleMovementKeyPressed(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.DELETE)){
             Movement toRemove = movementTable.getSelectionModel().getSelectedItem();
+            if(Objects.isNull(toRemove)) return;
             Transaction transaction = transactionTable.getSelectionModel().getSelectedItem();
+            if(Objects.isNull(transaction)) return;
             transaction.removeMovement(toRemove);
             movementTable.setItems(FXCollections.observableList(
                     transactionTable.getSelectionModel().getSelectedItem().getMovements()));
@@ -122,6 +131,7 @@ public class STWizardFXController implements Initializable {
     }
 
     private void returnToMainScene(){
+        logger.info("closing scheduled transaction wizard");
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.setTitle("JBudget");
         stage.setScene(mainScene);

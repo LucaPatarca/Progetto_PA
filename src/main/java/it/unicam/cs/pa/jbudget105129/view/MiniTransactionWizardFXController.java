@@ -16,32 +16,42 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class MiniTransactionWizardFXController implements Initializable {
 
     private final ObservableList<Transaction> list;
-    public TextField descriptionTextField;
-    public DatePicker datePicker;
-    public Button doneButton;
-    public Button cancelButton;
+    private final Logger logger;
+
+    @FXML public TextField descriptionTextField;
+    @FXML public DatePicker datePicker;
+    @FXML public Button doneButton;
+    @FXML public Button cancelButton;
 
     public MiniTransactionWizardFXController(ObservableList<Transaction> list){
         this.list=list;
+        this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.MiniTransactionFXController");
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        logger.info("opening mini transaction wizard");
         datePicker.setValue(LocalDate.now());
     }
 
     @FXML public void handleDonePressed() {
         if(checkInput()){
-            list.add(new RoundedTransaction(
+            RoundedTransaction transaction=new RoundedTransaction(
                     descriptionTextField.getText(),
                     datePicker.getValue()
-            ));
+            );
+            list.add(transaction);
+            logger.info("added new transaction: "+transaction);
             closePopup();
         }else {
+            logger.warning("tried to add new transaction with wrong parameters: '"
+            +descriptionTextField.getText()+"', '"
+            +datePicker.getValue().toString()+"'");
             showAlert();
         }
     }
@@ -51,6 +61,7 @@ public class MiniTransactionWizardFXController implements Initializable {
     }
 
     private void closePopup(){
+        logger.info("closing mini transaction wizard");
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
     }
@@ -58,7 +69,7 @@ public class MiniTransactionWizardFXController implements Initializable {
     private boolean checkInput(){
         return Objects.nonNull(descriptionTextField.getText()) &&
                 Objects.nonNull(datePicker.getValue()) &&
-                !descriptionTextField.getText().equals("");
+                !descriptionTextField.getText().isBlank();
     }
 
     private void showAlert() {
