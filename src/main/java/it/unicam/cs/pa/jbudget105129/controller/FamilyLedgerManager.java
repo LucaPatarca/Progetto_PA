@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class FamilyLedgerManager implements LedgerManager {
     private Ledger ledger;
     private final PersistenceManager persistenceManager;
+    private final Logger logger;
 
     /**
      * Creates a new {@link FamilyLedgerManager} with the specified parameters. This constructor
@@ -36,6 +38,8 @@ public class FamilyLedgerManager implements LedgerManager {
     protected FamilyLedgerManager(@AppLedger Ledger ledger, @AppPersistence PersistenceManager persistenceManager){
         this.ledger=ledger;
         this.persistenceManager=persistenceManager;
+        this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.controller.FamilyLedgerManager");
+        logger.info("new ledger manager created");
     }
 
     /**
@@ -67,6 +71,7 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void addTransaction(String description, LocalDate date, List<Movement> movements, List<Tag> tags) throws AccountException {
+        logger.info("trying to add new transaction '"+description+"'");
         if (description==null||date==null||movements==null) throw new NullPointerException();
         if (description.isBlank()) throw new IllegalArgumentException("transaction cannot have empty description");
         if (movements.isEmpty()) throw new IllegalArgumentException("transactions must have at least one movement");
@@ -77,7 +82,9 @@ public class FamilyLedgerManager implements LedgerManager {
         tags.forEach(transaction::addTag);
         try {
             ledger.addTransaction(transaction);
+            logger.info("transaction '"+transaction+"' added successfully");
         } catch (AccountException e){
+            logger.info("removing failed transaction '"+transaction+"'");
             this.removeTransaction(transaction);
             throw e;
         }
@@ -92,6 +99,7 @@ public class FamilyLedgerManager implements LedgerManager {
     @Override
     public void removeTransaction(Transaction transaction) throws AccountException {
         if(transaction==null) throw new NullPointerException();
+        logger.info("removing failed transaction '"+transaction+"'");
         ledger.removeTransaction(transaction);
     }
 
@@ -107,7 +115,9 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void addAccount(String name, String description, String referent, double opening, AccountType type) {
-        Account account=RoundedAccount.getInstance(Objects.requireNonNull(name),
+        logger.info("trying to add new account '"+name+"'");
+        if (Objects.isNull(name)||name.isBlank()) throw new IllegalArgumentException("account cannot have empty name");
+        Account account=RoundedAccount.getInstance(name,
                 Objects.requireNonNull(description),
                 opening,
                 Objects.requireNonNull(type)
@@ -116,6 +126,7 @@ public class FamilyLedgerManager implements LedgerManager {
         if(type.equals(AccountType.LIABILITY))
             account.setMinAmount(0.0);
         ledger.addAccount(account);
+        logger.info("successfully added account '"+account+"'");
     }
 
     /**
@@ -133,7 +144,9 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void addAccount(String name, String description, String referent, double opening, AccountType type, Double min, Double max) {
-        Account account=RoundedAccount.getInstance(Objects.requireNonNull(name),
+        logger.info("trying to add new account '"+name+"'");
+        if (Objects.isNull(name)||name.isBlank()) throw new IllegalArgumentException("account cannot have empty name");
+        Account account=RoundedAccount.getInstance(name,
                 Objects.requireNonNull(description),opening,Objects.requireNonNull(type));
         if(name.isBlank()) throw new IllegalArgumentException("Account cannot have empty name");
         account.setMinAmount(min);
@@ -145,6 +158,7 @@ public class FamilyLedgerManager implements LedgerManager {
         account.setMaxAmount(max);
         account.setReferent(Objects.requireNonNull(referent));
         ledger.addAccount(account);
+        logger.info("successfully added account '"+account+"'");
     }
 
     /**
@@ -155,6 +169,7 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void removeAccount(Account account) throws AccountException {
+        logger.info("trying to remove account '"+account+"'");
         boolean isUsed = ledger.getTransactions().stream().map(Transaction::getMovements).flatMap(List::stream)
                 .anyMatch(m->m.getAccount().equals(account)) ||
                 ledger.getScheduledTransactions().stream().map(ScheduledTransaction::getTransactions)
@@ -162,6 +177,7 @@ public class FamilyLedgerManager implements LedgerManager {
                         .anyMatch(m->m.getAccount().equals(account));
         if(isUsed) throw new AccountException("Tried to remove used account");
         ledger.removeAccount(account);
+        logger.info("successfully removed account '"+account+"'");
     }
 
     /**
@@ -172,9 +188,11 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void addScheduledTransaction(String description, List<Transaction> transactions) {
+        logger.info("trying to add new scheduled transaction '"+description+"'");
         if(Objects.requireNonNull(transactions).isEmpty()) throw new IllegalArgumentException("tried to add an empty scheduled transaction");
         if(Objects.requireNonNull(description).isBlank()) throw new IllegalArgumentException("scheduled transaction cannot have empty description");
         ledger.addScheduledTransaction(new MapScheduledTransaction(description,transactions));
+        logger.info("scheduled transaction '"+description+"' added successfully");
     }
 
     /**
@@ -184,6 +202,7 @@ public class FamilyLedgerManager implements LedgerManager {
     @Override
     public void removeScheduledTransaction(ScheduledTransaction scheduledTransaction) throws AccountException {
         ledger.removeScheduledTransaction(scheduledTransaction);
+        logger.info("removed scheduled transaction '"+scheduledTransaction+"'");
     }
 
     @Override
@@ -237,7 +256,9 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void schedule(LocalDate date) throws AccountException {
+        logger.info("trying to schedule ledger to date "+date);
         ledger.schedule(date);
+        logger.info("ledger successfully scheduled to date "+date);
     }
 
     /**
@@ -246,7 +267,10 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void schedule() throws AccountException {
-        ledger.schedule(LocalDate.now());
+        LocalDate now = LocalDate.now();
+        logger.info("trying to schedule ledger to current date ("+now+")");
+        ledger.schedule(now);
+        logger.info("ledger successfully scheduled to current date ("+now+")");
     }
 
     /**
@@ -257,10 +281,12 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void loadLedger(String file) throws IOException {
+        logger.info("trying to load ledger from '"+file+"'");
         SingleTag.getRegistry().reset();
         RoundedMovement.getRegistry().reset();
         RoundedAccount.getRegistry().reset();
-        ledger= persistenceManager.load(file);
+        ledger=persistenceManager.load(file);
+        logger.info("ledger successfully loaded from '"+file+"'");
     }
 
     /**
@@ -270,6 +296,8 @@ public class FamilyLedgerManager implements LedgerManager {
      */
     @Override
     public void saveLedger(String file) throws IOException {
+        logger.info("trying to save ledger to '"+file+"'");
         persistenceManager.save(ledger,file);
+        logger.info("ledger successfully saved to '"+file+"'");
     }
 }

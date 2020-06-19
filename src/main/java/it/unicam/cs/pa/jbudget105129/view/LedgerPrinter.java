@@ -6,15 +6,12 @@ import it.unicam.cs.pa.jbudget105129.model.Account;
 import it.unicam.cs.pa.jbudget105129.model.Movement;
 import it.unicam.cs.pa.jbudget105129.model.Tag;
 
-import javax.swing.text.DateFormatter;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public class LedgerPrinter {
+    // TODO: 19/06/2020 extract interface
 
     public String stringOf(Account account){
         return account.getName()+", "+account.getDescription();

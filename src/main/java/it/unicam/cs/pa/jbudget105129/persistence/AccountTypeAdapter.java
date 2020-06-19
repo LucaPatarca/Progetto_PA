@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class AccountTypeAdapter implements JsonDeserializer<Account>, JsonSerializer<Account> {
 
-    private Set<Integer> alreadySaved;
+    private final Set<Integer> alreadySaved;
 
     public AccountTypeAdapter(){
         alreadySaved=new HashSet<>();

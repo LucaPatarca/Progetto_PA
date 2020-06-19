@@ -79,7 +79,7 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     private static Scene mainScene;
     private static boolean unsavedChanges;
-    private static Logger logger;
+    private static final Logger logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.TableView");;
     private Stage primaryStage;
     private LedgerManager ledgerManager;
     private LedgerPrinter ledgerPrinter;
@@ -112,7 +112,6 @@ public class TableView extends Application implements Initializable,PropertyChan
         ledgerManager= injector.getInstance(LedgerManager.class);
         unsavedChanges=false;
         ledgerPrinter=new LedgerPrinter();
-        logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.TableView");
         saveMenuItem.setDisable(true);
         initTransactionTable();
         initAccountTable();
