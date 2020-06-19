@@ -1,5 +1,7 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.model.Account;
 import it.unicam.cs.pa.jbudget105129.model.RoundedMovement;
@@ -22,6 +24,7 @@ public class MiniMovementWizardFXController implements Initializable {
     private final Transaction transaction;
     private final List<Account> accounts;
     private final Logger logger;
+    private final Injector injector;
 
     @FXML public Button cancelButton;
     @FXML public Button doneButton;
@@ -34,15 +37,16 @@ public class MiniMovementWizardFXController implements Initializable {
         this.transaction=transaction;
         this.accounts=accounts;
         this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.MiniMovementWizardFXController");
+        this.injector= Guice.createInjector(new ViewModule());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         logger.info("opening mini movement wizard");
         typeSelect.setItems(FXCollections.observableArrayList(MovementType.values()));
-        typeSelect.setConverter(new MovementTypeConverter());
+        typeSelect.setConverter(injector.getInstance(MovementTypeConverter.class));
         accountSelect.setItems(FXCollections.observableList(accounts));
-        accountSelect.setConverter(new AccountConverter());
+        accountSelect.setConverter(injector.getInstance(AccountConverter.class));
         amountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
                 Double.MIN_VALUE,Double.MAX_VALUE,1,0.01));
     }

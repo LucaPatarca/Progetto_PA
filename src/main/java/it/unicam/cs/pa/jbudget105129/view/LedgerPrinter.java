@@ -10,56 +10,20 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public class LedgerPrinter {
-    // TODO: 19/06/2020 extract interface
+public interface LedgerPrinter {
+    String stringOf(Account account);
 
-    public String stringOf(Account account){
-        return account.getName()+", "+account.getDescription();
-    }
+    String stringOf(LocalDate date);
 
-    public String stringOf(LocalDate date) {
-        return date.toString();
-    }
+    String stringOfMovements(List<Movement> movements);
 
-    public String stringOfMovements(List<Movement> movements){
-        String toReturn="";
-        if(movements.isEmpty()) return toReturn;
-        for(Movement m : movements){
-            toReturn=toReturn.concat(m.getDescription()+", ");
-        }
-        return toReturn.subSequence(0,toReturn.length()-2).toString();
-    }
+    String stringOfTags(List<Tag> tags);
 
-    public String stringOfTags(List<Tag> tags){
-        String toReturn="";
-        if(tags.isEmpty()) return toReturn;
-        for(Tag t : tags){
-            toReturn=toReturn.concat(t.getName()+", ");
-        }
-        return toReturn.subSequence(0,toReturn.length()-2).toString();
-    }
+    String stringOf(AccountType type);
 
-    public String stringOf(AccountType type){
-        return type.toString().toLowerCase();
-    }
+    String stringOf(boolean bool);
 
-    public String stringOf(boolean bool){
-        if(bool)
-            return "yes";
-        else
-            return "no";
-    }
+    String stringOf(MovementType type);
 
-    public String stringOf(MovementType type){
-        return type.toString().toLowerCase();
-    }
-
-    public String stringOf(Optional<Double> value){
-        if(value.isEmpty()){
-            return "";
-        } else{
-            return value.get().toString();
-        }
-    }
-
+    String stringOf(Optional<Double> value);
 }

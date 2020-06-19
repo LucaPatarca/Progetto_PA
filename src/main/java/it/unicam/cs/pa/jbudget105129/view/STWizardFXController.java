@@ -1,5 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
+import com.google.inject.Injector;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.model.*;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -46,10 +47,10 @@ public class STWizardFXController implements Initializable {
     private final LedgerPrinter printer;
     private final Logger logger;
 
-    protected STWizardFXController(Scene scene, LedgerManager manager){
+    protected STWizardFXController(Scene scene, Injector injector){
         this.mainScene=scene;
-        this.manager=manager;
-        printer = new LedgerPrinter();
+        this.manager=injector.getInstance(LedgerManager.class);
+        printer = injector.getInstance(LedgerPrinter.class);
         this.logger = Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.STWizardFXController");
     }
 

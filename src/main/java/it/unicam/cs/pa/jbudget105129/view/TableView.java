@@ -79,11 +79,12 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     private static Scene mainScene;
     private static boolean unsavedChanges;
-    private static final Logger logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.TableView");;
+    private static final Logger logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.TableView");
     private Stage primaryStage;
     private LedgerManager ledgerManager;
     private LedgerPrinter ledgerPrinter;
     private File currentFile;
+    private Injector injector;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -108,10 +109,10 @@ public class TableView extends Application implements Initializable,PropertyChan
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         logger.fine("initializing main view");
-        Injector injector = Guice.createInjector(new LedgerManagerModule());
+        injector = Guice.createInjector(new LedgerManagerModule(),new ViewModule());
         ledgerManager= injector.getInstance(LedgerManager.class);
         unsavedChanges=false;
-        ledgerPrinter=new LedgerPrinter();
+        ledgerPrinter=injector.getInstance(LedgerPrinter.class);
         saveMenuItem.setDisable(true);
         initTransactionTable();
         initAccountTable();
@@ -192,19 +193,19 @@ public class TableView extends Application implements Initializable,PropertyChan
     }
 
     @FXML protected void handleNewTransaction() {
-        FXMLLoader loader = createLoader("/transactionWizard.fxml",param->new TransactionWizardFXController(mainScene,ledgerManager));
+        FXMLLoader loader = createLoader("/transactionWizard.fxml",param->new TransactionWizardFXController(mainScene,injector));
         Scene scene = createScene(loader,750,450);
         loadScene(scene,"Adding new transaction");
     }
 
     @FXML public void handleNewAccountPressed() {
-        FXMLLoader loader = createLoader("/accountWizard.fxml",param->new AccountWizardFXController(mainScene,ledgerManager));
+        FXMLLoader loader = createLoader("/accountWizard.fxml",param->new AccountWizardFXController(mainScene,injector));
         Scene scene = createScene(loader,480,350);
         loadScene(scene,"Adding new account");
     }
 
     @FXML public void handleNewScheduledPressed() {
-        FXMLLoader loader = createLoader("/scheduledTransactionWizard.fxml",param->new STWizardFXController(mainScene,ledgerManager));
+        FXMLLoader loader = createLoader("/scheduledTransactionWizard.fxml",param->new STWizardFXController(mainScene,injector));
         Scene scene = createScene(loader,750,450);
         loadScene(scene,"Adding new scheduled transacion");
     }
@@ -272,7 +273,6 @@ public class TableView extends Application implements Initializable,PropertyChan
         if(transaction==null) return;
         try {
             ledgerManager.removeTransaction(transaction);
-            logger.info("Transaction removed: "+transaction.getDescription());
         } catch (AccountException e) {
             logger.warning(e.getMessage());
             showErrorAlert("Transaction error", e.getMessage());
@@ -284,7 +284,6 @@ public class TableView extends Application implements Initializable,PropertyChan
         if (account==null) return;
         try {
             ledgerManager.removeAccount(account);
-            logger.info("Account removed: "+ledgerPrinter.stringOf(account));
         } catch (AccountException e) {
             logger.warning(e.getMessage());
             showErrorAlert("Account error",e.getLocalizedMessage());
@@ -296,7 +295,6 @@ public class TableView extends Application implements Initializable,PropertyChan
         if(st==null) return;
         try {
             ledgerManager.removeScheduledTransaction(st);
-            logger.info("ScheduledTransaction removed: "+st.getDescription());
         } catch (AccountException e) {
             logger.warning(e.getMessage());
             showErrorAlert("Scheduled transaction error",e.getMessage());
@@ -348,11 +346,9 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     private void save(){
         try {
-            logger.info("Try to save ledger to '"+currentFile.getAbsolutePath()+"'");
             ledgerManager.saveLedger(currentFile.getAbsolutePath());
             unsavedChanges=false;
             saveMenuItem.setDisable(true);
-            logger.info("Ledger successfully saved to '"+currentFile.getAbsolutePath()+"'");
         } catch (IOException e) {
             logger.severe(e.getMessage());
             showErrorAlert("Ledger save error",e.getLocalizedMessage());
@@ -367,7 +363,7 @@ public class TableView extends Application implements Initializable,PropertyChan
         );
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file==null) {
-            logger.info("Operation 'save as' aborted");
+            logger.fine("Operation 'save as' aborted");
             return;
         }
         currentFile=file;
@@ -377,21 +373,21 @@ public class TableView extends Application implements Initializable,PropertyChan
     private void load(){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Ledger File");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("JBudget file","*.jb"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JBudget file","*.jb"),
+                new FileChooser.ExtensionFilter("All files","*.*")
+        );
         File file = fileChooser.showOpenDialog(primaryStage);
         if(file==null) {
-            logger.info("Ledger load aborted");
+            logger.fine("Ledger load aborted");
             return;
         }
         currentFile=file;
         try {
-            logger.info("Try to load ledger from '"+currentFile.getAbsolutePath()+"'");
             ledgerManager.loadLedger(currentFile.getAbsolutePath());
             ledgerManager.schedule();
             unsavedChanges=false;
             saveMenuItem.setDisable(true);
-            logger.info("Ledger successfully loaded from '"+currentFile.getAbsolutePath()+"'");
         } catch (IOException e) {
             logger.severe(e.getMessage());
             showErrorAlert("Ledger load error",e.getLocalizedMessage());
@@ -426,7 +422,7 @@ public class TableView extends Application implements Initializable,PropertyChan
 
     private void showMovementPopup(Transaction selected){
         FXMLLoader loader = createLoader("/movementsPopup.fxml",
-                param->new MovementsPopupFXController(selected.getMovements(),ledgerManager));
+                param->new MovementsPopupFXController(selected.getMovements(),injector));
         Scene scene = createScene(loader,550,300);
         showNewStage(scene,selected.getDescription());
     }

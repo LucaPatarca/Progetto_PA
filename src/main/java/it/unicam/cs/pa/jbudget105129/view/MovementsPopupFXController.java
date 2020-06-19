@@ -1,5 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
+import com.google.inject.Injector;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.model.Movement;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -39,10 +40,10 @@ public class MovementsPopupFXController implements Initializable {
     @FXML public MenuItem EditTagsMenuItem;
     @FXML public TableColumn<Movement,String> tagsCol;
 
-    public MovementsPopupFXController(List<Movement> movements, LedgerManager manager){
+    public MovementsPopupFXController(List<Movement> movements, Injector injector){
         this.movements=movements;
-        this.printer=new LedgerPrinter();
-        this.ledgerManager=manager;
+        this.printer=injector.getInstance(LedgerPrinter.class);
+        this.ledgerManager=injector.getInstance(LedgerManager.class);
         this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.MovementsPopupFXController");
     }
 

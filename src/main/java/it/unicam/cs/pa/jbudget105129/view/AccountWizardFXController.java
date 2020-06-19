@@ -1,9 +1,9 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
+import com.google.inject.Injector;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -11,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -20,6 +19,7 @@ public class AccountWizardFXController implements Initializable {
     private final Scene mainScene;
     private final LedgerManager manager;
     private final Logger logger;
+    private final Injector injector;
 
     public TextField nameTextField;
     public TextField descriptionTextField;
@@ -33,17 +33,18 @@ public class AccountWizardFXController implements Initializable {
     public CheckBox hasMaximumAmountCheckBox;
     public CheckBox hasMinimumAmountCheckBox;
 
-    public AccountWizardFXController(Scene mainScene, LedgerManager manager){
+    public AccountWizardFXController(Scene mainScene, Injector injector){
         this.mainScene=mainScene;
-        this.manager=manager;
+        this.manager=injector.getInstance(LedgerManager.class);
         this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.AccountWizardFXController");
+        this.injector=injector;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         logger.info("opening account wizard");
         typeSelect.setItems(FXCollections.observableArrayList(AccountType.values()));
-        typeSelect.setConverter(new AccountTypeConverter());
+        typeSelect.setConverter(injector.getInstance(AccountTypeConverter.class));
         openingBalanceSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
                 -Double.MAX_VALUE,Double.MAX_VALUE,0.0,0.01));
         minAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
@@ -79,11 +80,11 @@ public class AccountWizardFXController implements Initializable {
         }
     }
 
-    @FXML public void handleMaxCheckBoxAction(ActionEvent event) {
+    @FXML public void handleMaxCheckBoxAction() {
         maxAmountSpinner.setDisable(!hasMaximumAmountCheckBox.isSelected());
     }
 
-    @FXML public void handleMinCheckBoxAction(ActionEvent event) {
+    @FXML public void handleMinCheckBoxAction() {
         minAmountSpinner.setDisable(!hasMinimumAmountCheckBox.isSelected());
     }
 

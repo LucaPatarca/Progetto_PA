@@ -1,8 +1,8 @@
 package it.unicam.cs.pa.jbudget105129.view;
 
+import com.google.inject.Injector;
 import it.unicam.cs.pa.jbudget105129.controller.LedgerManager;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
-import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -34,6 +34,7 @@ public class TransactionWizardFXController implements Initializable {
     private final Scene mainScene;
     private final LedgerPrinter ledgerPrinter;
     private final Logger logger;
+    private final Injector injector;
 
     @FXML public TableColumn<Movement, String> movementDescriptionCol;
     @FXML public TableColumn<Movement,String> movementTypeCol;
@@ -52,11 +53,12 @@ public class TransactionWizardFXController implements Initializable {
     @FXML public ContextMenu movementsContextMenu;
     @FXML public MenuItem editTagsMovementMenuItem;
 
-    public TransactionWizardFXController(Scene mainScene, LedgerManager ledgerManager){
-        this.ledgerManager= Objects.requireNonNull(ledgerManager);
+    public TransactionWizardFXController(Scene mainScene, Injector injector){
+        this.ledgerManager= Objects.requireNonNull(injector).getInstance(LedgerManager.class);
         this.mainScene=Objects.requireNonNull(mainScene);
-        this.ledgerPrinter = new LedgerPrinter();
+        this.ledgerPrinter = injector.getInstance(LedgerPrinter.class);
         this.logger=Logger.getLogger("it.unicam.cs.pa.jbudget105129.view.TransactionWizardFXController");
+        this.injector=injector;
     }
 
     @Override
@@ -64,13 +66,13 @@ public class TransactionWizardFXController implements Initializable {
         logger.info("opening transaction wizard");
         movementDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         movementAmountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
-        movementAccountCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getAccount().getName()));
+        movementAccountCol.setCellValueFactory(cellData->new SimpleStringProperty(ledgerPrinter.stringOf(cellData.getValue().getAccount())));
         movementTypeCol.setCellValueFactory(cellData->new SimpleStringProperty(ledgerPrinter.stringOf(cellData.getValue().getType())));
 
         movementTypeSelect.setItems(FXCollections.observableArrayList(MovementType.values()));
-        movementTypeSelect.setConverter(new MovementTypeConverter());
+        movementTypeSelect.setConverter(injector.getInstance(MovementTypeConverter.class));
         movementAccountSelect.setItems(FXCollections.observableArrayList(ledgerManager.getLedger().getAccounts()));
-        movementAccountSelect.setConverter(new AccountConverter());
+        movementAccountSelect.setConverter(injector.getInstance(AccountConverter.class));
         movementAmountSpinner.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(
                 Double.MIN_VALUE,Double.MAX_VALUE,1.0,0.01));
         movementTable.setOnContextMenuRequested(event->movementsContextMenu.show(movementTable,event.getScreenX(),event.getScreenY()));
