@@ -4,7 +4,6 @@ import it.unicam.cs.pa.jbudget105129.model.SingleTag;
 import it.unicam.cs.pa.jbudget105129.model.Tag;
 import it.unicam.cs.pa.jbudget105129.model.Tagged;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.TableView;

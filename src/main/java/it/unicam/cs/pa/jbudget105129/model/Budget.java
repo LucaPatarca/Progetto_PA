@@ -23,14 +23,14 @@ public interface Budget {
     void set(Tag tag, double expected);
 
     /**
-     * Returns the expected value linked to a particular {@link Tag}.
+     * Returns the expected value linked to a {@link Tag}.
      * @param tag The tag
      * @return The expected value
      */
     double get(Tag tag);
 
     /**
-     * Returns the predicate used by a {@link it.unicam.cs.pa.jbudget105129.controller.BudgetManager} to select transactions related
+     * Returns the predicate used to select transactions related
      * to this budget.
      * @return The predicate
      */

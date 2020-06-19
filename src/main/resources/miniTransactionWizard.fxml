@@ -6,13 +6,15 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="197.0" prefWidth="319.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.MiniTransactionWizardFXController">
-   <children>
-      <TextField fx:id="descriptionTextField" layoutX="14.0" layoutY="31.0" prefHeight="26.0" prefWidth="198.0" />
-      <Label layoutX="230.0" layoutY="36.0" text="Description" />
-      <DatePicker fx:id="datePicker" layoutX="14.0" layoutY="86.0" prefHeight="26.0" prefWidth="198.0" />
-      <Label layoutX="230.0" layoutY="91.0" text="Date" />
-      <Button fx:id="doneButton" layoutX="252.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleDonePressed" text="Done" />
-      <Button fx:id="cancelButton" layoutX="14.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleCancelPressed" text="Cancel" />
-   </children>
+<AnchorPane prefHeight="197.0" prefWidth="319.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="it.unicam.cs.pa.jbudget105129.view.MiniTransactionWizardFXController">
+    <TextField fx:id="descriptionTextField" layoutX="14.0" layoutY="31.0" prefHeight="26.0" prefWidth="198.0"/>
+    <Label layoutX="230.0" layoutY="36.0" text="Description"/>
+    <DatePicker fx:id="datePicker" layoutX="14.0" layoutY="86.0" prefHeight="26.0" prefWidth="198.0"/>
+    <Label layoutX="230.0" layoutY="91.0" text="Date"/>
+    <Button fx:id="doneButton" layoutX="252.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleDonePressed"
+            text="Done"/>
+    <Button fx:id="cancelButton" layoutX="14.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleCancelPressed"
+            text="Cancel"/>
 </AnchorPane>

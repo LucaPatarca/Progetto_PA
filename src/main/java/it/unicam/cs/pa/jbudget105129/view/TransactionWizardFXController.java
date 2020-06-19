@@ -12,10 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -25,7 +22,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class TransactionWizardFXController implements Initializable {
@@ -42,7 +38,7 @@ public class TransactionWizardFXController implements Initializable {
     @FXML public TableColumn<Movement,String> movementAccountCol;
     @FXML public TableView<Movement> movementTable;
     @FXML public Button addMovementButton;
-    @FXML public TextField movementDescriptionTextfield;
+    @FXML public TextField movementDescriptionTextField;
     @FXML public ChoiceBox<MovementType> movementTypeSelect;
     @FXML public ChoiceBox<Account> movementAccountSelect;
     @FXML public Spinner<Double> movementAmountSpinner;
@@ -82,7 +78,7 @@ public class TransactionWizardFXController implements Initializable {
     @FXML protected void handleAddMovementPressed() {
         if (checkMovementInput()) {
             RoundedMovement movement = RoundedMovement.getInstance(
-                    movementDescriptionTextfield.getText(),
+                    movementDescriptionTextField.getText(),
                     movementAmountSpinner.getValue(),
                     movementTypeSelect.getValue(),
                     movementAccountSelect.getValue()
@@ -152,11 +148,11 @@ public class TransactionWizardFXController implements Initializable {
     }
 
     private boolean checkMovementInput(){
-        return Objects.nonNull(movementDescriptionTextfield.getText()) &&
+        return Objects.nonNull(movementDescriptionTextField.getText()) &&
                 Objects.nonNull(movementTypeSelect.getValue()) &&
                 Objects.nonNull(movementAmountSpinner.getValue()) &&
                 Objects.nonNull(movementAccountSelect.getValue()) &&
-                !movementDescriptionTextfield.getText().isBlank();
+                !movementDescriptionTextField.getText().isBlank();
     }
 
     private void showAlert(String title, String content) {

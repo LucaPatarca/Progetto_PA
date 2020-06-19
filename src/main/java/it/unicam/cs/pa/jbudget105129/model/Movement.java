@@ -3,7 +3,6 @@ package it.unicam.cs.pa.jbudget105129.model;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 /**

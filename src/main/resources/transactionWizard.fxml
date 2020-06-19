@@ -18,83 +18,82 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="701.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.TransactionWizardFXController">
-   <children>
-      <Label text="Movements:">
-         <VBox.margin>
-            <Insets left="15.0" top="8.0" />
-         </VBox.margin>
-      </Label>
-      <GridPane hgap="15.0" VBox.vgrow="NEVER">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="701.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="it.unicam.cs.pa.jbudget105129.view.TransactionWizardFXController">
+    <Label text="Movements:">
+        <VBox.margin>
+          <Insets left="15.0" top="8.0"/>
+        </VBox.margin>
+    </Label>
+    <GridPane hgap="15.0" VBox.vgrow="NEVER">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
         </rowConstraints>
-         <children>
-            <TextField fx:id="movementDescriptionTextfield" />
-            <ChoiceBox fx:id="movementTypeSelect" prefWidth="150.0" GridPane.rowIndex="1" />
-            <ChoiceBox fx:id="movementAccountSelect" prefWidth="150.0" GridPane.columnIndex="2" />
-            <Spinner fx:id="movementAmountSpinner" editable="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Label text="Description" GridPane.columnIndex="1" />
-            <Label text="Type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="Account" GridPane.columnIndex="3" />
-            <Label text="Amount" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <Button fx:id="addMovementButton" mnemonicParsing="false" onAction="#handleAddMovementPressed" prefHeight="26.0" prefWidth="91.0" text="Add" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-            <Label text="Movement" textAlignment="RIGHT" GridPane.columnIndex="4" />
-         </children>
-         <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </VBox.margin>
-      </GridPane>
-      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-         <content>
-            <TableView fx:id="movementTable" onKeyPressed="#movementTableKeyPressed" prefHeight="200.0" prefWidth="200.0">
-              <columns>
-                <TableColumn fx:id="movementDescriptionCol" prefWidth="260.0" text="Description" />
-                <TableColumn fx:id="movementTypeCol" prefWidth="115.0" text="Type" />
-                  <TableColumn fx:id="movementAmountCol" minWidth="0.0" prefWidth="128.0" text="Amount" />
-                  <TableColumn fx:id="movementAccountCol" prefWidth="142.0" text="Account" />
-              </columns>
-               <contextMenu>
-                  <ContextMenu fx:id="movementsContextMenu">
+        <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </VBox.margin>
+        <TextField fx:id="movementDescriptionTextField"/>
+        <ChoiceBox fx:id="movementTypeSelect" prefWidth="150.0" GridPane.rowIndex="1"/>
+        <ChoiceBox fx:id="movementAccountSelect" prefWidth="150.0" GridPane.columnIndex="2"/>
+        <Spinner fx:id="movementAmountSpinner" editable="true" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <Label text="Description" GridPane.columnIndex="1"/>
+        <Label text="Type" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Label text="Account" GridPane.columnIndex="3"/>
+        <Label text="Amount" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+        <Button fx:id="addMovementButton" mnemonicParsing="false" onAction="#handleAddMovementPressed"
+                prefHeight="26.0" prefWidth="91.0" text="Add" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
+        <Label text="Movement" textAlignment="RIGHT" GridPane.columnIndex="4"/>
+    </GridPane>
+    <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+        <TableView fx:id="movementTable" onKeyPressed="#movementTableKeyPressed" prefHeight="200.0"
+                   prefWidth="200.0">
+            <columns>
+                <TableColumn fx:id="movementDescriptionCol" prefWidth="260.0" text="Description"/>
+                <TableColumn fx:id="movementTypeCol" prefWidth="115.0" text="Type"/>
+                <TableColumn fx:id="movementAmountCol" minWidth="0.0" prefWidth="128.0" text="Amount"/>
+                <TableColumn fx:id="movementAccountCol" prefWidth="142.0" text="Account"/>
+            </columns>
+            <contextMenu>
+                <ContextMenu fx:id="movementsContextMenu">
                     <items>
-                      <MenuItem fx:id="editTagsMovementMenuItem" mnemonicParsing="false" onAction="#handleMovementEditTagPressed" text="Edit Tags" />
+                        <MenuItem fx:id="editTagsMovementMenuItem" mnemonicParsing="false"
+                                  onAction="#handleMovementEditTagPressed" text="Edit Tags"/>
                     </items>
-                  </ContextMenu>
-               </contextMenu>
-            </TableView>
-         </content>
-      </ScrollPane>
-      <Separator prefWidth="200.0" />
-      <GridPane hgap="16.0">
+                </ContextMenu>
+            </contextMenu>
+        </TableView>
+    </ScrollPane>
+    <Separator prefWidth="200.0"/>
+    <GridPane hgap="16.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="65.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="299.0" minWidth="10.0" prefWidth="299.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="291.0" minWidth="10.0" prefWidth="202.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="161.0" minWidth="10.0" prefWidth="57.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="65.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="299.0" minWidth="10.0" prefWidth="299.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="291.0" minWidth="10.0" prefWidth="202.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="161.0" minWidth="10.0" prefWidth="57.0"/>
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
         </rowConstraints>
-         <children>
-            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancelPressed" text="Cancel" GridPane.rowIndex="1" />
-            <Button fx:id="addTransactionButton" mnemonicParsing="false" onAction="#handleAddTransactionPressed" text="Add" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-            <TextField fx:id="transactionDescriptionTextField" GridPane.columnIndex="1" />
-            <Label text="Description" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-            <DatePicker fx:id="transactionDate" GridPane.columnIndex="2" />
-            <Label text="Date" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-         </children>
-         <VBox.margin>
-            <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
-         </VBox.margin>
-      </GridPane>
-   </children>
+        <VBox.margin>
+            <Insets bottom="8.0" left="16.0" right="16.0" top="8.0"/>
+        </VBox.margin>
+        <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancelPressed" text="Cancel"
+                GridPane.rowIndex="1"/>
+        <Button fx:id="addTransactionButton" mnemonicParsing="false" onAction="#handleAddTransactionPressed"
+                text="Add" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1"/>
+        <TextField fx:id="transactionDescriptionTextField" GridPane.columnIndex="1"/>
+        <Label text="Description" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1"/>
+        <DatePicker fx:id="transactionDate" GridPane.columnIndex="2"/>
+        <Label text="Date" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1"/>
+    </GridPane>
 </VBox>

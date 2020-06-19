@@ -1,11 +1,10 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 /**
- * Represents a set of {@link Movement} that is considered as an atomic operation.
+ * Represents a set of {@link Movement}s considered as an atomic operation.
  */
 public interface Transaction extends Tagged{
     /**
@@ -28,7 +27,7 @@ public interface Transaction extends Tagged{
     List<Movement> getMovements();
 
     /**
-     * Returns the {@link Date} object representing the time on which this transaction was (or will be) applied.
+     * Returns the {@link LocalDate} object representing the time on which this transaction was (or will be) applied.
      * @return the transaction's date
      */
     LocalDate getDate();

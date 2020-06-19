@@ -7,7 +7,6 @@ import it.unicam.cs.pa.jbudget105129.persistence.PersistenceManager;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 /**

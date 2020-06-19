@@ -1,7 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 /**
  * Represent a set of programmed {@link Transaction}. This object must have a way to distinguish completed
@@ -16,12 +15,13 @@ public interface ScheduledTransaction {
 
     /**
      * Returns all the transactions contained in this scheduled transaction object
-     * @return the list of all transacions
+     * @return the list of all transactions
      */
     List<Transaction> getTransactions();
 
     /**
-     * Returns all the transactions before the given date.
+     * Returns all the transactions before the given date.  If the includeCompleted parameter is true
+     * all completed transactions are included otherwise this method returns only not completed transactions.
      * @param date the date
      * @param includeCompleted if this value is true all completed transactions are included in the result
      * @return the list of {@link Transaction}

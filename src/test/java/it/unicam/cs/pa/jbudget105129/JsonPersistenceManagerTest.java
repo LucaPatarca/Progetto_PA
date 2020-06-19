@@ -6,14 +6,12 @@ import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
 import it.unicam.cs.pa.jbudget105129.persistence.JsonPersistenceManager;
 import it.unicam.cs.pa.jbudget105129.persistence.PersistenceManager;
-import javafx.scene.Scene;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -81,6 +79,7 @@ public class JsonPersistenceManagerTest {
         assertFalse(loaded.getScheduledTransactions().get(0).isCompleted());
         ScheduledTransaction st = loaded.getScheduledTransactions().get(0);
         assertTrue(st.isCompleted(st.getTransactions().get(1))||st.isCompleted(st.getTransactions().get(0)));
+        //noinspection ResultOfMethodCallIgnored
         file.delete();
     }
 

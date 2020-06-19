@@ -2,7 +2,6 @@ package it.unicam.cs.pa.jbudget105129.controller;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import it.unicam.cs.pa.jbudget105129.annotations.AppLedger;
 import it.unicam.cs.pa.jbudget105129.annotations.AppPersistence;
 import it.unicam.cs.pa.jbudget105129.model.FamilyLedger;

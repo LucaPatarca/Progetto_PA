@@ -117,7 +117,6 @@ public class TableView extends Application implements Initializable,PropertyChan
         initTransactionTable();
         initAccountTable();
         initScheduledTable();
-        initBudgetTable();
         ledgerManager.getLedger().addListener(this);
     }
 
@@ -152,12 +151,6 @@ public class TableView extends Application implements Initializable,PropertyChan
         sTransactionCompletedCol.setCellValueFactory(cellData-> new SimpleStringProperty(
                 ledgerPrinter.stringOf(scheduledTable.getSelectionModel().getSelectedItem().isCompleted(cellData.getValue()))));
         scheduledTable.setOnContextMenuRequested(event->scheduledContextMenu.show(scheduledTable,event.getScreenX(),event.getScreenY()));
-    }
-
-    private void initBudgetTable(){
-        budgetNameCol.setCellValueFactory(cellData->new ReadOnlyStringWrapper(cellData.getValue().getName()));
-        budgetDescriptionCol.setCellValueFactory(cellData->new ReadOnlyStringWrapper(cellData.getValue().getDescription()));
-        // TODO: 16/06/2020 continuare
     }
 
     @Override

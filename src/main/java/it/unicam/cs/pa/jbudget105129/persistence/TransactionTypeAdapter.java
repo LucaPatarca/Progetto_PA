@@ -7,7 +7,6 @@ import it.unicam.cs.pa.jbudget105129.model.Transaction;
 
 import java.lang.reflect.Type;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class TransactionTypeAdapter implements JsonDeserializer<Transaction>, JsonSerializer<Transaction>{
     @Override

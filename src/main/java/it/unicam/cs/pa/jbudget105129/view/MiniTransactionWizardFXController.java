@@ -3,7 +3,6 @@ package it.unicam.cs.pa.jbudget105129.view;
 import it.unicam.cs.pa.jbudget105129.model.RoundedTransaction;
 import it.unicam.cs.pa.jbudget105129.model.Transaction;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;

@@ -1,11 +1,17 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
 import it.unicam.cs.pa.jbudget105129.enums.AccountType;
-import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents a registry for the class {@link RoundedAccount}, it is responsible for maintaining a registry
+ * for all instances of {@link RoundedAccount} throughout the application. It guarantee that every {@link RoundedAccount}
+ * has a different and unique ID.
+ *
+ * The method getInstance is also the only way you can create a new instance of {@link RoundedAccount}.
+ */
 public class RoundedAccountRegistry {
 
     private Map<Integer,RoundedAccount> registry = new HashMap<>();
@@ -13,17 +19,17 @@ public class RoundedAccountRegistry {
     private static int nextID=0;
 
     /**
-     * Creates a new RoundedMovementRegistry with the constructor as argument.
-     * @param factory the constructor used to create new instances of {@link RoundedMovement}.
+     * Creates a new {@link RoundedAccountRegistry} with the constructor as argument.
+     * @param factory the constructor used to create new instances of {@link RoundedAccount}.
      */
-    public RoundedAccountRegistry(RoundedAccountConstructor factory){
+    protected RoundedAccountRegistry(RoundedAccountConstructor factory){
         this.factory=factory;
     }
 
     /**
      * Returns an entry of the registry matching the specified ID, null if there is no entry for the ID.
-     * @param ID the ID used to find the {@link RoundedMovement}.
-     * @return the {@link RoundedMovement} in the registry or null if it can't be found.
+     * @param ID the ID used to find the {@link RoundedAccount}.
+     * @return the {@link RoundedAccount} in the registry or null if it can't be found.
      */
     public RoundedAccount getInstance(int ID){
         return registry.get(ID);
@@ -31,11 +37,11 @@ public class RoundedAccountRegistry {
 
     /**
      * Returns a new instance of {@link RoundedMovement} with the specified parameters and a generated unique ID.
-     * @param description the description of the movement
-     * @param amount the amount of the movement
-     * @param type the type of the movement
-     * @param account the account of the movement
-     * @return a new instance of {@link RoundedMovement}.
+     * @param name the name of the account
+     * @param description the description of the account
+     * @param openingBalance the opening balance of the account
+     * @param type the type of the account
+     * @return a new instance of {@link RoundedAccount}.
      */
     public RoundedAccount getInstance(String name, String description, double openingBalance, AccountType type){
         return getInstance(nextID,name,description,openingBalance,type);
@@ -47,11 +53,11 @@ public class RoundedAccountRegistry {
      * null otherwise.
      * If the registry does not contain an entry with the same ID:
      * returns a new object and puts it in the registry.
-     * @param ID the id of the movement
-     * @param description the description of the movement
-     * @param amount the amount of the movement
-     * @param type the type of the movement
-     * @param account the account of the movement
+     * @param ID the id of the account
+     * @param name the name of the account
+     * @param description the description of the account
+     * @param openingBalance the opening balance of the account
+     * @param type the type of the account
      * @return a {@link RoundedMovement} matching the parameter or null if the ID is already used by a different movement.
      */
     public RoundedAccount getInstance(int ID, String name, String description, double openingBalance, AccountType type){

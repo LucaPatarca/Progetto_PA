@@ -1,7 +1,6 @@
 package it.unicam.cs.pa.jbudget105129.persistence;
 
 import com.google.gson.*;
-import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import it.unicam.cs.pa.jbudget105129.model.*;
 

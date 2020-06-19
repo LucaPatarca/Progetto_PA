@@ -1,11 +1,13 @@
 package it.unicam.cs.pa.jbudget105129.model;
 
+import it.unicam.cs.pa.jbudget105129.controller.BudgetManager;
+
 import java.util.List;
 import java.util.Map;
 
 /**
- * Represents an object responsible for showing the progress of each category relative to a budget.
- * Instances of objects implementing this interface should be created only by a BudgetManager.
+ * Represents an object responsible for showing the progress of each category in relation to a budget.
+ * Instances of objects implementing this interface should only be created by a {@link BudgetManager}.
  */
 public interface BudgetReport {
     /**
@@ -28,7 +30,7 @@ public interface BudgetReport {
     Budget getBudget();
 
     /**
-     * Returns the report specific to a {@link Tag}, the report is represented by a double value calculated as
+     * Returns the report of a {@link Tag}, the report is represented by a double value calculated as
      * the difference between the expected expense and the current expense.
      * @param tag the tag to report
      * @return the report value

@@ -5,7 +5,6 @@ import it.unicam.cs.pa.jbudget105129.exceptions.AccountException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 

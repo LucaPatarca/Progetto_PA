@@ -13,132 +13,124 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="mainVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.pa.jbudget105129.view.TableView">
-   <children>
-      <MenuBar>
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-                  <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#handleSavePressed" text="Save" />
-                  <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#handleSaveAsPressed" text="Save as..." />
-              <MenuItem fx:id="loadMenuItem" mnemonicParsing="false" onAction="#handleLoadPressed" text="Load..." />
-            </items>
-          </Menu>
-            <Menu mnemonicParsing="false" text="Add">
-              <items>
-                <MenuItem fx:id="newTransactionItem" mnemonicParsing="false" onAction="#handleNewTransaction" text="New transaction..." />
-                  <MenuItem fx:id="newAccountMenuItem" mnemonicParsing="false" onAction="#handleNewAccountPressed" text="New account..." />
-                  <MenuItem fx:id="newSTransactionMenuItem" mnemonicParsing="false" onAction="#handleNewScheduledPressed" text="New scheduled transaction..." />
-              </items>
-            </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-        <tabs>
-          <Tab text="Transactions">
-               <content>
-                  <TableView fx:id="transactionTable" onKeyPressed="#handleTransactionKeyPressed" tableMenuButtonVisible="true">
-                    <columns>
-                      <TableColumn fx:id="transactionDateCol" prefWidth="96.0" text="Date" />
-                      <TableColumn fx:id="transactionDescriptionCol" prefWidth="182.0" text="Description" />
-                        <TableColumn fx:id="transactionTotalCol" prefWidth="70.0" text="Total" />
-                        <TableColumn fx:id="transactionMovementsCol" prefWidth="121.0" text="Movements" />
-                        <TableColumn fx:id="transactionTagsCol" prefWidth="111.0" text="Tags" />
-                    </columns>
-                     <contextMenu>
-                        <ContextMenu fx:id="transactionContextMenu">
-                          <items>
-                            <MenuItem fx:id="transactionContextDeleteItem" mnemonicParsing="false" onAction="#handleTransactionContextDeletePressed" text="Delete" />
-                              <MenuItem fx:id="transactionContextShowMovementsItem" mnemonicParsing="false" onAction="#transactionContextShowMovementsPressed" text="Show movements" />
-                              <MenuItem fx:id="transactionContextEditTagsItem" mnemonicParsing="false" onAction="#transactionContextEditTagsPressed" text="Edit tags" />
-                          </items>
-                        </ContextMenu>
-                     </contextMenu>
-                  </TableView>
-               </content></Tab>
-          <Tab text="Scheduled transactions">
-               <content>
-                  <SplitPane dividerPositions="0.32666666666666666" prefHeight="200.0" prefWidth="200.0">
-                     <items>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                           <children>
-                              <Label text="Scheduled transactions">
-                                 <padding>
-                                    <Insets bottom="2.0" left="16.0" top="2.0" />
-                                 </padding>
-                              </Label>
-                              <TableView fx:id="scheduledTable" onKeyPressed="#handleScheduledKeyPressed" onMouseClicked="#handleScheduledMouseClicked" prefHeight="388.0" prefWidth="178.0">
-                                <columns>
-                                  <TableColumn fx:id="scheduledDescriptionCol" prefWidth="150.0" text="Description" />
-                                  <TableColumn fx:id="scheduledCompletedCol" prefWidth="90.0" text="Completed" />
-                                </columns>
-                              </TableView>
-                           </children>
-                        </VBox>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                           <children>
-                              <Label text="Transactions">
-                                 <padding>
-                                    <Insets bottom="2.0" left="16.0" top="2.0" />
-                                 </padding>
-                              </Label>
-                              <TableView fx:id="sTransactionTable" prefHeight="388.0" prefWidth="399.0">
-                                <columns>
-                                  <TableColumn fx:id="sTransactionDateCol" prefWidth="138.0" text="Date" />
-                                  <TableColumn fx:id="sTransactionDescriptionCol" prefWidth="171.0" text="Description" />
-                                    <TableColumn fx:id="sTransactionTotalCol" prefWidth="87.0" text="Total" />
-                                    <TableColumn fx:id="sTransactionCompletedCol" prefWidth="97.0" text="Completed" />
-                                </columns>
-                                 <contextMenu>
-                                    <ContextMenu fx:id="scheduledContextMenu">
-                                      <items>
-                                        <MenuItem mnemonicParsing="false" onAction="#handleScheduledShowMovementsPressed" text="Show movements" />
-                                          <MenuItem mnemonicParsing="false" onAction="#handleScheduledEditTagsPressed" text="Edit Tags" />
-                                      </items>
-                                    </ContextMenu>
-                                 </contextMenu>
-                              </TableView>
-                           </children>
-                        </VBox>
-                     </items></SplitPane>
-               </content></Tab>
-            <Tab text="Accounts">
-               <content>
-                  <TableView fx:id="accountTable" onKeyPressed="#handleAccountKeyPressed" prefHeight="200.0" prefWidth="200.0">
-                    <columns>
-                      <TableColumn fx:id="accountNameCol" prefWidth="97.0" text="Name" />
-                      <TableColumn fx:id="accountDescriptionCol" prefWidth="178.0" text="Description" />
-                        <TableColumn fx:id="accountReferentCol" prefWidth="116.0" text="Referent" />
-                        <TableColumn fx:id="accountTypeCol" prefWidth="101.0" text="Type" />
-                        <TableColumn fx:id="accountBalanceCol" prefWidth="102.0" text="Balance" />
-                        <TableColumn fx:id="accountMinCol" prefWidth="75.0" text="Min" />
-                        <TableColumn fx:id="accountMaxCol" prefWidth="75.0" text="Max" />
-                    </columns>
-                  </TableView>
-               </content>
-            </Tab>
-            <Tab text="Budget">
-               <content>
-                  <TableView fx:id="budgetTable" prefHeight="200.0" prefWidth="200.0">
-                    <columns>
-                        <TableColumn fx:id="budgetNameCol" prefWidth="140.0" text="Category name" />
-                      <TableColumn fx:id="budgetDescriptionCol" prefWidth="278.0" text="Category description" />
-                      <TableColumn fx:id="budgetExpectedCol" prefWidth="143.0" text="Budget" />
-                    </columns>
-                  </TableView>
-               </content>
-            </Tab>
-        </tabs>
-      </TabPane>
-   </children>
+<VBox fx:id="mainVbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="it.unicam.cs.pa.jbudget105129.view.TableView">
+    <MenuBar>
+        <Menu mnemonicParsing="false" text="File">
+            <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#handleSavePressed" text="Save"/>
+            <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#handleSaveAsPressed"
+                      text="Save as..."/>
+            <MenuItem fx:id="loadMenuItem" mnemonicParsing="false" onAction="#handleLoadPressed" text="Load..."/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Add">
+            <MenuItem fx:id="newTransactionItem" mnemonicParsing="false" onAction="#handleNewTransaction"
+                      text="New transaction..."/>
+            <MenuItem fx:id="newAccountMenuItem" mnemonicParsing="false" onAction="#handleNewAccountPressed"
+                      text="New account..."/>
+            <MenuItem fx:id="newSTransactionMenuItem" mnemonicParsing="false" onAction="#handleNewScheduledPressed"
+                      text="New scheduled transaction..."/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+            <MenuItem mnemonicParsing="false" text="Delete"/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+            <MenuItem mnemonicParsing="false" text="About"/>
+        </Menu>
+    </MenuBar>
+    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <Tab text="Transactions">
+            <TableView fx:id="transactionTable" onKeyPressed="#handleTransactionKeyPressed"
+                       tableMenuButtonVisible="true">
+                <columns>
+                    <TableColumn fx:id="transactionDateCol" prefWidth="96.0" text="Date"/>
+                    <TableColumn fx:id="transactionDescriptionCol" prefWidth="182.0" text="Description"/>
+                    <TableColumn fx:id="transactionTotalCol" prefWidth="70.0" text="Total"/>
+                    <TableColumn fx:id="transactionMovementsCol" prefWidth="121.0" text="Movements"/>
+                    <TableColumn fx:id="transactionTagsCol" prefWidth="111.0" text="Tags"/>
+                </columns>
+                <contextMenu>
+                    <ContextMenu fx:id="transactionContextMenu">
+                        <items>
+                            <MenuItem fx:id="transactionContextDeleteItem" mnemonicParsing="false"
+                                      onAction="#handleTransactionContextDeletePressed" text="Delete"/>
+                            <MenuItem fx:id="transactionContextShowMovementsItem" mnemonicParsing="false"
+                                      onAction="#transactionContextShowMovementsPressed" text="Show movements"/>
+                            <MenuItem fx:id="transactionContextEditTagsItem" mnemonicParsing="false"
+                                      onAction="#transactionContextEditTagsPressed" text="Edit tags"/>
+                        </items>
+                    </ContextMenu>
+                </contextMenu>
+            </TableView>
+        </Tab>
+        <Tab text="Scheduled transactions">
+            <SplitPane dividerPositions="0.32666666666666666" prefHeight="200.0" prefWidth="200.0">
+                <VBox prefHeight="200.0" prefWidth="100.0">
+                    <Label text="Scheduled transactions">
+                        <padding>
+                            <Insets bottom="2.0" left="16.0" top="2.0"/>
+                        </padding>
+                    </Label>
+                    <TableView fx:id="scheduledTable" onKeyPressed="#handleScheduledKeyPressed"
+                               onMouseClicked="#handleScheduledMouseClicked" prefHeight="388.0"
+                               prefWidth="178.0">
+                        <columns>
+                            <TableColumn fx:id="scheduledDescriptionCol" prefWidth="150.0" text="Description"/>
+                            <TableColumn fx:id="scheduledCompletedCol" prefWidth="90.0" text="Completed"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+                <VBox prefHeight="200.0" prefWidth="100.0">
+                    <Label text="Transactions">
+                        <padding>
+                            <Insets bottom="2.0" left="16.0" top="2.0"/>
+                        </padding>
+                    </Label>
+                    <TableView fx:id="sTransactionTable" prefHeight="388.0" prefWidth="399.0">
+                        <columns>
+                            <TableColumn fx:id="sTransactionDateCol" prefWidth="138.0" text="Date"/>
+                            <TableColumn fx:id="sTransactionDescriptionCol" prefWidth="171.0"
+                                         text="Description"/>
+                            <TableColumn fx:id="sTransactionTotalCol" prefWidth="87.0" text="Total"/>
+                            <TableColumn fx:id="sTransactionCompletedCol" prefWidth="97.0" text="Completed"/>
+                        </columns>
+                        <contextMenu>
+                            <ContextMenu fx:id="scheduledContextMenu">
+                                <items>
+                                    <MenuItem mnemonicParsing="false"
+                                              onAction="#handleScheduledShowMovementsPressed"
+                                              text="Show movements"/>
+                                    <MenuItem mnemonicParsing="false"
+                                              onAction="#handleScheduledEditTagsPressed" text="Edit Tags"/>
+                                </items>
+                            </ContextMenu>
+                        </contextMenu>
+                    </TableView>
+                </VBox>
+            </SplitPane>
+        </Tab>
+        <Tab text="Accounts">
+            <TableView fx:id="accountTable" onKeyPressed="#handleAccountKeyPressed" prefHeight="200.0"
+                       prefWidth="200.0">
+                <columns>
+                    <TableColumn fx:id="accountNameCol" prefWidth="97.0" text="Name"/>
+                    <TableColumn fx:id="accountDescriptionCol" prefWidth="178.0" text="Description"/>
+                    <TableColumn fx:id="accountReferentCol" prefWidth="116.0" text="Referent"/>
+                    <TableColumn fx:id="accountTypeCol" prefWidth="101.0" text="Type"/>
+                    <TableColumn fx:id="accountBalanceCol" prefWidth="102.0" text="Balance"/>
+                    <TableColumn fx:id="accountMinCol" prefWidth="75.0" text="Min"/>
+                    <TableColumn fx:id="accountMaxCol" prefWidth="75.0" text="Max"/>
+                </columns>
+            </TableView>
+        </Tab>
+        <Tab text="Budget">
+            <TableView fx:id="budgetTable" prefHeight="200.0" prefWidth="200.0">
+                <columns>
+                    <TableColumn fx:id="budgetNameCol" prefWidth="140.0" text="Category name"/>
+                    <TableColumn fx:id="budgetDescriptionCol" prefWidth="278.0" text="Category description"/>
+                    <TableColumn fx:id="budgetExpectedCol" prefWidth="143.0" text="Budget"/>
+                </columns>
+            </TableView>
+        </Tab>
+    </TabPane>
 </VBox>

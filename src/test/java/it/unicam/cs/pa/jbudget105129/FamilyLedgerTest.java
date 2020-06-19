@@ -8,14 +8,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FamilyLedgerTest {
 
-    private static Transaction transaction0;
     private static Transaction transaction1;
     private static Transaction transaction2;
     private static ScheduledTransaction st;
@@ -31,7 +29,7 @@ public class FamilyLedgerTest {
         LocalDate oneDayAgo = LocalDate.now().minusDays(1);
 
         //transactions init
-        transaction0 = new RoundedTransaction("transazione base",oneMonthAgo);
+        Transaction transaction0 = new RoundedTransaction("transazione base", oneMonthAgo);
         transaction1 = new RoundedTransaction("transazione futura",oneMonthHence);
         transaction2 = new RoundedTransaction("transazione passata",oneDayAgo);
         st = new MapScheduledTransaction("scheduled transaction",

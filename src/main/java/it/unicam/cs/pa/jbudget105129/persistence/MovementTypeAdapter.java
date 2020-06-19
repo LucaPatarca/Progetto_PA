@@ -6,7 +6,6 @@ import it.unicam.cs.pa.jbudget105129.model.*;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class MovementTypeAdapter implements JsonSerializer<Movement>, JsonDeserializer<Movement> {
@@ -30,8 +29,8 @@ public class MovementTypeAdapter implements JsonSerializer<Movement>, JsonDeseri
                     null);
             JsonArray ja = jo.getAsJsonArray("tags");
             ja.forEach(element->{
-                JsonObject jtag = element.getAsJsonObject();
-                Tag tag = context.deserialize(jtag,Tag.class);
+                JsonObject jTag = element.getAsJsonObject();
+                Tag tag = context.deserialize(jTag,Tag.class);
                 o.addTag(tag);
             });
             return o;

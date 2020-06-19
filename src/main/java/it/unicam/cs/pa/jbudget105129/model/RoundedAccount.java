@@ -30,7 +30,7 @@ public class RoundedAccount implements Account {
     private final AccountType type;
     private BigDecimal minAmount;
     private BigDecimal maxAmount;
-    private int ID;
+    private final int ID;
     private static RoundedAccountRegistry registry;
 
     /**
