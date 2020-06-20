@@ -70,10 +70,6 @@ public class TableView extends Application implements Initializable,PropertyChan
     @FXML public MenuItem transactionContextDeleteItem;
     @FXML public MenuItem transactionContextShowMovementsItem;
     @FXML public ContextMenu scheduledContextMenu;
-    @FXML public javafx.scene.control.TableView<Tag> budgetTable;
-    @FXML public TableColumn<Tag,String> budgetNameCol;
-    @FXML public TableColumn<Tag,String> budgetDescriptionCol;
-    @FXML public TableColumn<Tag,Double> budgetExpectedCol;
     @FXML public MenuItem saveAsMenuItem;
     @FXML public MenuItem transactionContextEditTagsItem;
 

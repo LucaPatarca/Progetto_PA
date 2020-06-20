@@ -123,14 +123,5 @@
                 </columns>
             </TableView>
         </Tab>
-        <Tab text="Budget">
-            <TableView fx:id="budgetTable" prefHeight="200.0" prefWidth="200.0">
-                <columns>
-                    <TableColumn fx:id="budgetNameCol" prefWidth="140.0" text="Category name"/>
-                    <TableColumn fx:id="budgetDescriptionCol" prefWidth="278.0" text="Category description"/>
-                    <TableColumn fx:id="budgetExpectedCol" prefWidth="143.0" text="Budget"/>
-                </columns>
-            </TableView>
-        </Tab>
     </TabPane>
 </VBox>

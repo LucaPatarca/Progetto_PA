@@ -32,6 +32,10 @@ public class AccountTypeAdapter implements JsonDeserializer<Account>, JsonSerial
         );
         if(jo.has("referent"))
             account.setReferent(jo.get("referent").getAsString());
+        if(jo.has("min"))
+            account.setMinAmount(jo.get("min").getAsDouble());
+        if(jo.has("max"))
+            account.setMaxAmount(jo.get("max").getAsDouble());
         JsonArray movements = jo.get("movements").getAsJsonArray();
         for (JsonElement element : movements){
             Movement movement = context.deserialize(element,Movement.class);
@@ -51,8 +55,10 @@ public class AccountTypeAdapter implements JsonDeserializer<Account>, JsonSerial
             jo.addProperty("description",src.getDescription());
             jo.addProperty("openingBalance",src.getOpeningBalance());
             jo.add("movements",context.serialize(src.getMovements()));
-            jo.add("maxAmount",context.serialize(src.getMaxAmount()));
-            jo.add("minAmount",context.serialize(src.getMinAmount()));
+            if(src.getMaxAmount().isPresent())
+                jo.add("max",context.serialize(src.getMaxAmount().get()));
+            if(src.getMinAmount().isPresent())
+                jo.add("min",context.serialize(src.getMinAmount().get()));
             jo.addProperty("referent",src.getReferent());
             jo.add("type",context.serialize(src.getType()));
             alreadySaved.add(src.getID());
