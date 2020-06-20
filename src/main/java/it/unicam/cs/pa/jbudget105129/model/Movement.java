@@ -3,7 +3,6 @@ package it.unicam.cs.pa.jbudget105129.model;
 import it.unicam.cs.pa.jbudget105129.enums.MovementType;
 
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Represents a change in the balance of an {@link Account}.
@@ -50,12 +49,6 @@ public interface Movement extends Tagged{
     Transaction getTransaction();
 
     /**
-     * Returns all the tags of this movement
-     * @return the list of {@link Tag}
-     */
-    List<Tag> getTags();
-
-    /**
      * Returns the {@link Account} to which this movement applies
      * @return the movement's account.
      */
@@ -84,16 +77,4 @@ public interface Movement extends Tagged{
      * @param account the new account reference
      */
     void setAccount(Account account);
-
-    /**
-     * Adds a new {@link Tag} to this movement, null values are not allowed.
-     * @param tag the new {@link Tag}
-     */
-    void addTag(Tag tag);
-
-    /**
-     * Removes a {@link Tag} from this movement.
-     * @param tag the {@link Tag} to remove
-     */
-    void removeTag(Tag tag);
 }

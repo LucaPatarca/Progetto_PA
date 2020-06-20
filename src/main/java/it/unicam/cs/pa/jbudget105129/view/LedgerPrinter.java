@@ -10,6 +10,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Represents an object that is responsible for providing a string representation of various ledger obgects.
+ */
 public interface LedgerPrinter {
     String stringOf(Account account);
 

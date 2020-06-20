@@ -14,13 +14,6 @@ public interface Transaction extends Tagged{
     String getDescription();
 
     /**
-     * Returns a list of distinct (no repeated elements) {@link Tag} that are present on at least one
-     * of the inner {@link Movement}.
-     * @return the list of tags
-     */
-    List<Tag> getTags();
-
-    /**
      * Returns the list of inner {@link Movement} contained in this transaction.
      * @return the list of movements
      */
@@ -39,18 +32,6 @@ public interface Transaction extends Tagged{
      * @return the total amount of this transaction
      */
     double getTotalAmount();
-
-    /**
-     * Adds a tag to all the inner movements and, consequently, to this transaction.
-     * @param tag the tag to add
-     */
-    void addTag(Tag tag);
-
-    /**
-     * Removes a tag from all the inner movements and, consequently, from this transaction.
-     * @param tag the tag to remove
-     */
-    void removeTag(Tag tag);
 
     /**
      * Adds a {@link Movement} to this transaction's list.

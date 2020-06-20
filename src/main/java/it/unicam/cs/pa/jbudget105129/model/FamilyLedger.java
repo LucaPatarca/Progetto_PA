@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
  * all its {@link Movement}.
  *
  * This is a model object so it is possible to listen it for changes, this kind of responsibility is delegated
- * to a field of type {@link PropertyChangeSupport} that can be obtained by its getter.
+ * to a field of type {@link PropertyChangeSupport}.
  *
- * It is listener responsibility to add itself to the listener list by getting the {@link PropertyChangeSupport}
- * and calling the method addListener.
+ * It is listener responsibility to add itself to the listener list by calling the method addListener(),
+ * to do so, a class need to implement {@link PropertyChangeListener} interface.
  */
 public class FamilyLedger implements Ledger {
 
@@ -94,7 +94,7 @@ public class FamilyLedger implements Ledger {
      * on the {@link PropertyChangeSupport}. If one of the transaction's movement has an
      * {@link Account} that is not present inside the ledger the account is added to the
      * ledger. Each transaction's {@link Movement} is also added to the linked account to
-     * update accounts balance.
+     * update account's balance.
      * @param transaction the transaction to add
      * @throws AccountException if one of the accounts refuses the transaction
      */
@@ -132,8 +132,9 @@ public class FamilyLedger implements Ledger {
 
     /**
      * Removes a {@link ScheduledTransaction} from this ledger and fires an event to all the listeners
-     * on the {@link PropertyChangeSupport}.
-     * @param st the scheduled st to remove
+     * on the {@link PropertyChangeSupport}. For every completed transaction on this scheduled transaction
+     * an operation is performed to update each account's balance.
+     * @param st the scheduled transaction to remove
      */
     @Override
     public void removeScheduledTransaction(ScheduledTransaction st) throws AccountException {
@@ -158,7 +159,7 @@ public class FamilyLedger implements Ledger {
 
     /**
      * Schedules every {@link ScheduledTransaction} to a given date.
-     * This means that every {@link Transaction} before this date is marked as completed and its {@link Movement}
+     * This means that every {@link Transaction} before this date is marked as completed and its {@link Movement}s
      * are added to the linked account to update the balance.
      * @param date the date to be scheduled.
      * @throws AccountException if one of the account refuses the movement

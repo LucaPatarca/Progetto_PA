@@ -12,11 +12,9 @@ import java.util.function.Predicate;
  * Represents a collection of {@link Account}, {@link Transaction} and {@link ScheduledTransaction},
  * it is responsible for managing basic operation between this 3 types of object.
  *
- * This is a model object so it is possible to listen it for changes, this kind of responsibility is delegated
- * to a field of type {@link PropertyChangeSupport} that can be obtained by its getter.
- *
- * It is listener responsibility to add itself to the listener list by getting the {@link PropertyChangeSupport}
- * and calling the method addListener.
+ * This is a model object so it is possible to listen it for changes, to do so the listener class
+ * need to implement {@link PropertyChangeListener} interface and add itself to the listeners list
+ * using the method addListener().
  */
 public interface Ledger {
     /**
@@ -44,15 +42,14 @@ public interface Ledger {
     List<Account> getAccounts();
 
     /**
-     * Adds an {@link Account} to this ledger and fires an event to all the listeners
-     * on the {@link PropertyChangeSupport}.
+     * Adds an {@link Account} to this ledger and fires an event to all the listeners.
      * @param account the account to add
      */
     void addAccount(Account account);
 
     /**
-     * Adds a {@link Transaction} to this ledger and fires an event to all the listeners
-     * on the {@link PropertyChangeSupport}. If one of the transaction's movement has an
+     * Adds a {@link Transaction} to this ledger and fires an event to all the listeners.
+     * If one of the transaction's movement has an
      * {@link Account} that is not present inside the ledger the account is added to the
      * ledger. Each transaction's {@link Movement} is also added to the linked account to
      * update accounts balance.
@@ -62,30 +59,26 @@ public interface Ledger {
     void addTransaction(Transaction transaction) throws AccountException;
 
     /**
-     * Adds a {@link ScheduledTransaction} to this ledger and fires an event to all the listeners
-     * on the {@link PropertyChangeSupport}.
+     * Adds a {@link ScheduledTransaction} to this ledger and fires an event to all the listeners.
      * @param transaction the scheduled transaction to add
      */
     void addScheduledTransaction(ScheduledTransaction transaction);
 
     /**
-     * Removes a {@link Transaction} from this ledger and fires an event to all the listeners
-     * on the {@link PropertyChangeSupport}.
+     * Removes a {@link Transaction} from this ledger and fires an event to all the listeners.
      * @param transaction the transaction to remove
      * @throws AccountException if it is not possible to remove the transaction
      */
     void removeTransaction(Transaction transaction) throws AccountException;
 
     /**
-     * Removes a {@link ScheduledTransaction} from this ledger and fires an event to all the listeners
-     * on the {@link PropertyChangeSupport}.
+     * Removes a {@link ScheduledTransaction} from this ledger and fires an event to all the listeners.
      * @param transaction the scheduled transaction to remove
      */
     void removeScheduledTransaction(ScheduledTransaction transaction) throws AccountException;
 
     /**
-     * Removes a {@link Transaction} from this ledger and fires an event to all the listeners
-     * on the {@link PropertyChangeSupport}.
+     * Removes a {@link Transaction} from this ledger and fires an event to all the listeners.
      * @param account the account to remove
      */
     void removeAccount(Account account);
